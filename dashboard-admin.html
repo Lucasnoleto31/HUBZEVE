@@ -602,7 +602,7 @@
     document.getElementById('kpiTrades').textContent     = (trades.count ?? 0).toLocaleString('pt-BR');
 
     // Últimos usuários
-    const { data: recentes } = await sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(5);
+    const { data: recentes } = await sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(10);
     renderTbodyRecentes(recentes || []);
   }
 
@@ -624,7 +624,7 @@
 
   // ── USUÁRIOS ──
   async function loadUsuarios() {
-    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(10000);
     allUsers = data || [];
     renderUsuarios(allUsers);
   }
@@ -794,7 +794,8 @@
   async function loadUploads() {
     const { data } = await sb.from('uploads')
       .select('*, cliente:cliente_id(full_name, email)')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(10000);
     allUploads = data || [];
     filterUploads();
   }

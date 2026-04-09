@@ -573,7 +573,8 @@ async function loadTrades() {
     .from('trades')
     .select('*')
     .eq('cliente_id', profile.id)
-    .order('abertura', { ascending: true });
+    .order('abertura', { ascending: true })
+    .limit(100000);
 
   console.log('[loadTrades] error:', error);
   console.log('[loadTrades] total trades:', data?.length);
@@ -1319,12 +1320,38 @@ async function processFile(file) {
 
     setProgress(60, 'Salvando operações no banco...');
 
-    // Batch insert trades (100 per batch)
-    const BATCH = 100;
-    const rows  = parsed.trades.map(t => ({ ...t, upload_id: upRec.id, cliente_id: profile.id }));
+    // Batch insert trades (50 per batch)
+    const BATCH = 50;
+    const rows  = parsed.trades.map(t => ({
+      upload_id:          upRec.id,
+      cliente_id:         profile.id,
+      ativo:              t.ativo,
+      abertura:           t.abertura,
+      fechamento:         t.fechamento,
+      lado:               t.lado,
+      qtd_compra:         t.qtd_compra  || 0,
+      qtd_venda:          t.qtd_venda   || 0,
+      preco_compra:       t.preco_compra  || 0,
+      preco_venda:        t.preco_venda   || 0,
+      resultado_reais:    t.resultado_reais,
+      resultado_pontos:   t.resultado_pontos  || 0,
+      drawdown:           t.drawdown     || 0,
+      ganho_max:          t.ganho_max    || 0,
+      perda_max:          t.perda_max    || 0,
+      total_acumulado:    t.total_acumulado   || 0,
+      data_trade:         t.data_trade,
+      hora_abertura:      t.hora_abertura,
+      duracao_minutos:    t.duracao_minutos   || null,
+      tempo_operacao_seg: t.tempo_operacao_seg || null,
+      is_winner:          t.is_winner,
+    }));
     for (let i = 0; i < rows.length; i += BATCH) {
-      const { error: te } = await sb.from('trades').insert(rows.slice(i, i + BATCH));
-      if (te) throw new Error('Erro ao inserir operações: ' + te.message);
+      const batch = rows.slice(i, i + BATCH);
+      const { error: te } = await sb.from('trades').insert(batch);
+      if (te) {
+        console.error('Insert batch error:', te);
+        throw new Error(`Erro ao inserir operações (lote ${i/BATCH+1}): ${te.message}`);
+      }
       setProgress(60 + Math.round((i / rows.length) * 28), `Inserindo ${Math.min(i+BATCH, rows.length)} / ${rows.length}...`);
     }
 

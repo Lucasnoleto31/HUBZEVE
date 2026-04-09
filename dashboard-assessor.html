@@ -403,15 +403,17 @@
     const ids = vinculos.map(v => v.cliente_id);
 
     const [{ data: profiles }, { data: metricas }, { data: uploads }] = await Promise.all([
-      sb.from('profiles').select('*').in('id', ids),
+      sb.from('profiles').select('*').in('id', ids).limit(10000),
       sb.from('metricas_mensais').select('*')
         .in('cliente_id', ids)
         .eq('ano',  new Date().getFullYear())
-        .eq('mes',  new Date().getMonth() + 1),
+        .eq('mes',  new Date().getMonth() + 1)
+        .limit(10000),
       sb.from('uploads').select('cliente_id, created_at, status')
         .in('cliente_id', ids)
         .eq('status', 'done')
-        .order('created_at', { ascending: false }),
+        .order('created_at', { ascending: false })
+        .limit(10000),
     ]);
 
     meusClientes = (profiles || []).map(p => {
@@ -524,12 +526,12 @@
       ['pTrades','pPayoff','pFatorLucro','pMelhorDia'].forEach(id => document.getElementById(id).textContent = '—');
     }
 
-    // Trades
+    // Trades (últimas 50 para o perfil do assessor)
     const { data: trades } = await sb.from('trades')
       .select('*')
       .eq('cliente_id', clienteId)
       .order('fechamento', { ascending: false })
-      .limit(20);
+      .limit(50);
 
     const tbodyT = document.getElementById('tbodyTradesPerfil');
     document.getElementById('perfilTotalTrades').textContent = trades?.length ? trades.length + ' mais recentes' : '';
