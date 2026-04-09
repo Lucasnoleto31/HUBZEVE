@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redefinir Senha — ZeveHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
+  <style>
+    * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+    :root {
+      --blue: #0059FF; --bg: #000000; --card: #0D0D0D; --card-2: #141414;
+      --border: #1E1E1E; --border-2: #2A2A2A; --text: #FFFFFF;
+      --muted: #888888; --muted-2: #444444; --green: #22C55E; --red: #EF4444;
+    }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); display: flex; align-items: center; justify-content: center; }
+    .card { background: var(--card); border: 1px solid var(--border-2); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; margin: 24px; }
+    .input-field { width: 100%; background: var(--card-2); border: 1px solid var(--border-2); border-radius: 10px; color: var(--text); font-size: 15px; padding: 14px 44px 14px 16px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .input-field:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,89,255,.12); }
+    .input-field.error { border-color: var(--red); }
+    .input-field::placeholder { color: var(--muted-2); }
+    .btn { width: 100%; background: var(--blue); color: #fff; font-weight: 700; font-size: 15px; border: none; border-radius: 10px; padding: 15px; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: Inter; }
+    .btn:hover { background: #0047CC; box-shadow: 0 0 28px rgba(0,89,255,.4); transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .eye-btn { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; }
+    .eye-btn:hover { color: var(--text); }
+    .alert { border-radius: 8px; padding: 12px 14px; font-size: 13px; display: none; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .alert.error   { background: rgba(239,68,68,.08);  border: 1px solid rgba(239,68,68,.2);  color: #FCA5A5; }
+    .alert.success { background: rgba(34,197,94,.08);  border: 1px solid rgba(34,197,94,.2);  color: #86EFAC; }
+    .strength-bar { height: 4px; border-radius: 2px; background: var(--border-2); margin-top: 6px; overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 2px; transition: width .3s, background .3s; width: 0; }
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-loading, .state-expired, .state-success { display: none; text-align: center; }
+    .state-loading.show, .state-expired.show, .state-success.show, .state-form.show { display: block; }
+    .state-form { display: none; }
+    .big-icon { font-size: 48px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <!-- Logo -->
+  <div style="text-align:center; margin-bottom:32px;">
+    <img src="zeve logo completo.svg" alt="ZeveHub" style="height:30px; width:auto;" onerror="this.style.display='none'" />
+  </div>
+
+  <!-- Alerta de erro -->
+  <div class="alert error" id="alertError">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#EF4444" stroke-width="1.5"/><path d="M8 5v3M8 10.5v.5" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span id="alertErrorMsg"></span>
+  </div>
+
+  <!-- LOADING -->
+  <div class="state-loading show" id="stateLoading">
+    <div style="display:flex; align-items:center; justify-content:center; gap:12px; color:var(--muted); font-size:14px;">
+      <div class="spinner" style="display:block; border-top-color:var(--blue);"></div>
+      Verificando link...
+    </div>
+  </div>
+
+  <!-- LINK INVÁLIDO / EXPIRADO -->
+  <div class="state-expired" id="stateExpired">
+    <div class="big-icon">🔗</div>
+    <div style="font-size:20px; font-weight:800; margin-bottom:8px;">Link inválido ou expirado</div>
+    <div style="font-size:14px; color:var(--muted); margin-bottom:24px; line-height:1.6;">
+      Este link de redefinição expirou ou já foi utilizado.<br/>Solicite um novo link.
+    </div>
+    <a href="login.html" style="display:inline-flex; align-items:center; gap:8px; background:var(--blue); color:#fff; border-radius:10px; padding:12px 24px; font-size:14px; font-weight:600; text-decoration:none; transition:background .2s;" onmouseover="this.style.background='#0047CC'" onmouseout="this.style.background='var(--blue)'">
+      Voltar ao Login
+    </a>
+  </div>
+
+  <!-- SUCESSO -->
+  <div class="state-success" id="stateSuccess">
+    <div class="big-icon">✅</div>
+    <div style="font-size:20px; font-weight:800; margin-bottom:8px;">Senha redefinida!</div>
+    <div style="font-size:14px; color:var(--muted); margin-bottom:24px; line-height:1.6;">
+      Sua senha foi alterada com sucesso.<br/>Você será redirecionado automaticamente.
+    </div>
+    <div style="width:100%; background:var(--border-2); border-radius:4px; height:4px; overflow:hidden;">
+      <div id="redirectBar" style="height:100%; background:var(--blue); border-radius:4px; width:0%; transition:width 3s linear;"></div>
+    </div>
+    <div style="font-size:12px; color:var(--muted); margin-top:8px;">Redirecionando em 3 segundos...</div>
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <div class="state-form" id="stateForm">
+    <div style="margin-bottom:28px;">
+      <h1 style="font-size:24px; font-weight:800; margin-bottom:6px;">Redefinir senha</h1>
+      <p style="font-size:14px; color:var(--muted);">Digite sua nova senha abaixo.</p>
+    </div>
+
+    <form onsubmit="handleSubmit(event)" novalidate>
+
+      <!-- Nova senha -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px; font-weight:600; color:#CCC; display:block; margin-bottom:7px;">Nova senha</label>
+        <div style="position:relative;">
+          <input type="password" id="newPass" class="input-field" placeholder="Mínimo 8 caracteres" oninput="checkStrength(this.value)" />
+          <button type="button" class="eye-btn" onclick="toggleVis('newPass','eye1on','eye1off')">
+            <svg id="eye1off" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14.12 14.12A3 3 0 119.88 9.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg id="eye1on" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
+          </button>
+        </div>
+        <!-- Strength bar -->
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;" id="strengthLabel"></div>
+      </div>
+
+      <!-- Confirmar senha -->
+      <div style="margin-bottom:24px;">
+        <label style="font-size:13px; font-weight:600; color:#CCC; display:block; margin-bottom:7px;">Confirmar nova senha</label>
+        <div style="position:relative;">
+          <input type="password" id="confirmPass" class="input-field" placeholder="Repita a nova senha" />
+          <button type="button" class="eye-btn" onclick="toggleVis('confirmPass','eye2on','eye2off')">
+            <svg id="eye2off" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14.12 14.12A3 3 0 119.88 9.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg id="eye2on" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn" id="btnSubmit">
+        <div class="spinner" id="spinner"></div>
+        <span id="btnText">Redefinir Senha</span>
+      </button>
+
+    </form>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL  = 'https://bwrcznmovaigpfmezzrw.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3cmN6bm1vdmFpZ3BmbWV6enJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTA5NzMsImV4cCI6MjA5MTMyNjk3M30.tn12u4ZWnrVc-YlGaP6W6cIhbfBViKLPlKT0FhqmH8U';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+function show(id)  { document.getElementById(id).classList.add('show'); }
+function hide(id)  { document.getElementById(id).classList.remove('show'); }
+
+function showError(msg) {
+  const el = document.getElementById('alertError');
+  document.getElementById('alertErrorMsg').textContent = msg;
+  el.style.display = 'flex';
+}
+
+// ── Detect recovery session ──
+sb.auth.onAuthStateChange(async (event, session) => {
+  hide('stateLoading');
+  if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+    show('stateForm');
+  }
+});
+
+// Fallback: check if session already exists (e.g. page reload after token exchange)
+(async () => {
+  // Small delay to let onAuthStateChange fire first
+  await new Promise(r => setTimeout(r, 1200));
+  const loadingEl = document.getElementById('stateLoading');
+  if (loadingEl.classList.contains('show')) {
+    hide('stateLoading');
+    // No auth event fired — link invalid
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      show('stateForm');
+    } else {
+      show('stateExpired');
+    }
+  }
+})();
+
+// ── Submit ──
+async function handleSubmit(e) {
+  e.preventDefault();
+  const pass    = document.getElementById('newPass').value;
+  const confirm = document.getElementById('confirmPass').value;
+
+  document.getElementById('newPass').classList.remove('error');
+  document.getElementById('confirmPass').classList.remove('error');
+  document.getElementById('alertError').style.display = 'none';
+
+  if (pass.length < 8) {
+    document.getElementById('newPass').classList.add('error');
+    showError('A senha deve ter no mínimo 8 caracteres.');
+    return;
+  }
+  if (pass !== confirm) {
+    document.getElementById('confirmPass').classList.add('error');
+    showError('As senhas não coincidem.');
+    return;
+  }
+
+  const btn  = document.getElementById('btnSubmit');
+  const spin = document.getElementById('spinner');
+  const txt  = document.getElementById('btnText');
+  btn.disabled = true;
+  spin.style.display = 'block';
+  txt.textContent = 'Salvando...';
+
+  const { error } = await sb.auth.updateUser({ password: pass });
+
+  btn.disabled = false;
+  spin.style.display = 'none';
+  txt.textContent = 'Redefinir Senha';
+
+  if (error) {
+    showError('Erro ao redefinir senha: ' + error.message);
+    return;
+  }
+
+  hide('stateForm');
+  show('stateSuccess');
+
+  // Progress bar + redirect
+  setTimeout(() => {
+    document.getElementById('redirectBar').style.width = '100%';
+  }, 50);
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 3100);
+}
+
+// ── Strength indicator ──
+function checkStrength(val) {
+  const fill  = document.getElementById('strengthFill');
+  const label = document.getElementById('strengthLabel');
+  let score = 0;
+  if (val.length >= 8)  score++;
+  if (val.length >= 12) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+
+  const map = [
+    [0,   '0%',   '',          ''],
+    [1,   '25%',  '#EF4444',   'Muito fraca'],
+    [2,   '45%',  '#F59E0B',   'Fraca'],
+    [3,   '65%',  '#EAB308',   'Média'],
+    [4,   '85%',  '#22C55E',   'Forte'],
+    [5,   '100%', '#16A34A',   'Muito forte'],
+  ];
+  const [, w, c, l] = map[Math.min(score, 5)];
+  fill.style.width = w;
+  fill.style.background = c;
+  label.textContent = l;
+  label.style.color = c;
+}
+
+// ── Toggle password visibility ──
+function toggleVis(inputId, onId, offId) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    document.getElementById(offId).style.display = 'none';
+    document.getElementById(onId).style.display  = 'block';
+  } else {
+    input.type = 'password';
+    document.getElementById(offId).style.display = 'block';
+    document.getElementById(onId).style.display  = 'none';
+  }
+}
+</script>
+</body>
+</html>

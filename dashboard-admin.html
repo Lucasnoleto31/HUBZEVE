@@ -384,6 +384,19 @@
 
       <!-- ══ SEÇÃO: UPLOADS ══ -->
       <div class="section" id="sec-uploads">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+          <div class="search-wrap" style="flex:1; max-width:280px;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="color:var(--muted)"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input class="input" type="text" placeholder="Buscar por cliente..." id="searchUploads" oninput="filterUploads()" />
+          </div>
+          <select class="select" id="filterUploadStatus" onchange="filterUploads()">
+            <option value="">Todos os status</option>
+            <option value="done">Concluído</option>
+            <option value="processing">Processando</option>
+            <option value="error">Erro</option>
+          </select>
+          <span id="uploadsCount" style="font-size:13px; color:var(--muted); margin-left:auto;"></span>
+        </div>
         <div class="table-wrap">
           <div class="table-header"><h3>Todos os Uploads</h3></div>
           <table>
@@ -395,27 +408,37 @@
                 <th>Trades</th>
                 <th>Status</th>
                 <th>Data</th>
+                <th>Ação</th>
               </tr>
             </thead>
             <tbody id="tbodyUploads">
-              <tr><td colspan="6" class="empty">Carregando...</td></tr>
+              <tr><td colspan="7" class="empty">Carregando...</td></tr>
             </tbody>
           </table>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:14px;">
+          <button class="btn-ghost" id="btnUpPrev" onclick="changeUpPage(-1)" disabled>← Anterior</button>
+          <span id="upPageInfo" style="font-size:13px; color:var(--muted);">Página 1</span>
+          <button class="btn-ghost" id="btnUpNext" onclick="changeUpPage(1)">Próxima →</button>
         </div>
       </div>
 
       <!-- ══ SEÇÃO: PLANOS ══ -->
       <div class="section" id="sec-planos">
+        <div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
+          <button class="btn-primary" onclick="openModal('modalPlano'); editingPlanoId=null; document.getElementById('modalPlanoTitle').textContent='Novo Plano'; resetPlanoForm();">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+            Novo Plano
+          </button>
+        </div>
         <div class="table-wrap">
-          <div class="table-header">
-            <h3>Planos</h3>
-          </div>
+          <div class="table-header"><h3>Planos de Acesso</h3></div>
           <table>
             <thead>
-              <tr><th>Nome</th><th>Descrição</th><th>Max Uploads/mês</th><th>Status</th></tr>
+              <tr><th>Nome</th><th>Descrição</th><th>Max Uploads/mês</th><th>Funcionalidades</th><th>Status</th><th>Ações</th></tr>
             </thead>
             <tbody id="tbodyPlanos">
-              <tr><td colspan="4" class="empty">Carregando...</td></tr>
+              <tr><td colspan="6" class="empty">Carregando...</td></tr>
             </tbody>
           </table>
         </div>
@@ -492,6 +515,40 @@
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeModal('modalEditRole')">Cancelar</button>
       <button class="btn-primary" onclick="salvarEdicao()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: PLANO ═══════════ -->
+<div class="modal-overlay" id="modalPlano">
+  <div class="modal" style="max-width:520px;">
+    <h2 id="modalPlanoTitle">Novo Plano</h2>
+    <div class="form-row">
+      <label>Nome do plano</label>
+      <input class="input" type="text" id="planoNome" placeholder="Ex: Conveniado Premium" />
+    </div>
+    <div class="form-row">
+      <label>Descrição</label>
+      <textarea class="input" id="planoDescricao" rows="2" placeholder="Descreva os benefícios do plano..." style="resize:vertical;"></textarea>
+    </div>
+    <div class="form-row">
+      <label>Máximo de uploads por mês</label>
+      <input class="input" type="number" id="planoMaxUploads" value="100" min="1" />
+    </div>
+    <div class="form-row">
+      <label>Funcionalidades (uma por linha)</label>
+      <textarea class="input" id="planoFeatures" rows="4" placeholder="dashboard_completo&#10;upload_csv&#10;heatmap_horarios&#10;feedback_assessor" style="resize:vertical; font-size:13px;"></textarea>
+    </div>
+    <div class="form-row">
+      <label>Status</label>
+      <select class="select" id="planoAtivo" style="width:100%;">
+        <option value="true">Ativo</option>
+        <option value="false">Inativo</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('modalPlano')">Cancelar</button>
+      <button class="btn-primary" onclick="salvarPlano()">Salvar Plano</button>
     </div>
   </div>
 </div>
@@ -731,37 +788,157 @@
   }
 
   // ── UPLOADS ──
+  let allUploads = [], upPage = 1;
+  const UP_PER_PAGE = 20;
+
   async function loadUploads() {
     const { data } = await sb.from('uploads')
       .select('*, cliente:cliente_id(full_name, email)')
-      .order('created_at', { ascending: false })
-      .limit(50);
+      .order('created_at', { ascending: false });
+    allUploads = data || [];
+    filterUploads();
+  }
 
-    const tbody = document.getElementById('tbodyUploads');
-    if (!data?.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhum upload.</td></tr>'; return; }
-    tbody.innerHTML = data.map(u => `
-      <tr>
-        <td style="font-size:13px;">${esc(u.cliente?.full_name || u.cliente?.email || '—')}</td>
-        <td style="font-size:12px; color:var(--muted);">${esc(u.nome_arquivo)}</td>
-        <td style="font-size:12px; color:var(--muted);">${u.periodo_inicio ? formatDateShort(u.periodo_inicio) + ' – ' + formatDateShort(u.periodo_fim) : '—'}</td>
-        <td>${u.total_trades}</td>
-        <td>${statusBadge(u.status)}</td>
-        <td style="font-size:12px; color:var(--muted);">${formatDate(u.created_at)}</td>
-      </tr>`).join('');
+  function filterUploads() {
+    const q      = (document.getElementById('searchUploads')?.value || '').toLowerCase();
+    const status = document.getElementById('filterUploadStatus')?.value || '';
+    let rows = allUploads.filter(u => {
+      const name = (u.cliente?.full_name || u.cliente?.email || '').toLowerCase();
+      const matchQ = !q || name.includes(q) || u.nome_arquivo.toLowerCase().includes(q);
+      const matchS = !status || u.status === status;
+      return matchQ && matchS;
+    });
+    document.getElementById('uploadsCount').textContent = `${rows.length} upload(s)`;
+    renderUploads(rows);
+  }
+
+  function renderUploads(rows) {
+    const tbody      = document.getElementById('tbodyUploads');
+    const totalPages = Math.max(1, Math.ceil(rows.length / UP_PER_PAGE));
+    const start      = (upPage - 1) * UP_PER_PAGE;
+    const pageRows   = rows.slice(start, start + UP_PER_PAGE);
+
+    if (!pageRows.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty">Nenhum upload encontrado.</td></tr>'; }
+    else {
+      tbody.innerHTML = pageRows.map(u => `
+        <tr>
+          <td>
+            <div style="font-size:13px; font-weight:600;">${esc(u.cliente?.full_name || '—')}</div>
+            <div style="font-size:11px; color:var(--muted);">${esc(u.cliente?.email || '')}</div>
+          </td>
+          <td style="font-size:12px; color:var(--muted); max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(u.nome_arquivo)}</td>
+          <td style="font-size:12px; color:var(--muted);">${u.periodo_inicio ? formatDateShort(u.periodo_inicio) + ' – ' + formatDateShort(u.periodo_fim) : '—'}</td>
+          <td><strong>${u.total_trades}</strong></td>
+          <td>${statusBadge(u.status)}</td>
+          <td style="font-size:12px; color:var(--muted);">${formatDate(u.created_at)}</td>
+          <td><button class="btn-danger" onclick="deletarUpload('${u.id}')">Excluir</button></td>
+        </tr>`).join('');
+    }
+
+    document.getElementById('btnUpPrev').disabled = upPage <= 1;
+    document.getElementById('btnUpNext').disabled = upPage >= totalPages;
+    document.getElementById('upPageInfo').textContent = `Página ${upPage} de ${totalPages}`;
+  }
+
+  function changeUpPage(dir) {
+    const q      = (document.getElementById('searchUploads')?.value || '').toLowerCase();
+    const status = document.getElementById('filterUploadStatus')?.value || '';
+    const rows   = allUploads.filter(u => {
+      const name = (u.cliente?.full_name || u.cliente?.email || '').toLowerCase();
+      return (!q || name.includes(q) || u.nome_arquivo.toLowerCase().includes(q)) && (!status || u.status === status);
+    });
+    const total = Math.max(1, Math.ceil(rows.length / UP_PER_PAGE));
+    upPage = Math.max(1, Math.min(upPage + dir, total));
+    renderUploads(rows);
+  }
+
+  async function deletarUpload(id) {
+    if (!confirm('Excluir este upload e todas as suas operações? Esta ação não pode ser desfeita.')) return;
+    const { error } = await sb.from('uploads').delete().eq('id', id);
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast('Upload excluído.', 'success');
+    loadUploads();
+    loadOverview();
   }
 
   // ── PLANOS ──
+  let editingPlanoId = null;
+
   async function loadPlanos() {
     const { data } = await sb.from('planos').select('*').order('created_at');
     const tbody = document.getElementById('tbodyPlanos');
-    if (!data?.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty">Nenhum plano.</td></tr>'; return; }
-    tbody.innerHTML = data.map(p => `
-      <tr>
-        <td style="font-weight:600;">${esc(p.nome)}</td>
-        <td style="font-size:13px; color:var(--muted);">${esc(p.descricao || '—')}</td>
-        <td>${p.max_uploads_mes}</td>
-        <td>${p.ativo ? '<span class="badge badge-green">Ativo</span>' : '<span class="badge badge-red">Inativo</span>'}</td>
-      </tr>`).join('');
+    if (!data?.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhum plano.</td></tr>'; return; }
+    tbody.innerHTML = data.map(p => {
+      let features = [];
+      try { features = JSON.parse(p.features || '[]'); } catch {}
+      return `
+        <tr>
+          <td style="font-weight:600;">${esc(p.nome)}</td>
+          <td style="font-size:13px; color:var(--muted);">${esc(p.descricao || '—')}</td>
+          <td style="text-align:center;">${p.max_uploads_mes}</td>
+          <td style="font-size:12px; color:var(--muted);">${features.slice(0,3).join(', ')}${features.length > 3 ? ` +${features.length-3}` : ''}</td>
+          <td>${p.ativo ? '<span class="badge badge-green">Ativo</span>' : '<span class="badge badge-red">Inativo</span>'}</td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-sm" onclick='abrirEditPlano(${JSON.stringify(p)})'>Editar</button>
+              <button class="btn-danger" onclick="togglePlanoAtivo('${p.id}', ${p.ativo})">${p.ativo ? 'Desativar' : 'Ativar'}</button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  function resetPlanoForm() {
+    document.getElementById('planoNome').value       = '';
+    document.getElementById('planoDescricao').value  = '';
+    document.getElementById('planoMaxUploads').value = '100';
+    document.getElementById('planoFeatures').value   = 'dashboard_completo\nupload_csv\nheatmap_horarios\nfeedback_assessor\nhistorico_operacoes';
+    document.getElementById('planoAtivo').value      = 'true';
+  }
+
+  function abrirEditPlano(p) {
+    editingPlanoId = p.id;
+    document.getElementById('modalPlanoTitle').textContent = 'Editar Plano';
+    document.getElementById('planoNome').value       = p.nome || '';
+    document.getElementById('planoDescricao').value  = p.descricao || '';
+    document.getElementById('planoMaxUploads').value = p.max_uploads_mes || 100;
+    let features = [];
+    try { features = JSON.parse(p.features || '[]'); } catch {}
+    document.getElementById('planoFeatures').value = features.join('\n');
+    document.getElementById('planoAtivo').value    = String(p.ativo);
+    openModal('modalPlano');
+  }
+
+  async function salvarPlano() {
+    const nome       = document.getElementById('planoNome').value.trim();
+    const descricao  = document.getElementById('planoDescricao').value.trim();
+    const maxUploads = parseInt(document.getElementById('planoMaxUploads').value) || 100;
+    const featuresRaw= document.getElementById('planoFeatures').value;
+    const ativo      = document.getElementById('planoAtivo').value === 'true';
+
+    if (!nome) { showToast('Informe o nome do plano.', 'error'); return; }
+
+    const features = featuresRaw.split('\n').map(f => f.trim()).filter(Boolean);
+    const payload  = { nome, descricao: descricao || null, max_uploads_mes: maxUploads, features: JSON.stringify(features), ativo };
+
+    let error;
+    if (editingPlanoId) {
+      ({ error } = await sb.from('planos').update(payload).eq('id', editingPlanoId));
+    } else {
+      ({ error } = await sb.from('planos').insert(payload));
+    }
+
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast(editingPlanoId ? 'Plano atualizado!' : 'Plano criado!', 'success');
+    closeModal('modalPlano');
+    loadPlanos();
+  }
+
+  async function togglePlanoAtivo(id, ativo) {
+    const { error } = await sb.from('planos').update({ ativo: !ativo }).eq('id', id);
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast(ativo ? 'Plano desativado.' : 'Plano ativado!', 'success');
+    loadPlanos();
   }
 
   // ── NAVEGAÇÃO ──
