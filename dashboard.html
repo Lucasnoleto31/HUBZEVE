@@ -692,6 +692,7 @@ function daysAgo(n) {
    RENDER DASHBOARD
 ============================================================ */
 function renderDashboard() {
+  console.log('[renderDashboard] filtered.length:', filtered.length);
   if (filtered.length === 0) {
     document.getElementById('empty-overview').style.display = 'block';
     document.getElementById('dash-content').style.display   = 'none';
@@ -700,11 +701,21 @@ function renderDashboard() {
   document.getElementById('empty-overview').style.display = 'none';
   document.getElementById('dash-content').style.display   = 'block';
 
-  const m = calcMetrics(filtered);
-  renderKPIs(m);
-  renderCharts(m);
-  renderHeatmap(m.hourly);
-  renderStatsRow(m);
+  try {
+    console.log('[renderDashboard] calcMetrics...');
+    const m = calcMetrics(filtered);
+    console.log('[renderDashboard] pnl:', m.pnl, 'wr:', m.wr, 'total:', m.totalTrades);
+    renderKPIs(m);
+    console.log('[renderDashboard] KPIs ok');
+    renderCharts(m);
+    console.log('[renderDashboard] Charts ok');
+    renderHeatmap(m.hourly);
+    console.log('[renderDashboard] Heatmap ok');
+    renderStatsRow(m);
+  } catch(err) {
+    console.error('[renderDashboard] ERRO:', err.message, err.stack);
+    toast('Erro ao renderizar: ' + err.message, 'error');
+  }
   renderTradesTable();
 }
 
@@ -1169,19 +1180,22 @@ function parseProfitCSV(text) {
     if (hl === 'ativo')            idx.ativo      = i;
     else if (hl === 'abertura')    idx.abertura   = i;
     else if (hl === 'fechamento')  idx.fechamento = i;
-    else if (hl === 'tempo' || hl === 'duracao') idx.tempo = i;
-    else if (hl === 'c/v' || hl === 'lado')      idx.lado  = i;
+    else if (/^tempo/.test(hl) || /^durac/.test(hl)) idx.tempo = i;
+    else if (hl === 'c/v' || hl === 'lado' || hl === 'c / v') idx.lado = i;
     else if (/qtd\.?\s*c/.test(hl) && !hl.includes('v')) idx.qtd_c = i;
     else if (/qtd\.?\s*v/.test(hl) && !hl.includes('c')) idx.qtd_v = i;
-    else if (/pre.o\s*c/.test(hl) && !hl.includes('v'))  idx.pc    = i;
-    else if (/pre.o\s*v/.test(hl) && !hl.includes('c'))  idx.pv    = i;
-    else if (/resultado.*r\$/.test(hl) || hl === 'resultado') idx.res_r = idx.res_r ?? i;
-    else if (/resultado.*pt/.test(hl)) idx.res_pts = i;
+    else if ((/preco?\s*c/i.test(hl) || /pr\.?\s*c/i.test(hl)) && !hl.includes('v'))  idx.pc = i;
+    else if ((/preco?\s*v/i.test(hl) || /pr\.?\s*v/i.test(hl)) && !hl.includes('c'))  idx.pv = i;
+    else if (/resultado/.test(hl) && (hl.includes('r$') || hl.includes('rs') || hl.includes('reai') || hl.includes('r.'))) idx.res_r = idx.res_r ?? i;
+    else if (/resultado/.test(hl) && (hl.includes('pt') || hl.includes('pont'))) idx.res_pts = i;
+    else if (/resultado/.test(hl)) idx.res_r = idx.res_r ?? i; // fallback: any "resultado" col
     else if (/^dd/.test(hl) || hl.includes('drawdown')) idx.dd    = i;
     else if (hl.includes('ganho') && hl.includes('max')) idx.gmax  = i;
     else if (hl.includes('perda') && hl.includes('max')) idx.pmax  = i;
     else if (hl.includes('total'))                       idx.total = i;
   });
+  console.log('[parseProfitCSV] headers:', JSON.stringify(headers));
+  console.log('[parseProfitCSV] idx:', JSON.stringify(idx));
 
   const parseBR = s => {
     if (!s || !s.trim() || s.trim() === '-') return 0;
