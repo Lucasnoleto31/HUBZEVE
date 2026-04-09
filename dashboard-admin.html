@@ -326,6 +326,7 @@
               <tr>
                 <th>Usuário</th>
                 <th>Role</th>
+                <th>Plano</th>
                 <th>Conta Profit</th>
                 <th>Cadastro</th>
                 <th>Status</th>
@@ -506,6 +507,12 @@
       <input class="input" type="text" id="editContaProfit" />
     </div>
     <div class="form-row">
+      <label>Plano</label>
+      <select class="select" id="editPlanoId" style="width:100%;">
+        <option value="">Sem plano</option>
+      </select>
+    </div>
+    <div class="form-row">
       <label>Status</label>
       <select class="select" id="editAtivo" style="width:100%;">
         <option value="true">Ativo</option>
@@ -565,6 +572,7 @@
   );
 
   let allUsers = [];
+  let allPlanos = [];
   let currentUser = null;
 
   // ── INIT ──
@@ -580,11 +588,20 @@
     document.getElementById('userName').textContent = profile.full_name || profile.email;
     document.getElementById('userInitials').textContent = (profile.full_name || profile.email).slice(0,2).toUpperCase();
 
+    await loadPlanosCache();
     loadOverview();
     loadUsuarios();
     loadVinculos();
     loadUploads();
     loadPlanos();
+  }
+
+  async function loadPlanosCache() {
+    const { data } = await sb.from('planos').select('id, nome').eq('ativo', true).order('nome');
+    allPlanos = data || [];
+    const sel = document.getElementById('editPlanoId');
+    sel.innerHTML = '<option value="">Sem plano</option>' +
+      allPlanos.map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('');
   }
 
   // ── OVERVIEW ──
@@ -616,7 +633,7 @@
           <div style="font-size:12px; color:var(--muted);">${esc(u.email)}</div>
         </td>
         <td>${roleBadge(u.role)}</td>
-        <td><span class="badge badge-gray">Conveniado</span></td>
+        <td style="font-size:13px; color:var(--muted);">${u.plano?.nome ? `<span class="badge badge-blue">${esc(u.plano.nome)}</span>` : '<span style="color:var(--muted-2)">—</span>'}</td>
         <td style="color:var(--muted); font-size:13px;">${formatDate(u.created_at)}</td>
         <td>${u.ativo ? '<span class="badge badge-green">Ativo</span>' : '<span class="badge badge-red">Inativo</span>'}</td>
       </tr>`).join('');
@@ -624,7 +641,7 @@
 
   // ── USUÁRIOS ──
   async function loadUsuarios() {
-    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(10000);
+    const { data } = await sb.from('profiles').select('*, plano:plano_id(nome)').order('created_at', { ascending: false }).limit(10000);
     allUsers = data || [];
     renderUsuarios(allUsers);
   }
@@ -632,7 +649,7 @@
   function renderUsuarios(users) {
     const tbody = document.getElementById('tbodyUsuarios');
     document.getElementById('usuariosCount').textContent = `${users.length} usuário(s)`;
-    if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhum usuário encontrado.</td></tr>'; return; }
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty">Nenhum usuário encontrado.</td></tr>'; return; }
     tbody.innerHTML = users.map(u => `
       <tr>
         <td>
@@ -640,6 +657,7 @@
           <div style="font-size:12px; color:var(--muted);">${esc(u.email)}</div>
         </td>
         <td>${roleBadge(u.role)}</td>
+        <td style="font-size:13px;">${u.plano?.nome ? `<span class="badge badge-blue">${esc(u.plano.nome)}</span>` : '<span style="color:var(--muted-2)">—</span>'}</td>
         <td style="font-size:13px; color:var(--muted);">${esc(u.conta_profit || '—')}</td>
         <td style="font-size:13px; color:var(--muted);">${formatDate(u.created_at)}</td>
         <td>${u.ativo ? '<span class="badge badge-green">Ativo</span>' : '<span class="badge badge-red">Inativo</span>'}</td>
@@ -709,6 +727,7 @@
     document.getElementById('editName').value        = u.full_name || '';
     document.getElementById('editRole').value        = u.role;
     document.getElementById('editContaProfit').value = u.conta_profit || '';
+    document.getElementById('editPlanoId').value     = u.plano_id || '';
     document.getElementById('editAtivo').value       = String(u.ativo);
     openModal('modalEditRole');
   }
@@ -720,8 +739,9 @@
     const conta = document.getElementById('editContaProfit').value.trim();
     const ativo = document.getElementById('editAtivo').value === 'true';
 
+    const planoId = document.getElementById('editPlanoId').value || null;
     const { error } = await sb.from('profiles').update({
-      full_name: name, role, conta_profit: conta || null, ativo
+      full_name: name, role, conta_profit: conta || null, ativo, plano_id: planoId
     }).eq('id', id);
 
     if (error) { showToast(error.message, 'error'); return; }

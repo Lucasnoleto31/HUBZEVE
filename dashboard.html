@@ -363,6 +363,35 @@
             </div>
           </div>
 
+          <!-- Extra KPIs: Consistência, Streaks, Best/Worst trade -->
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:14px;">
+            <div class="kpi">
+              <div class="kpi-label">Consistência</div>
+              <div class="kpi-value" id="stat-consistencia">—</div>
+              <div class="kpi-sub">% dias positivos</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Melhor Trade</div>
+              <div class="kpi-value" id="stat-best-trade" style="color:var(--green)">—</div>
+              <div class="kpi-sub" id="sub-best-trade">—</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Pior Trade</div>
+              <div class="kpi-value" id="stat-worst-trade" style="color:var(--red)">—</div>
+              <div class="kpi-sub" id="sub-worst-trade">—</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Seq. Máx Ganhos</div>
+              <div class="kpi-value" id="stat-streak-win" style="color:var(--green)">—</div>
+              <div class="kpi-sub">trades consecutivos</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Seq. Máx Perdas</div>
+              <div class="kpi-value" id="stat-streak-loss" style="color:var(--red)">—</div>
+              <div class="kpi-sub">trades consecutivos</div>
+            </div>
+          </div>
+
           <!-- Resumo por Dia da Semana -->
           <div class="chart-card" style="margin-bottom:14px;">
             <div class="chart-title">Resumo por Dia da Semana</div>
@@ -417,6 +446,28 @@
                   </tr>
                 </thead>
                 <tbody id="tbody-worst"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Resumo por Ativo -->
+          <div class="chart-card" style="margin-bottom:14px;">
+            <div class="chart-title">Resumo por Ativo</div>
+            <div class="chart-sub">Performance consolidada por instrumento negociado</div>
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Ativo</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Trades</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Ganhos</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Perdas</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Win Rate</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">P&L</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Média/Trade</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-ativos"></tbody>
               </table>
             </div>
           </div>
@@ -771,8 +822,10 @@ function renderDashboard() {
     renderHeatmap(m.hourly);
     console.log('[renderDashboard] Heatmap ok');
     renderStatsRow(m);
+    renderExtraKPIs(filtered);
     renderWeekday(filtered);
     renderTopTrades(filtered);
+    renderAtivos(filtered);
   } catch(err) {
     console.error('[renderDashboard] ERRO:', err.message, err.stack);
     toast('Erro ao renderizar: ' + err.message, 'error');
@@ -1106,6 +1159,84 @@ function renderTopTrades(trades) {
 }
 
 /* ============================================================
+   EXTRA KPIs: Consistência, Best/Worst Trade, Streaks
+============================================================ */
+function renderExtraKPIs(trades) {
+  // Consistency: % dias positivos
+  const byDay = {};
+  trades.forEach(t => {
+    const d = t.data_trade || (t.abertura || '').split('T')[0];
+    if (!d) return;
+    if (!byDay[d]) byDay[d] = 0;
+    byDay[d] += fnum(t.resultado_reais);
+  });
+  const days       = Object.values(byDay);
+  const posDays    = days.filter(v => v > 0).length;
+  const consistency = days.length ? (posDays / days.length) * 100 : 0;
+  set('stat-consistencia', consistency.toFixed(0) + '%', consistency >= 50 ? 'var(--green)' : 'var(--red)');
+
+  // Best & worst individual trade
+  const sorted = [...trades].sort((a, b) => fnum(b.resultado_reais) - fnum(a.resultado_reais));
+  const best   = sorted[0];
+  const worst  = sorted[sorted.length - 1];
+  if (best) {
+    set('stat-best-trade', fmtR$(fnum(best.resultado_reais)), 'var(--green)');
+    const bdt = (best.data_trade || '').split('-').reverse().join('/');
+    document.getElementById('sub-best-trade').textContent = (best.ativo || '') + (bdt ? ' · ' + bdt : '');
+  }
+  if (worst) {
+    set('stat-worst-trade', fmtR$(fnum(worst.resultado_reais)), 'var(--red)');
+    const wdt = (worst.data_trade || '').split('-').reverse().join('/');
+    document.getElementById('sub-worst-trade').textContent = (worst.ativo || '') + (wdt ? ' · ' + wdt : '');
+  }
+
+  // Max streaks (in time order)
+  const inOrder = [...trades].sort((a, b) => new Date(a.abertura) - new Date(b.abertura));
+  let maxWin = 0, maxLoss = 0, curW = 0, curL = 0;
+  inOrder.forEach(t => {
+    if (t.is_winner) { curW++; curL = 0; if (curW > maxWin) maxWin = curW; }
+    else             { curL++; curW = 0; if (curL > maxLoss) maxLoss = curL; }
+  });
+  set('stat-streak-win',  maxWin,  'var(--green)');
+  set('stat-streak-loss', maxLoss, 'var(--red)');
+}
+
+/* ============================================================
+   RESUMO POR ATIVO
+============================================================ */
+function renderAtivos(trades) {
+  const byAtivo = {};
+  trades.forEach(t => {
+    const a = t.ativo || 'N/D';
+    if (!byAtivo[a]) byAtivo[a] = { n: 0, wins: 0, losses: 0, pnl: 0 };
+    byAtivo[a].n++;
+    byAtivo[a].pnl += fnum(t.resultado_reais);
+    if (t.is_winner) byAtivo[a].wins++;
+    else byAtivo[a].losses++;
+  });
+
+  const rows = Object.entries(byAtivo)
+    .sort((a, b) => Math.abs(b[1].pnl) - Math.abs(a[1].pnl))
+    .map(([ativo, s]) => {
+      const wr  = s.n ? (s.wins / s.n) * 100 : 0;
+      const avg = s.n ? s.pnl / s.n : 0;
+      return `<tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:10px 12px;font-weight:700;">${escHtml(ativo)}</td>
+        <td style="padding:10px 12px;text-align:right;color:var(--muted);">${s.n}</td>
+        <td style="padding:10px 12px;text-align:right;color:var(--green);">${s.wins}</td>
+        <td style="padding:10px 12px;text-align:right;color:var(--red);">${s.losses}</td>
+        <td style="padding:10px 12px;text-align:right;color:${wr >= 50 ? 'var(--green)' : 'var(--red)'};font-weight:700;">${wr.toFixed(1)}%</td>
+        <td style="padding:10px 12px;text-align:right;color:${s.pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:700;">${fmtR$(s.pnl)}</td>
+        <td style="padding:10px 12px;text-align:right;color:${avg >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(avg)}</td>
+      </tr>`;
+    });
+
+  document.getElementById('tbody-ativos').innerHTML = rows.length
+    ? rows.join('')
+    : '<tr><td colspan="7" style="padding:16px;text-align:center;color:var(--muted);">Sem dados</td></tr>';
+}
+
+/* ============================================================
    UPLOAD LIST
 ============================================================ */
 function renderUploadList() {
@@ -1127,6 +1258,7 @@ function renderUploadList() {
     const fixBtn = u.status === 'processing'
       ? `<button onclick="fixUploadStatus('${u.id}')" style="background:none;border:1px solid var(--bord-2);color:var(--muted);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:Inter;margin-left:8px;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Marcar concluído</button>`
       : '';
+    const delBtn = `<button onclick="deleteUpload('${u.id}')" style="background:none;border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:Inter;margin-left:8px;" onmouseover="this.style.background='rgba(239,68,68,.1)'" onmouseout="this.style.background='none'">Excluir</button>`;
     return `
       <div class="upload-row">
         <div style="display:flex;align-items:center;gap:12px;">
@@ -1138,7 +1270,7 @@ function renderUploadList() {
             </div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;">${badge}${fixBtn}</div>
+        <div style="display:flex;align-items:center;">${badge}${fixBtn}${delBtn}</div>
       </div>`;
   }).join('');
 }
@@ -1161,6 +1293,20 @@ async function fixUploadStatus(uploadId) {
   }
   toast('Upload marcado como concluído!', 'success');
   await loadUploads();
+}
+
+/* ============================================================
+   DELETE UPLOAD (by client)
+============================================================ */
+async function deleteUpload(uploadId) {
+  if (!confirm('Excluir este upload e todas as suas operações? Esta ação não pode ser desfeita.')) return;
+  const { error } = await sb.from('uploads').delete().eq('id', uploadId).eq('cliente_id', profile.id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast('Upload excluído.', 'success');
+  allTrades = allTrades.filter(t => t.upload_id !== uploadId);
+  filtered  = [...allTrades];
+  await loadUploads();
+  applyPeriod();
 }
 
 /* ============================================================
