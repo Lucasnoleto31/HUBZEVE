@@ -194,6 +194,10 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       Operações
     </button>
+    <button class="nav-item" id="nav-calendario" onclick="showSection('calendario',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Calendário
+    </button>
     <button class="nav-item" id="nav-feedback" onclick="showSection('feedback',this)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
       Feedback
@@ -472,6 +476,104 @@
         </div>
       </div>
 
+      <!-- ==================== CALENDÁRIO ==================== -->
+      <div id="sec-calendario" class="section">
+
+        <!-- Capital + navegação de mês -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="period-btn" onclick="changeCalMonth(-1)" style="padding:8px 14px;">←</button>
+            <div id="cal-month-label" style="font-size:18px;font-weight:800;min-width:180px;text-align:center;">—</div>
+            <button class="period-btn" onclick="changeCalMonth(1)" style="padding:8px 14px;">→</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:13px;color:var(--muted);font-weight:600;">Capital (R$)</label>
+            <input type="number" id="capital-input" placeholder="Ex: 50000" min="0" step="1000"
+              style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;outline:none;width:160px;font-family:Inter;"
+              oninput="onCapitalChange()" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
+          </div>
+        </div>
+
+        <!-- Calendário -->
+        <div class="chart-card" style="margin-bottom:14px;">
+          <div id="cal-container"></div>
+        </div>
+
+        <!-- Detalhe do dia (aparece ao clicar) -->
+        <div id="day-detail-wrap" style="display:none;margin-bottom:14px;">
+          <div class="chart-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+              <div>
+                <div class="chart-title" id="day-detail-title">—</div>
+                <div class="chart-sub" id="day-detail-sub">—</div>
+              </div>
+              <button onclick="document.getElementById('day-detail-wrap').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:Inter;">Fechar</button>
+            </div>
+            <div id="day-detail-content"></div>
+          </div>
+        </div>
+
+        <!-- Top 10 melhores / piores dias -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="chart-card">
+            <div class="chart-title" style="color:var(--green);margin-bottom:4px;">Top 10 Melhores Dias</div>
+            <div class="chart-sub" style="margin-bottom:12px;">Maior P&L diário</div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead><tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">#</th>
+                <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Data</th>
+                <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Trades</th>
+                <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">P&L</th>
+              </tr></thead>
+              <tbody id="tbody-best-days"></tbody>
+            </table>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title" style="color:var(--red);margin-bottom:4px;">Top 10 Piores Dias</div>
+            <div class="chart-sub" style="margin-bottom:12px;">Maior perda diária</div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead><tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">#</th>
+                <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Data</th>
+                <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Trades</th>
+                <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">P&L</th>
+              </tr></thead>
+              <tbody id="tbody-worst-days"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Desempenho Mensal por Ano -->
+        <div class="chart-card" style="margin-bottom:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <div>
+              <div class="chart-title">Desempenho Mensal por Ano</div>
+              <div class="chart-sub" id="monthly-capital-sub">Informe o capital para ver o retorno %</div>
+            </div>
+          </div>
+          <div style="overflow-x:auto;" id="monthly-year-container"></div>
+        </div>
+
+        <!-- Performance por Dia da Semana -->
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:4px;">Performance por Dia da Semana</div>
+          <div class="chart-sub" style="margin-bottom:12px;">Média de resultado e win rate por dia</div>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead><tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Dia</th>
+              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Trades</th>
+              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Win Rate</th>
+              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">P&L Total</th>
+              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Média/Trade</th>
+              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Dias Op.</th>
+              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Média/Dia</th>
+            </tr></thead>
+            <tbody id="tbody-weekday-cal"></tbody>
+          </table>
+        </div>
+
+      </div>
+
       <!-- ==================== FEEDBACK ==================== -->
       <div id="sec-feedback" class="section">
         <div id="feedback-empty" class="empty-state" style="display:none">
@@ -547,10 +649,11 @@ let uploads     = [];
    NAVIGATION
 ============================================================ */
 const TITLES = {
-  overview: ['Visão Geral',    'Análise de performance das suas operações'],
-  uploads:  ['Uploads',        'Importe seus relatórios do Profit'],
-  trades:   ['Operações',      'Histórico completo de trades'],
-  feedback: ['Feedback',       'Comentários e orientações do seu assessor'],
+  overview:   ['Visão Geral',    'Análise de performance das suas operações'],
+  uploads:    ['Uploads',        'Importe seus relatórios do Profit'],
+  trades:     ['Operações',      'Histórico completo de trades'],
+  calendario: ['Calendário',     'Performance diária, mensal e por dia da semana'],
+  feedback:   ['Feedback',       'Comentários e orientações do seu assessor'],
 };
 
 function showSection(name, btn) {
@@ -561,7 +664,8 @@ function showSection(name, btn) {
   const [t, s] = TITLES[name] || ['', ''];
   document.getElementById('topbar-title').textContent = t;
   document.getElementById('topbar-sub').textContent   = s;
-  if (name === 'feedback') markNotifsRead();
+  if (name === 'feedback')   markNotifsRead();
+  if (name === 'calendario') renderCalendario();
 }
 
 /* ============================================================
@@ -1656,6 +1760,305 @@ function toast(msg, type = 'success') {
 async function logout() {
   await sb.auth.signOut();
   window.location.href = 'login.html';
+}
+
+/* ============================================================
+   CALENDÁRIO
+============================================================ */
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth(); // 0-indexed
+let calCapital = 0;
+
+const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DAYS_PT   = ['Seg','Ter','Qua','Qui','Sex'];
+
+// Agrega todos os trades por data
+function buildDayMap(trades) {
+  const m = {};
+  trades.forEach(t => {
+    const d = t.data_trade || (t.abertura||'').split('T')[0];
+    if (!d) return;
+    if (!m[d]) m[d] = { pnl:0, n:0, wins:0 };
+    m[d].pnl  += fnum(t.resultado_reais);
+    m[d].n++;
+    if (t.is_winner) m[d].wins++;
+  });
+  return m;
+}
+
+function renderCalendario() {
+  document.getElementById('cal-month-label').textContent =
+    `${MONTHS_PT[calMonth]} ${calYear}`;
+  renderCalGrid();
+  renderTopDays();
+  renderMonthlyByYear();
+  renderWeekdayPerf();
+}
+
+function changeCalMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0;  calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderCalendario();
+  document.getElementById('day-detail-wrap').style.display = 'none';
+}
+
+function onCapitalChange() {
+  calCapital = parseFloat(document.getElementById('capital-input').value) || 0;
+  renderMonthlyByYear();
+}
+
+/* --- Grade do calendário --- */
+function renderCalGrid() {
+  const dayMap = buildDayMap(allTrades);
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
+
+  // Agrupa dias do mês em semanas (5 colunas Seg-Sex)
+  const weeks = [];
+  let week = [null,null,null,null,null];
+  for (let d = 1; d <= lastDate; d++) {
+    const date = new Date(calYear, calMonth, d);
+    const wd   = (date.getDay() + 6) % 7; // Mon=0…Sun=6
+    if (wd >= 5) continue; // pula sab/dom
+    if (wd === 0 && week.some(x => x !== null)) {
+      weeks.push(week); week = [null,null,null,null,null];
+    }
+    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    week[wd] = { d, ds, ...(dayMap[ds] || { pnl:0, n:0, wins:0 }) };
+  }
+  if (week.some(x => x !== null)) weeks.push(week);
+
+  // Render
+  let html = `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;">`;
+  // Header
+  DAYS_PT.forEach(d => {
+    html += `<div style="text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:8px 0;text-transform:uppercase;letter-spacing:.06em;">${d}</div>`;
+  });
+  // Cells
+  weeks.forEach(wk => {
+    wk.forEach(cell => {
+      if (!cell) {
+        html += `<div style="height:88px;border-radius:10px;background:var(--card-2);opacity:.3;"></div>`;
+      } else {
+        const hasData = cell.n > 0;
+        const pos     = hasData && cell.pnl > 0;
+        const neg     = hasData && cell.pnl < 0;
+        const bg      = pos ? 'rgba(34,197,94,.10)' : neg ? 'rgba(239,68,68,.10)' : 'var(--card-2)';
+        const border  = pos ? 'rgba(34,197,94,.30)' : neg ? 'rgba(239,68,68,.30)' : 'var(--border)';
+        const pnlColor= pos ? 'var(--green)' : neg ? 'var(--red)' : 'var(--muted)';
+        const wr      = cell.n ? Math.round(cell.wins/cell.n*100) : null;
+        html += `
+          <div onclick="openDayDetail('${cell.ds}')"
+               style="height:88px;border-radius:10px;background:${bg};border:1px solid ${border};padding:10px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;justify-content:space-between;"
+               onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(0,0,0,.3)'"
+               onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="font-size:12px;font-weight:700;color:var(--muted);">${cell.d}</div>
+            ${hasData ? `
+              <div>
+                <div style="font-size:14px;font-weight:800;color:${pnlColor};">${fmtR$(cell.pnl)}</div>
+                <div style="font-size:10px;color:var(--muted);margin-top:2px;">${cell.n} ops · ${wr}% ✓</div>
+              </div>` : `<div style="font-size:11px;color:var(--mut-2);">—</div>`}
+          </div>`;
+      }
+    });
+  });
+  html += `</div>`;
+  document.getElementById('cal-container').innerHTML = html;
+}
+
+/* --- Detalhe do dia (por horário) --- */
+function openDayDetail(dateStr) {
+  const trades = allTrades.filter(t => {
+    const d = t.data_trade || (t.abertura||'').split('T')[0];
+    return d === dateStr;
+  });
+
+  const wrap = document.getElementById('day-detail-wrap');
+  if (!trades.length) { wrap.style.display = 'none'; return; }
+
+  const [y,m,d] = dateStr.split('-');
+  const dtFmt   = `${d}/${m}/${y}`;
+  const pnl     = trades.reduce((s,t) => s + fnum(t.resultado_reais), 0);
+  const wins    = trades.filter(t => t.is_winner).length;
+
+  document.getElementById('day-detail-title').textContent =
+    `${dtFmt} — ${fmtR$(pnl)}`;
+  document.getElementById('day-detail-sub').textContent =
+    `${trades.length} operações · ${wins} ganhos · ${trades.length-wins} perdas · ${Math.round(wins/trades.length*100)}% acerto`;
+
+  // Agrupa por hora
+  const byHour = {};
+  trades.forEach(t => {
+    const h = t.hora_abertura ? parseInt(String(t.hora_abertura).split(':')[0]) : -1;
+    if (!byHour[h]) byHour[h] = { pnl:0, n:0, wins:0, trades:[] };
+    byHour[h].pnl += fnum(t.resultado_reais);
+    byHour[h].n++;
+    if (t.is_winner) byHour[h].wins++;
+    byHour[h].trades.push(t);
+  });
+
+  const hourRows = Object.entries(byHour)
+    .filter(([h]) => h >= 0)
+    .sort(([a],[b]) => a - b)
+    .map(([h, s]) => {
+      const wr = s.n ? Math.round(s.wins/s.n*100) : 0;
+      const c  = s.pnl >= 0 ? 'var(--green)' : 'var(--red)';
+      return `<tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:8px 12px;font-weight:700;">${String(h).padStart(2,'0')}h</td>
+        <td style="padding:8px 12px;text-align:right;color:var(--muted);">${s.n}</td>
+        <td style="padding:8px 12px;text-align:right;color:var(--green);">${s.wins}</td>
+        <td style="padding:8px 12px;text-align:right;color:var(--red);">${s.n - s.wins}</td>
+        <td style="padding:8px 12px;text-align:right;color:${wr>=50?'var(--green)':'var(--red)'};">${wr}%</td>
+        <td style="padding:8px 12px;text-align:right;color:${c};font-weight:700;">${fmtR$(s.pnl)}</td>
+      </tr>`;
+    }).join('');
+
+  document.getElementById('day-detail-content').innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="border-bottom:1px solid var(--border);">
+        <th style="text-align:left;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Hora</th>
+        <th style="text-align:right;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Ops</th>
+        <th style="text-align:right;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Ganhos</th>
+        <th style="text-align:right;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Perdas</th>
+        <th style="text-align:right;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Win Rate</th>
+        <th style="text-align:right;padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">P&L</th>
+      </tr></thead>
+      <tbody>${hourRows || '<tr><td colspan="6" style="padding:12px;text-align:center;color:var(--muted);">Sem dados de horário</td></tr>'}</tbody>
+    </table>`;
+
+  wrap.style.display = 'block';
+  wrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* --- Top 10 melhores / piores dias --- */
+function renderTopDays() {
+  const dayMap = buildDayMap(allTrades);
+  const days   = Object.entries(dayMap)
+    .map(([ds, s]) => ({ ds, ...s }))
+    .sort((a,b) => b.pnl - a.pnl);
+
+  const rowHtml = (item, i, color) => {
+    const [y,m,d] = item.ds.split('-');
+    return `<tr style="border-bottom:1px solid var(--border);cursor:pointer;" onclick="document.getElementById('nav-calendario').click();setTimeout(()=>{ calYear=${parseInt(y)};calMonth=${parseInt(m)-1};renderCalendario();openDayDetail('${item.ds}'); },50)">
+      <td style="padding:8px 10px;color:var(--muted);font-weight:700;">${i+1}</td>
+      <td style="padding:8px 10px;font-weight:600;">${d}/${m}/${y}</td>
+      <td style="padding:8px 10px;text-align:right;color:var(--muted);">${item.n}</td>
+      <td style="padding:8px 10px;text-align:right;color:${color};font-weight:700;">${fmtR$(item.pnl)}</td>
+    </tr>`;
+  };
+
+  const empty = '<tr><td colspan="4" style="padding:12px;text-align:center;color:var(--muted);">Sem dados</td></tr>';
+  document.getElementById('tbody-best-days').innerHTML  =
+    days.slice(0,10).map((d,i) => rowHtml(d,i,'var(--green)')).join('') || empty;
+  document.getElementById('tbody-worst-days').innerHTML =
+    days.slice(-10).reverse().map((d,i) => rowHtml(d,i,'var(--red)')).join('') || empty;
+}
+
+/* --- Desempenho Mensal por Ano --- */
+function renderMonthlyByYear() {
+  const capital = calCapital;
+  const sub = document.getElementById('monthly-capital-sub');
+
+  // Agrupa por ano-mês
+  const byYM = {};
+  allTrades.forEach(t => {
+    const d = t.data_trade || (t.abertura||'').split('T')[0];
+    if (!d) return;
+    const [y,m] = d.split('-');
+    const key = `${y}-${m}`;
+    if (!byYM[key]) byYM[key] = { pnl:0, n:0, wins:0, y:parseInt(y), m:parseInt(m)-1 };
+    byYM[key].pnl += fnum(t.resultado_reais);
+    byYM[key].n++;
+    if (t.is_winner) byYM[key].wins++;
+  });
+
+  if (!Object.keys(byYM).length) {
+    document.getElementById('monthly-year-container').innerHTML =
+      '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;">Sem dados</div>';
+    return;
+  }
+
+  // Obtém anos únicos
+  const years = [...new Set(Object.values(byYM).map(x => x.y))].sort();
+
+  sub.textContent = capital > 0
+    ? `Capital: ${fmtR$(capital)} · Retorno % = P&L mensal ÷ capital`
+    : 'Informe o capital para ver o retorno %';
+
+  const monthNames = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+  const thead = `<thead><tr style="border-bottom:1px solid var(--border);">
+    <th style="text-align:left;padding:9px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Ano</th>
+    ${monthNames.map(mn=>`<th style="text-align:right;padding:9px 8px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">${mn}</th>`).join('')}
+    <th style="text-align:right;padding:9px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Total</th>
+    ${capital > 0 ? '<th style="text-align:right;padding:9px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Retorno %</th>' : ''}
+  </tr></thead>`;
+
+  const tbody = years.map(yr => {
+    let yearPnl = 0;
+    const cells = Array.from({length:12}, (_,mi) => {
+      const key = `${yr}-${String(mi+1).padStart(2,'0')}`;
+      const s   = byYM[key];
+      if (!s) return `<td style="padding:9px 8px;text-align:right;color:var(--mut-2);font-size:12px;">—</td>`;
+      yearPnl += s.pnl;
+      const c = s.pnl >= 0 ? 'var(--green)' : 'var(--red)';
+      const ret = capital > 0 ? (s.pnl/capital*100).toFixed(1)+'%' : '';
+      return `<td style="padding:9px 8px;text-align:right;font-size:12px;color:${c};font-weight:600;">${fmtR$(s.pnl)}${capital>0?`<br><span style="font-size:10px;color:${c};opacity:.8;">${ret}</span>`:''}</td>`;
+    });
+    const tc = yearPnl >= 0 ? 'var(--green)' : 'var(--red)';
+    const retAnual = capital > 0 ? (yearPnl/capital*100).toFixed(1) : null;
+    return `<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:9px 12px;font-weight:700;">${yr}</td>
+      ${cells.join('')}
+      <td style="padding:9px 12px;text-align:right;font-weight:800;color:${tc};">${fmtR$(yearPnl)}</td>
+      ${capital > 0 ? `<td style="padding:9px 12px;text-align:right;font-weight:800;color:${tc};">${retAnual}%</td>` : ''}
+    </tr>`;
+  }).join('');
+
+  document.getElementById('monthly-year-container').innerHTML =
+    `<table style="width:100%;border-collapse:collapse;font-size:12px;">${thead}<tbody>${tbody}</tbody></table>`;
+}
+
+/* --- Performance por Dia da Semana --- */
+function renderWeekdayPerf() {
+  const DAYS = ['Segunda','Terça','Quarta','Quinta','Sexta'];
+  const stats = Array.from({length:5}, () => ({ n:0, wins:0, pnl:0, dias: new Set() }));
+
+  allTrades.forEach(t => {
+    const d  = t.data_trade || (t.abertura||'').split('T')[0];
+    if (!d) return;
+    const wd = (new Date(d + 'T12:00:00').getDay() + 6) % 7; // Mon=0
+    if (wd >= 5) return;
+    stats[wd].n++;
+    stats[wd].pnl += fnum(t.resultado_reais);
+    if (t.is_winner) stats[wd].wins++;
+    stats[wd].dias.add(d);
+  });
+
+  const rows = stats.map((s, i) => {
+    if (s.n === 0) return `<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:10px 12px;font-weight:600;">${DAYS[i]}</td>
+      <td colspan="6" style="padding:10px 12px;color:var(--mut-2);font-size:12px;">Sem operações</td></tr>`;
+    const wr   = (s.wins/s.n*100);
+    const dias = s.dias.size;
+    const avgT = s.n ? s.pnl/s.n : 0;
+    const avgD = dias ? s.pnl/dias : 0;
+    const pc   = s.pnl >= 0 ? 'var(--green)' : 'var(--red)';
+    return `<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:10px 12px;font-weight:700;">${DAYS[i]}</td>
+      <td style="padding:10px 12px;text-align:right;color:var(--muted);">${s.n}</td>
+      <td style="padding:10px 12px;text-align:right;color:${wr>=50?'var(--green)':'var(--red)'};font-weight:700;">${wr.toFixed(1)}%</td>
+      <td style="padding:10px 12px;text-align:right;color:${pc};font-weight:700;">${fmtR$(s.pnl)}</td>
+      <td style="padding:10px 12px;text-align:right;color:${avgT>=0?'var(--green)':'var(--red)'};">${fmtR$(avgT)}</td>
+      <td style="padding:10px 12px;text-align:right;color:var(--muted);">${dias}</td>
+      <td style="padding:10px 12px;text-align:right;color:${avgD>=0?'var(--green)':'var(--red)'};">${fmtR$(avgD)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tbody-weekday-cal').innerHTML =
+    rows || '<tr><td colspan="7" style="padding:12px;text-align:center;color:var(--muted);">Sem dados</td></tr>';
 }
 </script>
 </body>
