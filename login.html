@@ -411,6 +411,63 @@
 
     </form>
 
+    <!-- Link para cadastro -->
+    <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:22px;">
+      Ainda não tem conta?
+      <a href="#" onclick="showRegister(event)" style="color:var(--blue);font-weight:600;text-decoration:none;margin-left:4px;">Criar cadastro</a>
+    </p>
+
+    <!-- ── FORMULÁRIO DE CADASTRO (oculto) ── -->
+    <form id="registerForm" onsubmit="handleRegister(event)" novalidate style="display:none;">
+
+      <div style="margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+        <button type="button" onclick="showLogin()" style="background:var(--card);border:1px solid var(--border-2);border-radius:8px;color:var(--muted);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div>
+          <h2 style="font-size:20px;font-weight:800;margin:0 0 2px;">Criar cadastro</h2>
+          <p style="font-size:13px;color:var(--muted);margin:0;">Sua conta ficará pendente de aprovação.</p>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label class="input-label" for="regName">Nome completo</label>
+        <input type="text" id="regName" class="input-field" placeholder="João da Silva" autocomplete="name" required />
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label class="input-label" for="regEmail">E-mail</label>
+        <input type="email" id="regEmail" class="input-field" placeholder="seuemail@exemplo.com" autocomplete="email" required />
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label class="input-label" for="regPassword">Senha</label>
+        <div class="input-group">
+          <input type="password" id="regPassword" class="input-field" placeholder="Mínimo 6 caracteres" style="padding-right:48px;" required />
+          <button type="button" class="eye-btn" onclick="toggleRegPassword()">
+            <svg id="regEyeOff" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14.12 14.12A3 3 0 119.88 9.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg id="regEyeOn" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label class="input-label" for="regConfirm">Confirmar senha</label>
+        <input type="password" id="regConfirm" class="input-field" placeholder="Repita a senha" required />
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <label class="input-label" for="regContaProfit">Conta Profit <span style="color:var(--muted);font-weight:400;">(opcional)</span></label>
+        <input type="text" id="regContaProfit" class="input-field" placeholder="Ex: 2345745" />
+      </div>
+
+      <button type="submit" class="btn-primary" id="btnRegister">
+        <div class="spinner" id="spinnerReg"></div>
+        <span id="btnRegText">Solicitar acesso</span>
+      </button>
+
+    </form>
+
     <!-- Divisor -->
     <div class="divider" style="margin: 28px 0;">Precisa de ajuda?</div>
 
@@ -456,21 +513,40 @@
     }
   }
 
-  // ── Alternar entre login e forgot ──
+  // ── Alternar entre formulários ──
+  const FORMS = ['loginForm', 'forgotForm', 'registerForm'];
+  function showOnly(id) {
+    FORMS.forEach(f => {
+      const el = document.getElementById(f);
+      if (el) el.style.display = f === id ? 'block' : 'none';
+    });
+    hideAlerts();
+  }
+
   function showForgotPassword(e) {
     e.preventDefault();
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('forgotForm').style.display = 'block';
-    hideAlerts();
-    // Preenche e-mail se já digitado
+    showOnly('forgotForm');
     const email = document.getElementById('email').value;
     if (email) document.getElementById('forgotEmail').value = email;
   }
 
   function showLogin() {
-    document.getElementById('forgotForm').style.display = 'none';
-    document.getElementById('loginForm').style.display  = 'block';
-    hideAlerts();
+    showOnly('loginForm');
+  }
+
+  function showRegister(e) {
+    e.preventDefault();
+    showOnly('registerForm');
+    const email = document.getElementById('email').value;
+    if (email) document.getElementById('regEmail').value = email;
+  }
+
+  function toggleRegPassword() {
+    const input = document.getElementById('regPassword');
+    const off   = document.getElementById('regEyeOff');
+    const on    = document.getElementById('regEyeOn');
+    if (input.type === 'password') { input.type = 'text';     off.style.display = 'none';  on.style.display = 'block'; }
+    else                           { input.type = 'password'; off.style.display = 'block'; on.style.display = 'none';  }
   }
 
   // ── Alertas ──
@@ -564,17 +640,85 @@
       return;
     }
 
-    // Busca o role do usuário para redirecionar para a página certa
+    // Busca perfil para verificar status e redirecionar
     const { data: profile } = await sb
       .from('profiles')
-      .select('role')
+      .select('role, ativo')
       .eq('id', data.user.id)
       .single();
 
+    // Conta pendente de aprovação
+    if (!profile?.ativo) {
+      await sb.auth.signOut();
+      showError('Sua conta está pendente de aprovação pela Assessoria Zeve. Você será notificado quando o acesso for liberado.');
+      return;
+    }
+
     const role = profile?.role || 'cliente';
-    if (role === 'admin')    window.location.href = 'dashboard-admin.html';
+    if (role === 'admin')         window.location.href = 'dashboard-admin.html';
     else if (role === 'assessor') window.location.href = 'dashboard-assessor.html';
     else                          window.location.href = 'dashboard.html';
+  }
+
+  // ── Cadastro ──
+  async function handleRegister(e) {
+    e.preventDefault();
+    hideAlerts();
+
+    const name    = document.getElementById('regName').value.trim();
+    const email   = document.getElementById('regEmail').value.trim();
+    const pass    = document.getElementById('regPassword').value;
+    const confirm = document.getElementById('regConfirm').value;
+    const conta   = document.getElementById('regContaProfit').value.trim();
+
+    // Validações
+    if (!name)                         { showError('Informe seu nome completo.');           document.getElementById('regName').focus(); return; }
+    if (!email || !isValidEmail(email)){ showError('Informe um e-mail válido.');            document.getElementById('regEmail').focus(); return; }
+    if (!pass || pass.length < 6)      { showError('A senha deve ter pelo menos 6 caracteres.'); document.getElementById('regPassword').focus(); return; }
+    if (pass !== confirm)              { showError('As senhas não coincidem.');              document.getElementById('regConfirm').focus(); return; }
+
+    const btn     = document.getElementById('btnRegister');
+    const spinner = document.getElementById('spinnerReg');
+    const text    = document.getElementById('btnRegText');
+    btn.disabled = true; spinner.style.display = 'block'; text.textContent = 'Enviando...';
+
+    // Cria conta no Auth
+    const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
+
+    btn.disabled = false; spinner.style.display = 'none'; text.textContent = 'Solicitar acesso';
+
+    if (error) {
+      if (error.message?.toLowerCase().includes('already registered')) {
+        showError('Este e-mail já está cadastrado. Tente fazer login.');
+      } else {
+        showError('Erro ao cadastrar: ' + error.message);
+      }
+      return;
+    }
+
+    // Garante que o perfil existe com ativo=false (pendente)
+    if (data.user) {
+      await sb.from('profiles').upsert({
+        id:           data.user.id,
+        full_name:    name,
+        email,
+        role:         'cliente',
+        ativo:        false,
+        conta_profit: conta || null,
+      }, { onConflict: 'id' });
+
+      // Se o Supabase fez login automático após signUp, desloga
+      await sb.auth.signOut();
+    }
+
+    // Mostra tela de sucesso
+    showOnly('loginForm');
+    showSuccess('Cadastro realizado! Sua conta está pendente de aprovação pela Assessoria Zeve. Entraremos em contato em breve.');
+    document.getElementById('regName').value = '';
+    document.getElementById('regEmail').value = '';
+    document.getElementById('regPassword').value = '';
+    document.getElementById('regConfirm').value = '';
+    document.getElementById('regContaProfit').value = '';
   }
 
   // ── Recuperar senha ──
