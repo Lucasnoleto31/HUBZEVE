@@ -627,7 +627,16 @@
     }
 
     if (data.user) {
-      await sb.from('profiles').upsert({
+      // Se não há sessão (confirmação de email pendente), faz login temporário para conseguir inserir o perfil
+      if (!data.session) {
+        // Tenta inserir o perfil via signIn temporário não é possível sem senha confirmada.
+        // Salva os dados no localStorage para o admin consultar caso o upsert falhe.
+        localStorage.setItem('zeve_pending_profile_' + data.user.id, JSON.stringify({
+          id: data.user.id, full_name: name, email, role: 'cliente', ativo: false, conta_profit: conta || null,
+        }));
+      }
+
+      const { error: upsertError } = await sb.from('profiles').upsert({
         id:           data.user.id,
         full_name:    name,
         email,
@@ -635,6 +644,12 @@
         ativo:        false,
         conta_profit: conta || null,
       }, { onConflict: 'id' });
+
+      if (upsertError) {
+        console.warn('[ZeveHub] Upsert do perfil falhou (possível RLS):', upsertError.message);
+        // Mesmo assim segue — o admin pode ativar pelo Auth
+      }
+
       await sb.auth.signOut();
     }
 

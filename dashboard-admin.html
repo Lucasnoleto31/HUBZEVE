@@ -830,7 +830,7 @@
     document.getElementById('kpiTrades').textContent     = (trades.count ?? 0).toLocaleString('pt-BR');
 
     // Pendentes de aprovação
-    const { data: pendentes } = await sb.from('profiles').select('id, full_name, email, created_at').eq('ativo', false).order('created_at', { ascending: false });
+    const { data: pendentes } = await sb.from('profiles').select('id, full_name, email, created_at').or('ativo.eq.false,ativo.is.null').order('created_at', { ascending: false });
     const qtd = (pendentes || []).length;
     const badge = document.getElementById('badgePendentes');
     const kpiCard = document.getElementById('kpiPendentesCard');
@@ -854,6 +854,10 @@
       kpiCard.style.display = 'none';
       alertEl.style.display = 'none';
     }
+
+    // Debug: loga total de usuários carregados no console para diagnóstico
+    console.log('[ZeveHub] loadOverview — total profiles:', (await sb.from('profiles').select('id, email, ativo').limit(1000)).data?.length, '| pendentes (false+null):', qtd);
+
 
     // Últimos usuários
     const { data: recentes } = await sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(10);
@@ -915,7 +919,13 @@
   function renderUsuarios(users) {
     const tbody = document.getElementById('tbodyUsuarios');
     document.getElementById('usuariosCount').textContent = `${users.length} usuário(s)`;
-    if (!users.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty">Nenhum usuário encontrado.</td></tr>'; return; }
+    if (!users.length) {
+      const msg = soPendentes
+        ? 'Nenhum cadastro pendente de aprovação.<br><small style="color:var(--muted-2);">Se alguém se cadastrou e não aparece aqui, o perfil pode não ter sido criado por restrição de segurança (RLS). Verifique em Supabase → Authentication → Users.</small>'
+        : 'Nenhum usuário encontrado.';
+      tbody.innerHTML = `<tr><td colspan="7" class="empty" style="line-height:1.8;">${msg}</td></tr>`;
+      return;
+    }
     tbody.innerHTML = users.map(u => `
       <tr>
         <td>
