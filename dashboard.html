@@ -361,124 +361,6 @@
             </div>
           </div>
 
-          <!-- ── ROW 5: Heatmap ── -->
-          <div class="chart-card" style="margin-bottom:14px;">
-            <div class="chart-title">Heatmap por Horário</div>
-            <div class="chart-sub">Concentração de trades e resultado por hora do pregão</div>
-            <div class="heatmap-grid" id="heatmap-grid"></div>
-            <div class="heatmap-labels" id="heatmap-labels"></div>
-            <div style="display:flex;gap:16px;margin-top:12px;font-size:11px;color:var(--muted);">
-              <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(34,197,94,.75);display:inline-block"></span> Positivo</span>
-              <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(239,68,68,.75);display:inline-block"></span> Negativo</span>
-              <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:3px;background:var(--bord-2);display:inline-block"></span> Sem operações</span>
-              <span style="margin-left:auto;font-size:10px;">Número = qtd de trades na hora</span>
-            </div>
-          </div>
-
-          <!-- ── ROW 6: Extra KPIs (Streaks / Best-Worst) ── -->
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;">
-            <div class="kpi">
-              <div class="kpi-label">Melhor Trade</div>
-              <div class="kpi-value" id="stat-best-trade" style="color:var(--green);font-size:18px;">—</div>
-              <div class="kpi-sub" id="sub-best-trade">—</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-label">Pior Trade</div>
-              <div class="kpi-value" id="stat-worst-trade" style="color:var(--red);font-size:18px;">—</div>
-              <div class="kpi-sub" id="sub-worst-trade">—</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-label">Seq. Máx Ganhos</div>
-              <div class="kpi-value" id="stat-streak-win" style="color:var(--green)">—</div>
-              <div class="kpi-sub">trades consecutivos</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-label">Seq. Máx Perdas</div>
-              <div class="kpi-value" id="stat-streak-loss" style="color:var(--red)">—</div>
-              <div class="kpi-sub">trades consecutivos</div>
-            </div>
-          </div>
-
-          <!-- Resumo por Dia da Semana -->
-          <div class="chart-card" style="margin-bottom:14px;">
-            <div class="chart-title">Resumo por Dia da Semana</div>
-            <div class="chart-sub">Performance consolidada por dia da semana</div>
-            <div style="overflow-x:auto;">
-              <table style="width:100%;border-collapse:collapse;font-size:13px;" id="tbl-weekday">
-                <thead>
-                  <tr style="border-bottom:1px solid var(--border);">
-                    <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Dia</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Trades</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Ganhos</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Perdas</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Win Rate</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">P&L</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Média/Trade</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-weekday"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Top trades -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-            <!-- Top 5 Ganhos -->
-            <div class="chart-card">
-              <div class="chart-title" style="color:var(--green)">Top 5 Melhores Trades</div>
-              <div class="chart-sub">Maiores lucros individuais</div>
-              <table style="width:100%;border-collapse:collapse;font-size:12px;" id="tbl-best">
-                <thead>
-                  <tr style="border-bottom:1px solid var(--border);">
-                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">#</th>
-                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Ativo</th>
-                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Data</th>
-                    <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Resultado</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-best"></tbody>
-              </table>
-            </div>
-            <!-- Top 5 Perdas -->
-            <div class="chart-card">
-              <div class="chart-title" style="color:var(--red)">Top 5 Piores Trades</div>
-              <div class="chart-sub">Maiores perdas individuais</div>
-              <table style="width:100%;border-collapse:collapse;font-size:12px;" id="tbl-worst">
-                <thead>
-                  <tr style="border-bottom:1px solid var(--border);">
-                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">#</th>
-                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Ativo</th>
-                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Data</th>
-                    <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Resultado</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-worst"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Resumo por Ativo -->
-          <div class="chart-card" style="margin-bottom:14px;">
-            <div class="chart-title">Resumo por Ativo</div>
-            <div class="chart-sub">Performance consolidada por instrumento negociado</div>
-            <div style="overflow-x:auto;">
-              <table style="width:100%;border-collapse:collapse;font-size:13px;">
-                <thead>
-                  <tr style="border-bottom:1px solid var(--border);">
-                    <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Ativo</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Trades</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Ganhos</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Perdas</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Win Rate</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">P&L</th>
-                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Média/Trade</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-ativos"></tbody>
-              </table>
-            </div>
-          </div>
-
         </div>
       </div>
 
@@ -826,13 +708,7 @@ function renderDashboard() {
     console.log('[renderDashboard] KPIs ok');
     renderCharts(m);
     console.log('[renderDashboard] Charts ok');
-    renderHeatmap(m.hourly);
-    console.log('[renderDashboard] Heatmap ok');
     renderStatsRow(m);
-    renderExtraKPIs(filtered);
-    renderWeekday(filtered);
-    renderTopTrades(filtered);
-    renderAtivos(filtered);
   } catch(err) {
     console.error('[renderDashboard] ERRO:', err.message, err.stack);
     toast('Erro ao renderizar: ' + err.message, 'error');
