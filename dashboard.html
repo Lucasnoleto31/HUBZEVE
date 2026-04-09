@@ -1177,22 +1177,28 @@ function parseProfitCSV(text) {
     const hl = h.toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // strip accents
       .trim();
-    if (hl === 'ativo')            idx.ativo      = i;
-    else if (hl === 'abertura')    idx.abertura   = i;
-    else if (hl === 'fechamento')  idx.fechamento = i;
-    else if (/^tempo/.test(hl) || /^durac/.test(hl)) idx.tempo = i;
-    else if (hl === 'c/v' || hl === 'lado' || hl === 'c / v') idx.lado = i;
-    else if (/qtd\.?\s*c/.test(hl) && !hl.includes('v')) idx.qtd_c = i;
-    else if (/qtd\.?\s*v/.test(hl) && !hl.includes('c')) idx.qtd_v = i;
-    else if ((/preco?\s*c/i.test(hl) || /pr\.?\s*c/i.test(hl)) && !hl.includes('v'))  idx.pc = i;
-    else if ((/preco?\s*v/i.test(hl) || /pr\.?\s*v/i.test(hl)) && !hl.includes('c'))  idx.pv = i;
-    else if (/resultado/.test(hl) && (hl.includes('r$') || hl.includes('rs') || hl.includes('reai') || hl.includes('r.'))) idx.res_r = idx.res_r ?? i;
-    else if (/resultado/.test(hl) && (hl.includes('pt') || hl.includes('pont'))) idx.res_pts = i;
-    else if (/resultado/.test(hl)) idx.res_r = idx.res_r ?? i; // fallback: any "resultado" col
-    else if (/^dd/.test(hl) || hl.includes('drawdown')) idx.dd    = i;
-    else if (hl.includes('ganho') && hl.includes('max')) idx.gmax  = i;
-    else if (hl.includes('perda') && hl.includes('max')) idx.pmax  = i;
-    else if (hl.includes('total'))                       idx.total = i;
+    if (hl === 'ativo')                                         idx.ativo   = i;
+    else if (hl === 'abertura')                                 idx.abertura   = i;
+    else if (hl === 'fechamento')                               idx.fechamento = i;
+    else if (/^tempo/.test(hl) || /^durac/.test(hl))           idx.tempo   = i;
+    else if (hl === 'c/v' || hl === 'lado' || hl === 'c / v')  idx.lado    = i;
+    else if (/qtd/.test(hl) && hl.includes('comp'))            idx.qtd_c   = i;
+    else if (/qtd/.test(hl) && hl.includes('vend'))            idx.qtd_v   = i;
+    // Preço Compra / Preço Venda — distinguish by "compra"/"venda" substring (not by absence of 'c')
+    else if ((hl.includes('preco') || hl.includes('pr.')) && hl.includes('comp')) idx.pc = i;
+    else if ((hl.includes('preco') || hl.includes('pr.')) && hl.includes('vend')) idx.pv = i;
+    // Res. Operação → resultado_reais  (NOT the % column, NOT "intervalo")
+    else if (/^res\.?\s*opera/.test(hl) && !hl.includes('%'))  idx.res_r   = i;
+    else if (/resultado.*opera/.test(hl) && !hl.includes('%'))  idx.res_r   = idx.res_r ?? i;
+    // Res. Operação (%) → resultado_pontos (approximation — if no pts col)
+    else if (/^res\.?\s*opera/.test(hl) && hl.includes('%'))   idx.res_pts = idx.res_pts ?? i;
+    // Resultado R$ / Resultado Reais fallbacks
+    else if (/resultado/.test(hl) && !hl.includes('%') && !hl.includes('pt') && !hl.includes('pont')) idx.res_r = idx.res_r ?? i;
+    else if (/resultado/.test(hl) && (hl.includes('pt') || hl.includes('pont'))) idx.res_pts = idx.res_pts ?? i;
+    else if (/^dd/.test(hl) || hl.includes('drawdown'))        idx.dd      = i;
+    else if (hl.includes('ganho') && hl.includes('max'))        idx.gmax    = i;
+    else if (hl.includes('perda') && hl.includes('max'))        idx.pmax    = i;
+    else if (hl.includes('total') && !hl.includes('acum'))     idx.total   = i;
   });
   console.log('[parseProfitCSV] headers:', JSON.stringify(headers));
   console.log('[parseProfitCSV] idx:', JSON.stringify(idx));
