@@ -237,11 +237,11 @@
 
         <!-- Period selector -->
         <div class="period-bar">
-          <button class="period-btn active" id="pbtn-30d" onclick="setPeriod('30d',this)">30 dias</button>
+          <button class="period-btn" id="pbtn-30d" onclick="setPeriod('30d',this)">30 dias</button>
           <button class="period-btn" id="pbtn-7d"  onclick="setPeriod('7d',this)">7 dias</button>
           <button class="period-btn" id="pbtn-month" onclick="setPeriod('month',this)">Este mês</button>
           <button class="period-btn" id="pbtn-90d" onclick="setPeriod('90d',this)">90 dias</button>
-          <button class="period-btn" id="pbtn-all" onclick="setPeriod('all',this)">Todo período</button>
+          <button class="period-btn active" id="pbtn-all" onclick="setPeriod('all',this)">Todo período</button>
           <button class="period-btn" id="pbtn-custom" onclick="setPeriod('custom',this)">Personalizado</button>
           <div id="custom-dates" style="display:none;align-items:center;gap:8px;">
             <input type="date" class="period-input" id="date-from" onchange="applyCustomPeriod()" />
@@ -505,7 +505,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 let profile     = null;
 let allTrades   = [];
 let filtered    = [];
-let period      = '30d';
+let period      = 'all';
 let customFrom  = null;
 let customTo    = null;
 let charts      = {};
