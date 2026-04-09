@@ -76,8 +76,8 @@
     .chart-wrap { position: relative; }
 
     /* HEATMAP */
-    .heatmap-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; }
-    .heatmap-labels { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; margin-top: 4px; }
+    .heatmap-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; }
+    .heatmap-labels { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; margin-top: 4px; }
     .heatmap-cell { height: 50px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; cursor: default; transition: transform .1s; color: rgba(255,255,255,.85); }
     .heatmap-cell:hover { transform: scale(1.08); z-index: 5; position: relative; }
     .heatmap-hour-label { font-size: 9px; color: var(--muted); text-align: center; }
@@ -936,28 +936,31 @@ function renderHeatmap(hourly) {
   const labels = document.getElementById('heatmap-labels');
   grid.innerHTML = labels.innerHTML = '';
 
-  const maxN = Math.max(...hourly.map(h => h.n), 1);
+  // Pregão: 09h–18h (10 colunas)
+  const PREGAO = [9,10,11,12,13,14,15,16,17,18];
+  const pregaoData = PREGAO.map(h => ({ hour: h, ...hourly[h] }));
+  const maxN = Math.max(...pregaoData.map(d => d.n), 1);
 
-  hourly.forEach((h, hour) => {
+  pregaoData.forEach(({ hour, n, pnl }) => {
     // Cell
     const cell = document.createElement('div');
     cell.className = 'heatmap-cell';
-    if (h.n === 0) {
+    if (n === 0) {
       cell.style.background = 'var(--bord-2)';
     } else {
-      const alpha = 0.25 + (h.n / maxN) * 0.65;
-      cell.style.background = h.pnl >= 0
+      const alpha = 0.25 + (n / maxN) * 0.65;
+      cell.style.background = pnl >= 0
         ? `rgba(34,197,94,${alpha.toFixed(2)})`
         : `rgba(239,68,68,${alpha.toFixed(2)})`;
-      cell.textContent = h.n;
+      cell.textContent = n;
     }
-    cell.title = `${String(hour).padStart(2,'0')}h — ${h.n} trade${h.n !== 1 ? 's' : ''} · ${fmtR$(h.pnl)}`;
+    cell.title = `${String(hour).padStart(2,'0')}h — ${n} trade${n !== 1 ? 's' : ''} · ${fmtR$(pnl)}`;
     grid.appendChild(cell);
 
     // Label
     const lbl = document.createElement('div');
     lbl.className = 'heatmap-hour-label';
-    lbl.textContent = String(hour).padStart(2,'0');
+    lbl.textContent = `${String(hour).padStart(2,'0')}h`;
     labels.appendChild(lbl);
   });
 }
