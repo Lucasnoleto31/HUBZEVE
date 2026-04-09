@@ -550,7 +550,17 @@
     arrow.style.display = 'block';
 
     if (error) {
-      showError('E-mail ou senha incorretos. Verifique suas credenciais.');
+      console.error('Login error:', error.message);
+      const msg = error.message || '';
+      if (msg.toLowerCase().includes('email not confirmed')) {
+        showError('E-mail ainda não confirmado. Verifique sua caixa de entrada (incluindo spam).');
+      } else if (msg.toLowerCase().includes('invalid login credentials') || msg.toLowerCase().includes('invalid email or password')) {
+        showError('E-mail ou senha incorretos. Verifique suas credenciais.');
+      } else if (msg.toLowerCase().includes('too many requests')) {
+        showError('Muitas tentativas. Aguarde alguns minutos e tente novamente.');
+      } else {
+        showError('Erro ao entrar: ' + msg);
+      }
       return;
     }
 
