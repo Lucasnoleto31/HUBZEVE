@@ -202,6 +202,27 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       Risco
     </button>
+    <button class="nav-item" id="nav-comparativo" onclick="showSection('comparativo',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+      Comparativo
+    </button>
+    <button class="nav-item" id="nav-horarios" onclick="showSection('horarios',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Horários
+    </button>
+    <button class="nav-item" id="nav-metas" onclick="showSection('metas',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      Metas
+    </button>
+    <button class="nav-item" id="nav-consistencia" onclick="showSection('consistencia',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Consistência
+    </button>
+    <button class="nav-item" id="nav-exportar" onclick="showSection('exportar',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar
+    </button>
+
     <div class="sb-section">Conta</div>
     <a class="nav-item" href="perfil.html" style="text-decoration:none;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -633,6 +654,167 @@
       </div>
 
 
+      <!-- ==================== COMPARATIVO ==================== -->
+      <div id="sec-comparativo" class="section">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+          <div class="chart-card">
+            <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Período A</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input type="date" id="cmp-a-from" class="period-input" onchange="renderComparativo()"/>
+              <span style="color:var(--muted)">—</span>
+              <input type="date" id="cmp-a-to" class="period-input" onchange="renderComparativo()"/>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div style="font-size:11px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Período B</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input type="date" id="cmp-b-from" class="period-input" onchange="renderComparativo()"/>
+              <span style="color:var(--muted)">—</span>
+              <input type="date" id="cmp-b-to" class="period-input" onchange="renderComparativo()"/>
+            </div>
+          </div>
+        </div>
+        <div id="cmp-kpis" style="margin-bottom:14px;"></div>
+        <div class="chart-card" style="margin-bottom:14px;">
+          <div class="chart-title">Curva de Performance</div>
+          <div class="chart-sub">Resultado acumulado por número de operação (normalizado)</div>
+          <div class="chart-wrap" style="height:260px;"><canvas id="chart-cmp-equity"></canvas></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="chart-card">
+            <div class="chart-title" style="color:var(--blue);margin-bottom:4px;">Período A — P&L por Dia</div>
+            <div class="chart-sub" style="margin-bottom:12px;" id="cmp-a-sub">—</div>
+            <div class="chart-wrap" style="height:180px;"><canvas id="chart-cmp-a-daily"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title" style="color:var(--yellow);margin-bottom:4px;">Período B — P&L por Dia</div>
+            <div class="chart-sub" style="margin-bottom:12px;" id="cmp-b-sub">—</div>
+            <div class="chart-wrap" style="height:180px;"><canvas id="chart-cmp-b-daily"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== HORÁRIOS ==================== -->
+      <div id="sec-horarios" class="section">
+        <div class="chart-card" style="margin-bottom:14px;">
+          <div class="chart-title" style="margin-bottom:4px;">Heatmap — Dia da Semana × Horário</div>
+          <div class="chart-sub" style="margin-bottom:16px;">Performance por combinação de dia e hora do pregão · cor = P&L · número = operações</div>
+          <div style="overflow-x:auto;" id="heatmap-dh"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="chart-card">
+            <div class="chart-title">P&L por Horário</div>
+            <div class="chart-sub">Resultado acumulado por hora do pregão</div>
+            <div class="chart-wrap" style="height:220px;"><canvas id="chart-hourly-pnl"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">P&L por Dia da Semana</div>
+            <div class="chart-sub">Resultado acumulado e win rate por dia</div>
+            <div class="chart-wrap" style="height:220px;"><canvas id="chart-weekday-bar"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== METAS ==================== -->
+      <div id="sec-metas" class="section">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;">
+          <div class="kpi">
+            <div class="kpi-label">Meta Diária (R$)</div>
+            <input type="number" id="meta-diaria" placeholder="Ex: 500" min="0"
+              style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:22px;font-weight:800;outline:none;font-family:Inter;padding:4px 0;margin-top:4px;"
+              oninput="onMetaChange()" />
+            <div class="kpi-sub">objetivo por dia operado</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Meta Mensal (R$)</div>
+            <input type="number" id="meta-mensal" placeholder="Ex: 8000" min="0"
+              style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:22px;font-weight:800;outline:none;font-family:Inter;padding:4px 0;margin-top:4px;"
+              oninput="onMetaChange()" />
+            <div class="kpi-sub">objetivo no mês</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Mês de referência</div>
+            <input type="month" id="meta-mes"
+              style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:18px;font-weight:800;outline:none;font-family:Inter;padding:4px 0;margin-top:4px;color-scheme:dark;"
+              oninput="onMetaChange()" />
+            <div class="kpi-sub">período analisado</div>
+          </div>
+        </div>
+        <div id="metas-kpis" style="margin-bottom:20px;"></div>
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:4px;">Calendário de Metas</div>
+          <div class="chart-sub" style="margin-bottom:16px;"><span style="color:var(--green);font-weight:700;">Verde</span> = bateu meta · <span style="color:var(--red);font-weight:700;">Vermelho</span> = não bateu · <span style="color:var(--yellow);font-weight:700;">Amarelo</span> = positivo mas abaixo da meta · Cinza = não operou</div>
+          <div id="metas-calendar"></div>
+        </div>
+      </div>
+
+      <!-- ==================== CONSISTÊNCIA ==================== -->
+      <div id="sec-consistencia" class="section">
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:14px;">
+          <div class="kpi">
+            <div class="kpi-label">Dias Positivos</div>
+            <div class="kpi-value" id="con-dias-pos">—</div>
+            <div class="kpi-sub" id="con-dias-pos-sub">% dos dias operados</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Seq. Máx. Ganhos</div>
+            <div class="kpi-value" id="con-streak-win" style="color:var(--green);">—</div>
+            <div class="kpi-sub">dias consecutivos positivos</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Seq. Máx. Perdas</div>
+            <div class="kpi-value" id="con-streak-loss" style="color:var(--red);">—</div>
+            <div class="kpi-sub">dias consecutivos negativos</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Semanas Positivas</div>
+            <div class="kpi-value" id="con-semanas">—</div>
+            <div class="kpi-sub">% das semanas operadas</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Meses Positivos</div>
+            <div class="kpi-value" id="con-meses">—</div>
+            <div class="kpi-sub">% dos meses operados</div>
+          </div>
+        </div>
+        <div class="chart-card" style="margin-bottom:14px;">
+          <div class="chart-title">P&L Diário com Média Móvel</div>
+          <div class="chart-sub">Barras = resultado do dia · Linha = média móvel 10 dias</div>
+          <div class="chart-wrap" style="height:240px;"><canvas id="chart-con-daily"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:4px;">Distribuição de Resultados Diários</div>
+          <div class="chart-sub" style="margin-bottom:14px;">Frequência de cada faixa de resultado por dia operado</div>
+          <div class="chart-wrap" style="height:200px;"><canvas id="chart-con-hist"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ==================== EXPORTAR ==================== -->
+      <div id="sec-exportar" class="section">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+          <div class="chart-card" style="cursor:pointer;transition:border-color .15s;" id="export-csv-card"
+            onclick="exportCSV('all')"
+            onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="font-size:36px;margin-bottom:12px;">📊</div>
+            <div class="chart-title">Exportar Todas as Operações</div>
+            <div class="chart-sub" style="margin-bottom:14px;">CSV com todas as operações cadastradas — ativo, data, resultado, acumulado</div>
+            <button class="btn-primary" onclick="event.stopPropagation();exportCSV('all')">⬇ Baixar CSV</button>
+          </div>
+          <div class="chart-card" style="cursor:pointer;transition:border-color .15s;"
+            onclick="exportCSV('filtered')"
+            onmouseover="this.style.borderColor='var(--yellow)'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="font-size:36px;margin-bottom:12px;">🗂️</div>
+            <div class="chart-title">Exportar Período Filtrado</div>
+            <div class="chart-sub" style="margin-bottom:14px;">Apenas as operações do período selecionado na Visão Geral</div>
+            <button class="btn-primary" style="background:var(--yellow);color:#000;" onclick="event.stopPropagation();exportCSV('filtered')">⬇ Baixar CSV Filtrado</button>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:14px;">Resumo para Exportação</div>
+          <div id="export-preview"></div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /layout -->
@@ -703,6 +885,11 @@ const TITLES = {
   trades:     ['Operações',      'Histórico completo de trades'],
   calendario: ['Calendário',     'Performance diária, mensal e por dia da semana'],
   risco:      ['Risco',          'Controle de drawdown — quanto você perdeu e como se recuperou'],
+  comparativo:['Comparativo',   'Compare dois períodos lado a lado'],
+  horarios:   ['Horários',      'Heatmap de performance por dia da semana e horário'],
+  metas:      ['Metas',         'Acompanhe seus objetivos diários e mensais'],
+  consistencia:['Consistência', 'Análise de regularidade e distribuição de resultados'],
+  exportar:   ['Exportar',      'Baixe seus dados em CSV ou gere um relatório'],
 };
 
 function showSection(name, btn) {
@@ -713,8 +900,13 @@ function showSection(name, btn) {
   const [t, s] = TITLES[name] || ['', ''];
   document.getElementById('topbar-title').textContent = t;
   document.getElementById('topbar-sub').textContent   = s;
-  if (name === 'calendario') renderCalendario();
-  if (name === 'risco')      renderRisco();
+  if (name === 'calendario')  renderCalendario();
+  if (name === 'risco')       renderRisco();
+  if (name === 'comparativo') renderComparativo();
+  if (name === 'horarios')    renderHorarios();
+  if (name === 'metas')       renderMetas();
+  if (name === 'consistencia')renderConsistencia();
+  if (name === 'exportar')    renderExportar();
 }
 
 /* ============================================================
@@ -2307,6 +2499,530 @@ function renderTopDDTable(events) {
   document.getElementById('tbody-top-dd').innerHTML = rows.length
     ? rows.join('')
     : '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">Nenhum evento de drawdown registrado.</td></tr>';
+}
+
+/* ============================================================
+   COMPARATIVO
+============================================================ */
+function renderComparativo() {
+  // Init default dates on first open
+  const aFrom = document.getElementById('cmp-a-from');
+  if (!aFrom.value) {
+    const now  = new Date();
+    const y    = now.getFullYear(), m = now.getMonth();
+    const prev = new Date(y, m - 1, 1);
+    aFrom.value = fmtISO(new Date(y, m - 1, 1));
+    document.getElementById('cmp-a-to').value = fmtISO(new Date(y, m, 0));
+    document.getElementById('cmp-b-from').value = fmtISO(new Date(y, m, 1));
+    document.getElementById('cmp-b-to').value   = fmtISO(now);
+  }
+  const af = document.getElementById('cmp-a-from').value;
+  const at = document.getElementById('cmp-a-to').value;
+  const bf = document.getElementById('cmp-b-from').value;
+  const bt = document.getElementById('cmp-b-to').value;
+  if (!af || !at || !bf || !bt) return;
+
+  const tA = filterByRange(allTrades, af, at);
+  const tB = filterByRange(allTrades, bf, bt);
+  const mA = calcMetrics(tA);
+  const mB = calcMetrics(tB);
+
+  // KPI comparison
+  const kpis = [
+    { label: 'P&L Total',       a: fmtR$(mA.pnl),            b: fmtR$(mB.pnl),            delta: mB.pnl - mA.pnl, fmt: v => fmtR$(v) },
+    { label: 'Total de Ops',    a: mA.totalTrades,            b: mB.totalTrades,            delta: mB.totalTrades - mA.totalTrades, fmt: v => (v > 0 ? '+' : '') + v },
+    { label: 'Taxa de Acerto',  a: fmtPct(mA.wr),             b: fmtPct(mB.wr),             delta: mB.wr - mA.wr, fmt: v => (v > 0 ? '+' : '') + v.toFixed(1) + 'pp' },
+    { label: 'Fator de Lucro',  a: mA.pf.toFixed(2),          b: mB.pf.toFixed(2),          delta: mB.pf - mA.pf, fmt: v => (v > 0 ? '+' : '') + v.toFixed(2) },
+    { label: 'Max Drawdown',    a: fmtR$(mA.maxDD),           b: fmtR$(mB.maxDD),           delta: mA.maxDD - mB.maxDD, fmt: v => (v > 0 ? '-' : '+') + fmtR$(Math.abs(v)), invert: true },
+    { label: 'Payoff',          a: mA.payoff.toFixed(2) + 'x',b: mB.payoff.toFixed(2) + 'x',delta: mB.payoff - mA.payoff, fmt: v => (v > 0 ? '+' : '') + v.toFixed(2) + 'x' },
+    { label: 'Média/Trade',     a: fmtR$(mA.avgTrd),          b: fmtR$(mB.avgTrd),          delta: mB.avgTrd - mA.avgTrd, fmt: v => fmtR$(v) },
+    { label: 'Dias Operados',   a: mA.dias,                   b: mB.dias,                   delta: mB.dias - mA.dias, fmt: v => (v > 0 ? '+' : '') + v },
+  ];
+
+  document.getElementById('cmp-kpis').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      ${kpis.map(k => {
+        const dPos = k.invert ? k.delta > 0 : k.delta >= 0;
+        const dColor = k.delta === 0 ? 'var(--muted)' : dPos ? 'var(--green)' : 'var(--red)';
+        const dText  = k.delta === 0 ? '—' : k.fmt(k.delta);
+        return `<div class="kpi" style="position:relative;">
+          <div class="kpi-label">${k.label}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0;">
+            <div>
+              <div style="font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">A</div>
+              <div style="font-size:15px;font-weight:800;">${k.a}</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">B</div>
+              <div style="font-size:15px;font-weight:800;">${k.b}</div>
+            </div>
+          </div>
+          <div class="kpi-sub" style="color:${dColor};font-weight:700;">Δ ${dText}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // Chart overlay
+  destroyChart('cmp-equity');
+  const eqA = mA.equity.map((p, i) => ({ x: i, y: p.y }));
+  const eqB = mB.equity.map((p, i) => ({ x: i, y: p.y }));
+  charts['cmp-equity'] = new Chart(document.getElementById('chart-cmp-equity'), {
+    type: 'line',
+    data: {
+      datasets: [
+        { label: 'Período A', data: eqA, borderColor: '#0059FF', backgroundColor: 'rgba(0,89,255,.07)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 },
+        { label: 'Período B', data: eqB, borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,.07)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { padding: 16 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmtR$(ctx.raw.y)}` } } },
+      scales: {
+        x: { type: 'linear', title: { display: true, text: 'Operação #', color: 'var(--muted)' }, grid: { color: '#161616' } },
+        y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#161616' } }
+      }
+    }
+  });
+
+  // Daily charts
+  const renderDailyMini = (key, canvasId, metrics, color, subId) => {
+    destroyChart(key);
+    const dKeys   = Object.keys(metrics.byDay).sort();
+    const dVals   = dKeys.map(k => metrics.byDay[k].pnl);
+    const dColors = dVals.map(v => v >= 0 ? `rgba(${color},.75)` : 'rgba(239,68,68,.7)');
+    document.getElementById(subId).textContent = `${metrics.totalTrades} ops · ${fmtR$(metrics.pnl)} · ${fmtPct(metrics.wr)} acerto`;
+    charts[key] = new Chart(document.getElementById(canvasId), {
+      type: 'bar',
+      data: { labels: dKeys.map(d => d.split('-').slice(1).reverse().join('/')), datasets: [{ data: dVals, backgroundColor: dColors, borderRadius: 3, borderSkipped: false }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmtR$(ctx.raw) } } },
+        scales: { x: { ticks: { maxTicksLimit: 10, maxRotation: 0 }, grid: { color: '#161616' } }, y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#161616' } } }
+      }
+    });
+  };
+  renderDailyMini('cmp-a-daily', 'chart-cmp-a-daily', mA, '0,89,255',   'cmp-a-sub');
+  renderDailyMini('cmp-b-daily', 'chart-cmp-b-daily', mB, '245,158,11', 'cmp-b-sub');
+}
+
+function filterByRange(trades, from, to) {
+  const f = new Date(from + 'T00:00:00');
+  const t = new Date(to   + 'T23:59:59');
+  return trades.filter(tr => { const d = new Date(tr.abertura); return d >= f && d <= t; });
+}
+
+function fmtISO(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+/* ============================================================
+   HORÁRIOS
+============================================================ */
+function renderHorarios() {
+  if (!allTrades.length) return;
+  buildHeatmapDH();
+  renderHourlyBar();
+  renderWeekdayBar();
+}
+
+function buildHeatmapDH() {
+  const HOURS = [9,10,11,12,13,14,15,16,17,18];
+  const DNAMES = ['Seg','Ter','Qua','Qui','Sex'];
+  const matrix = Array.from({length:5}, () => Array.from({length:10}, () => ({n:0, wins:0, pnl:0})));
+
+  allTrades.forEach(t => {
+    const d  = new Date(t.abertura);
+    const wd = (d.getDay() + 6) % 7;
+    if (wd >= 5) return;
+    const h  = parseInt(String(t.hora_abertura || '').split(':')[0]);
+    const hi = HOURS.indexOf(h);
+    if (hi === -1) return;
+    const r = fnum(t.resultado_reais);
+    matrix[wd][hi].n++;
+    matrix[wd][hi].pnl += r;
+    if (t.is_winner) matrix[wd][hi].wins++;
+  });
+
+  let maxAbs = 1;
+  matrix.forEach(row => row.forEach(cell => { if (Math.abs(cell.pnl) > maxAbs) maxAbs = Math.abs(cell.pnl); }));
+
+  let html = `<table style="width:100%;border-collapse:separate;border-spacing:3px;">
+    <tr>
+      <td style="width:40px;"></td>
+      ${HOURS.map(h => `<td style="text-align:center;font-size:11px;color:var(--muted);font-weight:600;padding-bottom:8px;white-space:nowrap;">${String(h).padStart(2,'0')}h</td>`).join('')}
+    </tr>`;
+
+  DNAMES.forEach((day, di) => {
+    html += `<tr><td style="font-size:12px;font-weight:700;color:var(--muted);padding-right:8px;white-space:nowrap;vertical-align:middle;">${day}</td>`;
+    matrix[di].forEach((cell, hi) => {
+      if (cell.n === 0) {
+        html += `<td style="background:var(--card-2);border-radius:6px;height:54px;min-width:60px;"></td>`;
+      } else {
+        const alpha  = 0.2 + (Math.abs(cell.pnl) / maxAbs) * 0.7;
+        const bg     = cell.pnl >= 0 ? `rgba(34,197,94,${alpha.toFixed(2)})` : `rgba(239,68,68,${alpha.toFixed(2)})`;
+        const wr     = (cell.wins / cell.n * 100).toFixed(0);
+        const pFmt   = (cell.pnl >= 0 ? '+' : '') + fmtR$(cell.pnl);
+        html += `<td style="background:${bg};border-radius:6px;height:54px;min-width:60px;text-align:center;cursor:default;vertical-align:middle;"
+          title="${day} ${String(HOURS[hi]).padStart(2,'0')}h — ${cell.n} ops · ${wr}% acerto · ${pFmt}">
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.95);">${cell.n}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.75);">${pFmt}</div>
+        </td>`;
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</table>';
+  document.getElementById('heatmap-dh').innerHTML = html;
+}
+
+function renderHourlyBar() {
+  destroyChart('hourly-pnl');
+  const HOURS = [9,10,11,12,13,14,15,16,17,18];
+  const data  = HOURS.map(h => ({ pnl: 0, n: 0 }));
+  allTrades.forEach(t => {
+    const h  = parseInt(String(t.hora_abertura || '').split(':')[0]);
+    const hi = HOURS.indexOf(h);
+    if (hi === -1) return;
+    data[hi].pnl += fnum(t.resultado_reais);
+    data[hi].n++;
+  });
+  const vals   = data.map(d => d.pnl);
+  const colors = vals.map(v => v >= 0 ? 'rgba(34,197,94,.8)' : 'rgba(239,68,68,.8)');
+  charts['hourly-pnl'] = new Chart(document.getElementById('chart-hourly-pnl'), {
+    type: 'bar',
+    data: { labels: HOURS.map(h => String(h).padStart(2,'0') + 'h'), datasets: [{ data: vals, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtR$(ctx.raw)} · ${data[ctx.dataIndex].n} ops` } } },
+      scales: { x: { grid: { color: '#161616' } }, y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#161616' } } }
+    }
+  });
+}
+
+function renderWeekdayBar() {
+  destroyChart('weekday-bar');
+  const DNAMES = ['Segunda','Terça','Quarta','Quinta','Sexta'];
+  const data   = Array.from({length:5}, () => ({pnl:0, n:0, wins:0}));
+  allTrades.forEach(t => {
+    const wd = (new Date(t.abertura).getDay() + 6) % 7;
+    if (wd >= 5) return;
+    data[wd].pnl  += fnum(t.resultado_reais);
+    data[wd].n++;
+    if (t.is_winner) data[wd].wins++;
+  });
+  const vals   = data.map(d => d.pnl);
+  const colors = vals.map(v => v >= 0 ? 'rgba(34,197,94,.8)' : 'rgba(239,68,68,.8)');
+  charts['weekday-bar'] = new Chart(document.getElementById('chart-weekday-bar'), {
+    type: 'bar',
+    data: { labels: DNAMES, datasets: [{ data: vals, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => { const d = data[ctx.dataIndex]; return ` ${fmtR$(d.pnl)} · ${d.n} ops · ${d.n ? (d.wins/d.n*100).toFixed(0) : 0}% acerto`; } } } },
+      scales: { x: { grid: { color: '#161616' } }, y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#161616' } } }
+    }
+  });
+}
+
+/* ============================================================
+   METAS
+============================================================ */
+function renderMetas() {
+  // Restore from localStorage
+  const md = document.getElementById('meta-diaria');
+  const mm = document.getElementById('meta-mensal');
+  const ms = document.getElementById('meta-mes');
+  if (!md.value) md.value = localStorage.getItem('zeve_meta_diaria') || '';
+  if (!mm.value) mm.value = localStorage.getItem('zeve_meta_mensal') || '';
+  if (!ms.value) {
+    const now = new Date();
+    ms.value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  }
+  renderMetasContent();
+}
+
+function onMetaChange() {
+  localStorage.setItem('zeve_meta_diaria', document.getElementById('meta-diaria').value);
+  localStorage.setItem('zeve_meta_mensal', document.getElementById('meta-mensal').value);
+  renderMetasContent();
+}
+
+function renderMetasContent() {
+  const metaDia = parseFloat(document.getElementById('meta-diaria').value) || 0;
+  const metaMes = parseFloat(document.getElementById('meta-mensal').value) || 0;
+  const mesVal  = document.getElementById('meta-mes').value;
+  if (!mesVal) return;
+
+  const [y, m] = mesVal.split('-').map(Number);
+  const trades = allTrades.filter(t => {
+    const d = new Date(t.abertura);
+    return d.getFullYear() === y && d.getMonth() + 1 === m;
+  });
+
+  // Build day map
+  const byDay = {};
+  trades.forEach(t => {
+    const d = t.data_trade;
+    if (!byDay[d]) byDay[d] = 0;
+    byDay[d] += fnum(t.resultado_reais);
+  });
+  const days = Object.entries(byDay).sort((a,b) => a[0].localeCompare(b[0]));
+  const pnlMes = days.reduce((s, [,v]) => s + v, 0);
+  const diasOp = days.length;
+  const diasPos = days.filter(([,v]) => v >= metaDia && metaDia > 0 ? v >= metaDia : v > 0).length;
+  const diasMeta = metaDia > 0 ? days.filter(([,v]) => v >= metaDia).length : 0;
+
+  // Progress bar for monthly goal
+  const progPct = metaMes > 0 ? Math.min(100, (pnlMes / metaMes) * 100) : 0;
+  const progColor = progPct >= 100 ? 'var(--green)' : progPct >= 50 ? 'var(--yellow)' : 'var(--red)';
+
+  document.getElementById('metas-kpis').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
+      <div class="kpi" style="border-color:${pnlMes >= 0 ? 'rgba(34,197,94,.25)' : 'rgba(239,68,68,.25)'};">
+        <div class="kpi-label">P&L do Mês</div>
+        <div class="kpi-value" style="color:${pnlMes >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(pnlMes)}</div>
+        <div class="kpi-sub">${diasOp} dia${diasOp !== 1 ? 's' : ''} operado${diasOp !== 1 ? 's' : ''}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Dias que Bateram Meta</div>
+        <div class="kpi-value" style="color:var(--green);">${diasMeta > 0 ? diasMeta : diasOp > 0 ? diasPos : '—'}</div>
+        <div class="kpi-sub">${metaDia > 0 ? 'de ' + diasOp + ' dias operados' : 'dias positivos'}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Meta Mensal</div>
+        <div class="kpi-value" style="color:${progColor};">${metaMes > 0 ? progPct.toFixed(0) + '%' : '—'}</div>
+        <div class="kpi-sub">${metaMes > 0 ? fmtR$(pnlMes) + ' de ' + fmtR$(metaMes) : 'Informe a meta mensal'}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Faltam para Meta</div>
+        <div class="kpi-value" style="color:${metaMes > 0 && pnlMes >= metaMes ? 'var(--green)' : 'var(--yellow)'};">${metaMes > 0 ? (pnlMes >= metaMes ? '✓ Atingida' : fmtR$(metaMes - pnlMes)) : '—'}</div>
+        <div class="kpi-sub">${metaMes > 0 && pnlMes < metaMes ? 'para bater a meta' : ''}</div>
+      </div>
+    </div>
+    ${metaMes > 0 ? `
+    <div class="chart-card" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:600;">Progresso da Meta Mensal</div>
+        <div style="font-size:13px;font-weight:700;color:${progColor};">${progPct.toFixed(1)}%</div>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar" style="width:${progPct}%;background:${progColor};"></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;">${fmtR$(pnlMes)} de ${fmtR$(metaMes)}</div>
+    </div>` : ''}`;
+
+  // Calendar
+  const daysInMonth = new Date(y, m, 0).getDate();
+  const firstDay    = (new Date(y, m - 1, 1).getDay() + 6) % 7; // 0=Mon
+  let calHtml = `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+    ${['Seg','Ter','Qua','Qui','Sex'].map(d => `<div style="text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:4px 0;">${d}</div>`).join('')}`;
+
+  // Empty cells before first weekday
+  const startWd = firstDay < 5 ? firstDay : 0;
+  for (let i = 0; i < startWd; i++) calHtml += '<div></div>';
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(y, m - 1, day);
+    const wd   = (date.getDay() + 6) % 7;
+    if (wd >= 5) continue; // skip weekends
+    const iso  = fmtISO(date);
+    const pnl  = byDay[iso] ?? null;
+    let bg = 'var(--card-2)', textColor = 'var(--muted)', pnlText = '';
+    if (pnl !== null) {
+      if (metaDia > 0 && pnl >= metaDia)      { bg = 'rgba(34,197,94,.18)'; textColor = 'var(--green)'; }
+      else if (pnl > 0 && metaDia > 0)         { bg = 'rgba(245,158,11,.15)'; textColor = 'var(--yellow)'; }
+      else if (pnl > 0)                         { bg = 'rgba(34,197,94,.18)'; textColor = 'var(--green)'; }
+      else                                      { bg = 'rgba(239,68,68,.15)'; textColor = 'var(--red)'; }
+      pnlText = `<div style="font-size:10px;font-weight:600;color:${textColor};margin-top:2px;">${pnl >= 0 ? '+' : ''}${fmtR$(pnl)}</div>`;
+    }
+    calHtml += `<div style="background:${bg};border-radius:8px;padding:8px 6px;text-align:center;min-height:52px;">
+      <div style="font-size:13px;font-weight:700;color:${pnl !== null ? textColor : 'var(--mut-2)'};">${day}</div>
+      ${pnlText}
+    </div>`;
+  }
+  calHtml += '</div>';
+  document.getElementById('metas-calendar').innerHTML = calHtml;
+}
+
+/* ============================================================
+   CONSISTÊNCIA
+============================================================ */
+function renderConsistencia() {
+  if (!allTrades.length) return;
+
+  // Build daily P&L map
+  const byDay = {};
+  allTrades.forEach(t => {
+    const d = t.data_trade;
+    if (!byDay[d]) byDay[d] = 0;
+    byDay[d] += fnum(t.resultado_reais);
+  });
+  const days     = Object.entries(byDay).sort((a, b) => a[0].localeCompare(b[0]));
+  const pnlArr   = days.map(([,v]) => v);
+  const diasOp   = days.length;
+  const diasPos  = pnlArr.filter(v => v > 0).length;
+  const pctDias  = diasOp ? (diasPos / diasOp * 100) : 0;
+
+  // Streaks (day-level)
+  let maxWinStreak = 0, maxLossStreak = 0, curW = 0, curL = 0;
+  pnlArr.forEach(v => {
+    if (v > 0) { curW++; curL = 0; if (curW > maxWinStreak)  maxWinStreak  = curW; }
+    else       { curL++; curW = 0; if (curL > maxLossStreak) maxLossStreak = curL; }
+  });
+
+  // Weekly P&L (ISO week: Mon–Sun)
+  const byWeek = {};
+  days.forEach(([d, v]) => {
+    const date = new Date(d);
+    const y = date.getFullYear();
+    const startOfYear = new Date(y, 0, 1);
+    const weekNum = Math.ceil(((date - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+    const key = `${y}-W${weekNum}`;
+    byWeek[key] = (byWeek[key] || 0) + v;
+  });
+  const weeks      = Object.values(byWeek);
+  const weeksPos   = weeks.filter(v => v > 0).length;
+  const pctWeeks   = weeks.length ? (weeksPos / weeks.length * 100) : 0;
+
+  // Monthly P&L
+  const byMonth = {};
+  days.forEach(([d, v]) => {
+    const key = d.substring(0, 7);
+    byMonth[key] = (byMonth[key] || 0) + v;
+  });
+  const months    = Object.values(byMonth);
+  const monthsPos = months.filter(v => v > 0).length;
+  const pctMonths = months.length ? (monthsPos / months.length * 100) : 0;
+
+  // KPI display
+  set('con-dias-pos',      fmtPct(pctDias), pctDias >= 50 ? 'var(--green)' : 'var(--red)');
+  document.getElementById('con-dias-pos-sub').textContent = `${diasPos} de ${diasOp} dias operados`;
+  set('con-streak-win',  maxWinStreak,  'var(--green)');
+  set('con-streak-loss', maxLossStreak, 'var(--red)');
+  set('con-semanas',     fmtPct(pctWeeks),  pctWeeks >= 50 ? 'var(--green)' : 'var(--red)');
+  set('con-meses',       fmtPct(pctMonths), pctMonths >= 50 ? 'var(--green)' : 'var(--red)');
+
+  // Daily P&L bar + 10-day moving average
+  destroyChart('con-daily');
+  const labels   = days.map(([d]) => d.split('-').slice(1).reverse().join('/'));
+  const barVals  = pnlArr;
+  const maVals   = pnlArr.map((_, i) => {
+    const slice = pnlArr.slice(Math.max(0, i - 9), i + 1);
+    return slice.reduce((s, v) => s + v, 0) / slice.length;
+  });
+  charts['con-daily'] = new Chart(document.getElementById('chart-con-daily'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { type: 'bar',  data: barVals, backgroundColor: barVals.map(v => v >= 0 ? 'rgba(34,197,94,.6)' : 'rgba(239,68,68,.6)'), borderRadius: 2, borderSkipped: false, order: 2 },
+        { type: 'line', data: maVals, label: 'Média 10d', borderColor: '#F59E0B', backgroundColor: 'transparent', tension: 0.4, pointRadius: 0, borderWidth: 2, order: 1 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { filter: i => i.text === 'Média 10d', padding: 14 } }, tooltip: { callbacks: { label: ctx => ` ${fmtR$(ctx.raw)}` } } },
+      scales: { x: { ticks: { maxTicksLimit: 14, maxRotation: 0 }, grid: { color: '#161616' } }, y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#161616' } } }
+    }
+  });
+
+  // Histogram of daily results
+  destroyChart('con-hist');
+  const buckets = [-3000, -2000, -1000, -500, -200, 0, 200, 500, 1000, 2000, 3000];
+  const labels2 = ['< -3k', '-3k/-2k', '-2k/-1k', '-1k/-500', '-500/-200', '-200/0', '0/200', '200/500', '500/1k', '1k/2k', '2k/3k', '> 3k'];
+  const hist = Array(labels2.length).fill(0);
+  pnlArr.forEach(v => {
+    if      (v < buckets[0])  hist[0]++;
+    else if (v < buckets[1])  hist[1]++;
+    else if (v < buckets[2])  hist[2]++;
+    else if (v < buckets[3])  hist[3]++;
+    else if (v < buckets[4])  hist[4]++;
+    else if (v < buckets[5])  hist[5]++;
+    else if (v < buckets[6])  hist[6]++;
+    else if (v < buckets[7])  hist[7]++;
+    else if (v < buckets[8])  hist[8]++;
+    else if (v < buckets[9])  hist[9]++;
+    else if (v < buckets[10]) hist[10]++;
+    else                      hist[11]++;
+  });
+  const histColors = hist.map((_, i) => i < 6 ? 'rgba(239,68,68,.75)' : 'rgba(34,197,94,.75)');
+  charts['con-hist'] = new Chart(document.getElementById('chart-con-hist'), {
+    type: 'bar',
+    data: { labels: labels2, datasets: [{ data: hist, backgroundColor: histColors, borderRadius: 4, borderSkipped: false }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} dia${ctx.raw !== 1 ? 's' : ''}` } } },
+      scales: { x: { ticks: { font: { size: 10 }, maxRotation: 30 }, grid: { color: '#161616' } }, y: { ticks: { stepSize: 1 }, grid: { color: '#161616' } } }
+    }
+  });
+}
+
+/* ============================================================
+   EXPORTAR
+============================================================ */
+function renderExportar() {
+  const all = allTrades.length;
+  const fil = filtered.length;
+  const mA  = all  ? calcMetrics(allTrades) : null;
+  const mF  = fil  ? calcMetrics(filtered)  : null;
+
+  const block = (label, m, count) => m ? `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;">
+      <div style="background:var(--card-2);border-radius:10px;padding:14px;">
+        <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">${label}</div>
+        <div style="font-size:13px;font-weight:700;">${count} operações</div>
+      </div>
+      <div style="background:var(--card-2);border-radius:10px;padding:14px;">
+        <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">P&L Total</div>
+        <div style="font-size:13px;font-weight:700;color:${m.pnl>=0?'var(--green)':'var(--red)'};">${fmtR$(m.pnl)}</div>
+      </div>
+      <div style="background:var(--card-2);border-radius:10px;padding:14px;">
+        <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Taxa de Acerto</div>
+        <div style="font-size:13px;font-weight:700;">${fmtPct(m.wr)}</div>
+      </div>
+      <div style="background:var(--card-2);border-radius:10px;padding:14px;">
+        <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Dias Operados</div>
+        <div style="font-size:13px;font-weight:700;">${m.dias}</div>
+      </div>
+    </div>` : '';
+
+  document.getElementById('export-preview').innerHTML =
+    block('Todas as operações', mA, all) +
+    (fil !== all ? block('Período filtrado (Visão Geral)', mF, fil) : '');
+}
+
+function exportCSV(mode) {
+  const trades = mode === 'filtered' ? filtered : allTrades;
+  if (!trades.length) { toast('Nenhuma operação para exportar.', 'error'); return; }
+
+  const sorted = [...trades].sort((a, b) => new Date(a.abertura) - new Date(b.abertura));
+  let running  = 0;
+  const header = ['Ativo','Data','Abertura','Fechamento','Duracao_min','Lado','Qtd_Compra','Qtd_Venda','Preco_Compra','Preco_Venda','Resultado_R$','Acumulado_R$','Vencedor'].join(';');
+  const rows   = sorted.map(t => {
+    running += fnum(t.resultado_reais);
+    return [
+      t.ativo || '',
+      t.data_trade || '',
+      t.abertura   ? t.abertura.replace('T',' ').substring(0,16)   : '',
+      t.fechamento ? t.fechamento.replace('T',' ').substring(0,16) : '',
+      t.duracao_minutos != null ? fnum(t.duracao_minutos).toFixed(1) : '',
+      t.lado || '',
+      t.qtd_compra || '',
+      t.qtd_venda  || '',
+      t.preco_compra != null ? fnum(t.preco_compra).toFixed(2) : '',
+      t.preco_venda  != null ? fnum(t.preco_venda).toFixed(2)  : '',
+      fnum(t.resultado_reais).toFixed(2),
+      running.toFixed(2),
+      t.is_winner ? 'Sim' : 'Não',
+    ].map(v => '"' + String(v).replace(/"/g, '""') + '"').join(';');
+  });
+
+  const csv  = '\uFEFF' + [header, ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: `operacoes_${mode}_${new Date().toISOString().split('T')[0]}.csv` });
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`CSV exportado — ${trades.length} operações.`, 'success');
 }
 </script>
 </body>
