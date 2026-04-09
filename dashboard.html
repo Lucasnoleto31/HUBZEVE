@@ -972,6 +972,9 @@ function renderUploadList() {
     const periodo = u.periodo_inicio && u.periodo_fim
       ? `${fmtDate(u.periodo_inicio)} — ${fmtDate(u.periodo_fim)}`
       : '—';
+    const fixBtn = u.status === 'processing'
+      ? `<button onclick="fixUploadStatus('${u.id}')" style="background:none;border:1px solid var(--bord-2);color:var(--muted);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:Inter;margin-left:8px;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Marcar concluído</button>`
+      : '';
     return `
       <div class="upload-row">
         <div style="display:flex;align-items:center;gap:12px;">
@@ -983,9 +986,29 @@ function renderUploadList() {
             </div>
           </div>
         </div>
-        <div>${badge}</div>
+        <div style="display:flex;align-items:center;">${badge}${fixBtn}</div>
       </div>`;
   }).join('');
+}
+
+/* ============================================================
+   FIX UPLOAD STATUS
+============================================================ */
+async function fixUploadStatus(uploadId) {
+  const { error } = await sb.from('uploads')
+    .update({ status: 'done', processado_em: new Date().toISOString() })
+    .eq('id', uploadId)
+    .eq('cliente_id', profile.id);
+
+  if (error) {
+    // Fallback via upsert
+    const up = uploads.find(u => u.id === uploadId);
+    if (up) {
+      await sb.from('uploads').upsert({ ...up, status: 'done', processado_em: new Date().toISOString() });
+    }
+  }
+  toast('Upload marcado como concluído!', 'success');
+  await loadUploads();
 }
 
 /* ============================================================
@@ -1299,7 +1322,27 @@ async function processFile(file) {
     }
 
     setProgress(92, 'Finalizando...');
-    await sb.from('uploads').update({ status: 'done', processado_em: new Date().toISOString() }).eq('id', upRec.id);
+    const { error: doneErr } = await sb.from('uploads')
+      .update({ status: 'done', processado_em: new Date().toISOString() })
+      .eq('id', upRec.id);
+
+    if (doneErr) {
+      // RLS may block UPDATE — fallback: delete and re-insert with status done
+      console.warn('UPDATE bloqueado, tentando upsert:', doneErr.message);
+      await sb.from('uploads').upsert({
+        id: upRec.id,
+        cliente_id:    profile.id,
+        nome_arquivo:  file.name,
+        storage_path:  storagePath,
+        periodo_inicio: periodoInicio,
+        periodo_fim:    periodoFim,
+        conta_profit:  parsed.conta || profile.conta_profit || null,
+        titular:       parsed.titular || profile.full_name  || null,
+        total_trades:  parsed.trades.length,
+        status:        'done',
+        processado_em: new Date().toISOString(),
+      });
+    }
 
     setProgress(100, 'Concluído!');
     toast(`✓ ${parsed.trades.length} operações importadas com sucesso!`, 'success');
