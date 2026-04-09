@@ -344,7 +344,7 @@
           </div>
 
           <!-- Stats row -->
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;">
             <div class="kpi">
               <div class="kpi-label">Total de Trades</div>
               <div class="kpi-value" id="stat-total">—</div>
@@ -362,6 +362,65 @@
               <div class="kpi-value" id="stat-best" style="color:var(--green)">—</div>
             </div>
           </div>
+
+          <!-- Resumo por Dia da Semana -->
+          <div class="chart-card" style="margin-bottom:14px;">
+            <div class="chart-title">Resumo por Dia da Semana</div>
+            <div class="chart-sub">Performance consolidada por dia da semana</div>
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;" id="tbl-weekday">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Dia</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Trades</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Ganhos</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Perdas</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Win Rate</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">P&L</th>
+                    <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Média/Trade</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-weekday"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Top trades -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+            <!-- Top 5 Ganhos -->
+            <div class="chart-card">
+              <div class="chart-title" style="color:var(--green)">Top 5 Melhores Trades</div>
+              <div class="chart-sub">Maiores lucros individuais</div>
+              <table style="width:100%;border-collapse:collapse;font-size:12px;" id="tbl-best">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">#</th>
+                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Ativo</th>
+                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Data</th>
+                    <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Resultado</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-best"></tbody>
+              </table>
+            </div>
+            <!-- Top 5 Perdas -->
+            <div class="chart-card">
+              <div class="chart-title" style="color:var(--red)">Top 5 Piores Trades</div>
+              <div class="chart-sub">Maiores perdas individuais</div>
+              <table style="width:100%;border-collapse:collapse;font-size:12px;" id="tbl-worst">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">#</th>
+                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Ativo</th>
+                    <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Data</th>
+                    <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Resultado</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-worst"></tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -712,6 +771,8 @@ function renderDashboard() {
     renderHeatmap(m.hourly);
     console.log('[renderDashboard] Heatmap ok');
     renderStatsRow(m);
+    renderWeekday(filtered);
+    renderTopTrades(filtered);
   } catch(err) {
     console.error('[renderDashboard] ERRO:', err.message, err.stack);
     toast('Erro ao renderizar: ' + err.message, 'error');
@@ -973,6 +1034,75 @@ function renderStatsRow(m) {
   document.getElementById('stat-dias').textContent  = m.dias;
   set('stat-avg',  fmtR$(m.avgTrd), m.avgTrd >= 0 ? 'var(--green)' : 'var(--red)');
   set('stat-best', isFinite(m.bestDay) && m.dias > 0 ? fmtR$(m.bestDay) : '—', 'var(--green)');
+}
+
+/* ============================================================
+   WEEKDAY SUMMARY
+============================================================ */
+function renderWeekday(trades) {
+  const DAYS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const stats = Array.from({ length: 7 }, () => ({ n: 0, wins: 0, losses: 0, pnl: 0 }));
+
+  trades.forEach(t => {
+    const d = new Date(t.abertura);
+    const wd = d.getUTCDay(); // 0=Sun … 6=Sat
+    const r = fnum(t.resultado_reais);
+    stats[wd].n++;
+    stats[wd].pnl += r;
+    if (t.is_winner) stats[wd].wins++;
+    else stats[wd].losses++;
+  });
+
+  // Only show Mon–Fri (1–5) that have at least 1 trade
+  const rows = [1,2,3,4,5].filter(wd => stats[wd].n > 0).map(wd => {
+    const s  = stats[wd];
+    const wr = s.n ? (s.wins / s.n) * 100 : 0;
+    const avg = s.n ? s.pnl / s.n : 0;
+    const pnlColor = s.pnl >= 0 ? 'var(--green)' : 'var(--red)';
+    const wrColor  = wr >= 50 ? 'var(--green)' : 'var(--red)';
+    return `<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:10px 12px;font-weight:600;">${DAYS[wd]}</td>
+      <td style="padding:10px 12px;text-align:right;color:var(--muted);">${s.n}</td>
+      <td style="padding:10px 12px;text-align:right;color:var(--green);">${s.wins}</td>
+      <td style="padding:10px 12px;text-align:right;color:var(--red);">${s.losses}</td>
+      <td style="padding:10px 12px;text-align:right;color:${wrColor};font-weight:700;">${wr.toFixed(1)}%</td>
+      <td style="padding:10px 12px;text-align:right;color:${pnlColor};font-weight:700;">${fmtR$(s.pnl)}</td>
+      <td style="padding:10px 12px;text-align:right;color:${avg >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(avg)}</td>
+    </tr>`;
+  });
+
+  document.getElementById('tbody-weekday').innerHTML = rows.length
+    ? rows.join('')
+    : '<tr><td colspan="7" style="padding:16px;text-align:center;color:var(--muted);">Sem dados</td></tr>';
+}
+
+/* ============================================================
+   TOP 5 BEST / WORST TRADES
+============================================================ */
+function renderTopTrades(trades) {
+  const sorted = [...trades].sort((a, b) => fnum(b.resultado_reais) - fnum(a.resultado_reais));
+  const top5   = sorted.slice(0, 5);
+  const bot5   = sorted.slice(-5).reverse();
+
+  const row = (t, i, color) => {
+    const r = fnum(t.resultado_reais);
+    const dt = t.data_trade || (t.abertura ? t.abertura.split('T')[0] : '—');
+    const dtFmt = dt !== '—' ? dt.split('-').reverse().join('/') : '—';
+    return `<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:8px 10px;color:var(--muted);font-weight:700;">${i + 1}</td>
+      <td style="padding:8px 10px;font-weight:600;">${escHtml(t.ativo || '—')}</td>
+      <td style="padding:8px 10px;color:var(--muted);">${dtFmt}</td>
+      <td style="padding:8px 10px;text-align:right;color:${color};font-weight:700;">${fmtR$(r)}</td>
+    </tr>`;
+  };
+
+  document.getElementById('tbody-best').innerHTML  = top5.length
+    ? top5.map((t, i) => row(t, i, 'var(--green)')).join('')
+    : '<tr><td colspan="4" style="padding:12px;text-align:center;color:var(--muted);">Sem dados</td></tr>';
+
+  document.getElementById('tbody-worst').innerHTML = bot5.length
+    ? bot5.map((t, i) => row(t, i, 'var(--red)')).join('')
+    : '<tr><td colspan="4" style="padding:12px;text-align:center;color:var(--muted);">Sem dados</td></tr>';
 }
 
 /* ============================================================
