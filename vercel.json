@@ -5,6 +5,8 @@
     { "source": "/privacidade", "destination": "/privacidade.html" },
     { "source": "/termos", "destination": "/termos-de-uso.html" },
     { "source": "/suporte", "destination": "/suporte.html" },
-    { "source": "/admin", "destination": "/dashboard-admin.html" }
+    { "source": "/admin",      "destination": "/dashboard-admin.html" },
+    { "source": "/assessor",   "destination": "/dashboard-assessor.html" },
+    { "source": "/dashboard",  "destination": "/dashboard.html" }
   ]
 }

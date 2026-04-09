@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assessor — ZeveHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/recharts@2/umd/Recharts.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
+  <style>
+    * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+    :root {
+      --blue:   #0059FF;
+      --bg:     #000000;
+      --card:   #0D0D0D;
+      --card-2: #141414;
+      --border: #1E1E1E;
+      --bord-2: #2A2A2A;
+      --text:   #FFFFFF;
+      --muted:  #888888;
+      --mut-2:  #444444;
+      --green:  #22C55E;
+      --red:    #EF4444;
+      --yellow: #F59E0B;
+    }
+    html,body { height:100%; margin:0; background:var(--bg); color:var(--text); }
+    .layout { display:flex; height:100vh; overflow:hidden; }
+
+    /* SIDEBAR */
+    .sidebar { width:240px; background:var(--card); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; }
+    .sb-logo { padding:22px 20px; border-bottom:1px solid var(--border); }
+    .sb-logo img { height:28px; width:auto; }
+    .sb-badge { font-size:10px; font-weight:700; letter-spacing:.06em; color:var(--yellow); background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.2); border-radius:4px; padding:2px 6px; margin-top:6px; display:inline-block; }
+    .sb-section { padding:16px 12px 6px; font-size:10px; font-weight:700; letter-spacing:.08em; color:var(--mut-2); text-transform:uppercase; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; margin:2px 8px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:500; color:var(--muted); transition:all .15s; border:none; background:none; width:calc(100% - 16px); text-align:left; }
+    .nav-item:hover { background:var(--card-2); color:var(--text); }
+    .nav-item.active { background:rgba(0,89,255,.1); color:var(--blue); }
+    .notif-dot { width:7px; height:7px; border-radius:50%; background:var(--red); margin-left:auto; flex-shrink:0; }
+    .sb-footer { margin-top:auto; padding:16px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+    .sb-avatar { width:32px; height:32px; border-radius:50%; background:rgba(245,158,11,.2); color:var(--yellow); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .btn-logout { font-size:12px; color:var(--muted); background:none; border:none; cursor:pointer; padding:0; }
+    .btn-logout:hover { color:var(--red); }
+
+    /* MAIN */
+    .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+    .topbar { padding:16px 28px; border-bottom:1px solid var(--border); background:var(--card); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+    .topbar-title { font-size:18px; font-weight:800; }
+    .topbar-sub   { font-size:13px; color:var(--muted); margin-top:1px; }
+    .content { flex:1; overflow-y:auto; padding:28px; }
+    .section { display:none; }
+    .section.active { display:block; }
+
+    /* CARDS */
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+    .kpi { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; }
+    .kpi-label { font-size:12px; color:var(--muted); margin-bottom:6px; }
+    .kpi-value { font-size:26px; font-weight:800; }
+    .kpi-sub { font-size:12px; color:var(--muted); margin-top:4px; }
+
+    /* LISTA DE CLIENTES */
+    .cliente-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+    .cliente-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; cursor:pointer; transition:all .2s; }
+    .cliente-card:hover { border-color:rgba(0,89,255,.4); background:var(--card-2); transform:translateY(-2px); }
+    .cliente-card.alerta { border-color:rgba(239,68,68,.3); }
+    .cli-header { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+    .cli-avatar { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex-shrink:0; }
+    .cli-name { font-size:15px; font-weight:700; }
+    .cli-email { font-size:12px; color:var(--muted); }
+    .cli-metrics { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+    .cli-metric { background:var(--card-2); border-radius:8px; padding:10px; }
+    .cli-metric-label { font-size:10px; color:var(--muted); margin-bottom:3px; text-transform:uppercase; letter-spacing:.04em; }
+    .cli-metric-val { font-size:16px; font-weight:700; }
+    .cli-footer { margin-top:12px; display:flex; align-items:center; justify-content:space-between; }
+
+    /* PERFIL DO CLIENTE */
+    .back-btn { display:inline-flex; align-items:center; gap:8px; font-size:14px; color:var(--muted); cursor:pointer; background:none; border:none; padding:0; margin-bottom:20px; transition:color .15s; }
+    .back-btn:hover { color:var(--text); }
+    .perfil-header { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; margin-bottom:20px; display:flex; align-items:center; gap:20px; }
+    .perfil-avatar { width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; flex-shrink:0; }
+    .perfil-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+
+    /* TABELA */
+    .table-wrap { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+    .table-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .table-header h3 { font-size:15px; font-weight:700; }
+    table { width:100%; border-collapse:collapse; }
+    th { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; padding:12px 20px; text-align:left; border-bottom:1px solid var(--border); }
+    td { padding:13px 20px; font-size:14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:var(--card-2); }
+
+    /* COMENTÁRIOS */
+    .comentario-wrap { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+    .comentario-item { padding:16px 20px; border-bottom:1px solid var(--border); }
+    .comentario-item:last-child { border-bottom:none; }
+    .com-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+    .com-meta { font-size:12px; color:var(--muted); }
+    .com-texto { font-size:14px; line-height:1.65; }
+    .com-input-area { padding:20px; border-top:1px solid var(--border); }
+    textarea.input { background:var(--card-2); border:1px solid var(--bord-2); border-radius:10px; color:var(--text); font-size:14px; padding:12px 14px; outline:none; resize:vertical; min-height:90px; width:100%; transition:border-color .15s; }
+    textarea.input:focus { border-color:var(--blue); }
+    textarea.input::placeholder { color:var(--mut-2); }
+
+    /* NOTIFICAÇÕES */
+    .notif-item { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; gap:14px; transition:background .15s; }
+    .notif-item:hover { background:var(--card-2); }
+    .notif-item.nao-lida { border-left:3px solid var(--blue); }
+    .notif-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .notif-titulo { font-size:14px; font-weight:600; margin-bottom:2px; }
+    .notif-msg { font-size:13px; color:var(--muted); }
+    .notif-time { font-size:11px; color:var(--mut-2); margin-top:4px; }
+
+    /* BADGES / BTNS */
+    .badge { font-size:11px; font-weight:600; padding:3px 10px; border-radius:100px; }
+    .badge-green  { background:rgba(34,197,94,.1);  color:#22C55E; border:1px solid rgba(34,197,94,.2); }
+    .badge-red    { background:rgba(239,68,68,.1);  color:#EF4444; border:1px solid rgba(239,68,68,.2); }
+    .badge-yellow { background:rgba(245,158,11,.1); color:#F59E0B; border:1px solid rgba(245,158,11,.2); }
+    .badge-blue   { background:rgba(0,89,255,.1);   color:#4D94FF; border:1px solid rgba(0,89,255,.2); }
+    .btn-primary { background:var(--blue); color:#fff; font-weight:600; font-size:13px; border:none; border-radius:8px; padding:9px 16px; cursor:pointer; transition:all .15s; display:inline-flex; align-items:center; gap:6px; }
+    .btn-primary:hover { background:#0047CC; }
+    .btn-ghost { background:var(--card-2); color:var(--muted); font-weight:600; font-size:13px; border:1px solid var(--bord-2); border-radius:8px; padding:9px 16px; cursor:pointer; transition:all .15s; }
+    .btn-ghost:hover { color:var(--text); }
+    .btn-sm { background:var(--card-2); color:var(--muted); font-size:12px; font-weight:600; border:1px solid var(--bord-2); border-radius:6px; padding:6px 12px; cursor:pointer; transition:all .15s; }
+    .btn-sm:hover { color:var(--text); }
+    .btn-danger { background:rgba(239,68,68,.1); color:var(--red); font-size:12px; font-weight:600; border:1px solid rgba(239,68,68,.2); border-radius:6px; padding:6px 12px; cursor:pointer; }
+    .input { background:var(--card-2); border:1px solid var(--bord-2); border-radius:8px; color:var(--text); font-size:14px; padding:9px 13px; outline:none; transition:border-color .15s; }
+    .input:focus { border-color:var(--blue); }
+    .input::placeholder { color:var(--mut-2); }
+    .select { background:var(--card-2); border:1px solid var(--bord-2); border-radius:8px; color:var(--text); font-size:14px; padding:9px 13px; outline:none; cursor:pointer; }
+
+    /* EQUITY CURVE MINI */
+    .equity-bar { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+    .equity-fill { height:100%; border-radius:2px; }
+
+    /* SEARCH */
+    .search-wrap { position:relative; }
+    .search-wrap svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none; }
+    .search-wrap .input { padding-left:36px; }
+
+    /* SKEL */
+    .skel { background:linear-gradient(90deg,var(--border) 25%,var(--bord-2) 50%,var(--border) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:6px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* EMPTY */
+    .empty { text-align:center; padding:40px 20px; color:var(--muted); font-size:14px; }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:24px; right:24px; z-index:200; background:var(--card-2); border:1px solid var(--bord-2); border-radius:10px; padding:14px 18px; font-size:14px; font-weight:500; transform:translateY(80px); opacity:0; transition:all .3s; pointer-events:none; }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast.success { border-color:rgba(34,197,94,.3); }
+    .toast.error   { border-color:rgba(239,68,68,.3); }
+
+    @media(max-width:900px){ .kpi-grid,.perfil-kpis{grid-template-columns:repeat(2,1fr);} .sidebar{width:60px;} .sb-logo img,.nav-item span,.sb-section,.sb-footer div{display:none;} .nav-item{justify-content:center;padding:12px;margin:2px 4px;width:calc(100% - 8px);} }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <img src="zeve logo completo.svg" alt="ZeveHub" />
+      <div class="sb-badge">ASSESSOR</div>
+    </div>
+
+    <div class="sb-section">Menu</div>
+
+    <button class="nav-item active" onclick="showSection('overview',this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span>Visão Geral</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('clientes',this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M1 13c0-2.8 2.2-4.5 5-4.5s5 1.7 5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M14 12c0-1.8-1-3-2.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>Meus Clientes</span>
+    </button>
+
+    <button class="nav-item" id="navNotif" onclick="showSection('notificacoes',this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5a5 5 0 00-5 5v2.5L1.5 11h13L13 9V6.5a5 5 0 00-5-5z" stroke="currentColor" stroke-width="1.5"/><path d="M6 11v.5a2 2 0 004 0V11" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span>Notificações</span>
+      <div class="notif-dot" id="notifDot" style="display:none;"></div>
+    </button>
+
+    <div class="sb-footer">
+      <div class="sb-avatar" id="userInitials">?</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="userName">Carregando...</div>
+        <button class="btn-logout" onclick="logout()">Sair</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="sectionTitle">Visão Geral</div>
+        <div class="topbar-sub"   id="sectionSub">Seus clientes este mês</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <div class="search-wrap" id="searchWrap" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="color:var(--muted)"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input class="input" type="text" placeholder="Buscar cliente..." id="searchClientes" oninput="filterClientes()" style="width:220px;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ VISÃO GERAL ══ -->
+      <div class="section active" id="sec-overview">
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-label">Meus Clientes</div>
+            <div class="kpi-value" id="kpiClientes">—</div>
+            <div class="kpi-sub">vinculados ativos</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Clientes com Upload</div>
+            <div class="kpi-value" id="kpiComUpload">—</div>
+            <div class="kpi-sub">enviaram CSV este mês</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Alertas de DD</div>
+            <div class="kpi-value" id="kpiAlertas" style="color:var(--red);">—</div>
+            <div class="kpi-sub">drawdown alto este mês</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Comentários Enviados</div>
+            <div class="kpi-value" id="kpiComentarios">—</div>
+            <div class="kpi-sub">este mês</div>
+          </div>
+        </div>
+
+        <!-- Clientes com alerta -->
+        <div class="table-wrap" style="margin-bottom:20px;">
+          <div class="table-header">
+            <h3>⚠ Clientes que precisam de atenção</h3>
+          </div>
+          <div id="alertasContainer">
+            <div class="empty">Carregando...</div>
+          </div>
+        </div>
+
+        <!-- Últimos uploads -->
+        <div class="table-wrap">
+          <div class="table-header"><h3>Últimos uploads dos clientes</h3></div>
+          <table>
+            <thead><tr><th>Cliente</th><th>Arquivo</th><th>Trades</th><th>Status</th><th>Data</th><th></th></tr></thead>
+            <tbody id="tbodyUploads"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ CLIENTES ══ -->
+      <div class="section" id="sec-clientes">
+        <div class="cliente-grid" id="clienteGrid">
+          <div class="skel" style="height:160px; border-radius:14px;"></div>
+          <div class="skel" style="height:160px; border-radius:14px;"></div>
+          <div class="skel" style="height:160px; border-radius:14px;"></div>
+        </div>
+      </div>
+
+      <!-- ══ PERFIL DO CLIENTE ══ -->
+      <div class="section" id="sec-perfil">
+        <button class="back-btn" onclick="voltarClientes()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Voltar para clientes
+        </button>
+
+        <!-- Header do perfil -->
+        <div class="perfil-header">
+          <div class="perfil-avatar" id="perfilAvatar">?</div>
+          <div style="flex:1;">
+            <div style="font-size:20px; font-weight:800;" id="perfilNome">—</div>
+            <div style="font-size:13px; color:var(--muted);" id="perfilEmail">—</div>
+            <div style="font-size:12px; color:var(--muted); margin-top:2px;">Conta Profit: <span id="perfilConta">—</span></div>
+          </div>
+          <div id="perfilUltimoUpload" style="text-align:right;">
+            <div style="font-size:12px; color:var(--muted);">Último upload</div>
+            <div style="font-size:14px; font-weight:600;" id="perfilUploadData">—</div>
+          </div>
+        </div>
+
+        <!-- KPIs do cliente -->
+        <div class="perfil-kpis">
+          <div class="kpi">
+            <div class="kpi-label">P&L do Mês</div>
+            <div class="kpi-value" id="pPnl">—</div>
+            <div class="kpi-sub" id="pTrades">— operações</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Taxa de Acerto</div>
+            <div class="kpi-value" id="pAcerto">—</div>
+            <div class="kpi-sub" id="pPayoff">Payoff: —</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Drawdown Máx.</div>
+            <div class="kpi-value" id="pDD" style="color:var(--red);">—</div>
+            <div class="kpi-sub" id="pFatorLucro">Fator lucro: —</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Dias Operados</div>
+            <div class="kpi-value" id="pDias">—</div>
+            <div class="kpi-sub" id="pMelhorDia">Melhor dia: —</div>
+          </div>
+        </div>
+
+        <!-- Últimas operações -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Últimas Operações</h3>
+            <span style="font-size:13px; color:var(--muted);" id="perfilTotalTrades"></span>
+          </div>
+          <table>
+            <thead><tr><th>Data/Hora</th><th>Ativo</th><th>Lado</th><th>Qtd</th><th>Duração</th><th>Resultado</th></tr></thead>
+            <tbody id="tbodyTradesPerfil"><tr><td colspan="6" class="empty">Nenhuma operação ainda.</td></tr></tbody>
+          </table>
+        </div>
+
+        <!-- Comentários -->
+        <div class="comentario-wrap">
+          <div class="table-header"><h3>💬 Comentários & Feedback</h3></div>
+          <div id="comentariosList">
+            <div class="empty">Nenhum comentário ainda.</div>
+          </div>
+          <div class="com-input-area">
+            <textarea class="input" id="novoComentario" placeholder="Escreva um feedback para este cliente..."></textarea>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+              <select class="select" id="comentarioVisib">
+                <option value="shared">Visível para o cliente</option>
+                <option value="private">Apenas para mim</option>
+              </select>
+              <button class="btn-primary" onclick="enviarComentario()">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7l11-5-5 11-1.5-4.5L1 7z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Enviar feedback
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ NOTIFICAÇÕES ══ -->
+      <div class="section" id="sec-notificacoes">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Notificações</h3>
+            <button class="btn-ghost" onclick="marcarTodasLidas()">Marcar todas como lidas</button>
+          </div>
+          <div id="notifList"><div class="empty">Carregando...</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const { createClient } = supabase;
+  const sb = createClient(
+    'https://bwrcznmovaigpfmezzrw.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3cmN6bm1vdmFpZ3BmbWV6enJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTA5NzMsImV4cCI6MjA5MTMyNjk3M30.tn12u4ZWnrVc-YlGaP6W6cIhbfBViKLPlKT0FhqmH8U'
+  );
+
+  let currentUser = null;
+  let meusClientes = [];
+  let clienteSelecionado = null;
+
+  // ── INIT ──
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+    if (!profile || (profile.role !== 'assessor' && profile.role !== 'admin')) {
+      window.location.href = 'login.html'; return;
+    }
+
+    currentUser = profile;
+    document.getElementById('userName').textContent    = profile.full_name || profile.email;
+    document.getElementById('userInitials').textContent = (profile.full_name || profile.email).slice(0,2).toUpperCase();
+
+    await loadClientes();
+    loadOverview();
+    loadNotificacoes();
+  }
+
+  // ── CARREGAR CLIENTES ──
+  async function loadClientes() {
+    const { data: vinculos } = await sb
+      .from('assessor_cliente')
+      .select('cliente_id')
+      .eq('assessor_id', currentUser.id)
+      .eq('ativo', true);
+
+    if (!vinculos?.length) { meusClientes = []; renderClienteGrid(); return; }
+
+    const ids = vinculos.map(v => v.cliente_id);
+
+    const [{ data: profiles }, { data: metricas }, { data: uploads }] = await Promise.all([
+      sb.from('profiles').select('*').in('id', ids),
+      sb.from('metricas_mensais').select('*')
+        .in('cliente_id', ids)
+        .eq('ano',  new Date().getFullYear())
+        .eq('mes',  new Date().getMonth() + 1),
+      sb.from('uploads').select('cliente_id, created_at, status')
+        .in('cliente_id', ids)
+        .eq('status', 'done')
+        .order('created_at', { ascending: false }),
+    ]);
+
+    meusClientes = (profiles || []).map(p => {
+      const m = metricas?.find(x => x.cliente_id === p.id) || null;
+      const u = uploads?.find(x => x.cliente_id === p.id) || null;
+      return { ...p, metricas: m, ultimo_upload: u?.created_at || null };
+    });
+
+    renderClienteGrid();
+    document.getElementById('kpiClientes').textContent = meusClientes.length;
+    document.getElementById('kpiComUpload').textContent = meusClientes.filter(c => c.ultimo_upload).length;
+    document.getElementById('kpiAlertas').textContent   = meusClientes.filter(c => c.metricas?.drawdown_max > 500).length;
+  }
+
+  function renderClienteGrid() {
+    const grid = document.getElementById('clienteGrid');
+    if (!meusClientes.length) {
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Nenhum cliente vinculado ainda.</div>';
+      return;
+    }
+    grid.innerHTML = meusClientes.map(c => {
+      const m      = c.metricas;
+      const pnl    = m?.pnl_reais ?? null;
+      const acerto = m?.taxa_acerto ?? null;
+      const dd     = m?.drawdown_max ?? null;
+      const alerta = dd > 500;
+      const cor    = avatarColor(c.full_name || c.email);
+      return `
+      <div class="cliente-card${alerta ? ' alerta' : ''}" onclick="abrirPerfil('${c.id}')">
+        <div class="cli-header">
+          <div class="cli-avatar" style="background:${cor.bg}; color:${cor.text};">${initials(c.full_name || c.email)}</div>
+          <div>
+            <div class="cli-name">${esc(c.full_name || '—')}</div>
+            <div class="cli-email">${esc(c.email)}</div>
+          </div>
+          ${alerta ? '<span class="badge badge-red" style="margin-left:auto;">⚠ DD Alto</span>' : ''}
+        </div>
+        <div class="cli-metrics">
+          <div class="cli-metric">
+            <div class="cli-metric-label">P&L Mês</div>
+            <div class="cli-metric-val" style="color:${pnl === null ? 'var(--muted)' : pnl >= 0 ? 'var(--green)' : 'var(--red)'}">
+              ${pnl === null ? '—' : (pnl >= 0 ? '+' : '') + 'R$' + Math.abs(pnl).toLocaleString('pt-BR', {minimumFractionDigits:0})}
+            </div>
+          </div>
+          <div class="cli-metric">
+            <div class="cli-metric-label">Acerto</div>
+            <div class="cli-metric-val">${acerto === null ? '—' : acerto.toFixed(1) + '%'}</div>
+          </div>
+          <div class="cli-metric">
+            <div class="cli-metric-label">Drawdown</div>
+            <div class="cli-metric-val" style="color:${dd > 500 ? 'var(--red)' : 'var(--muted)'}">
+              ${dd === null ? '—' : '-R$' + dd.toLocaleString('pt-BR', {minimumFractionDigits:0})}
+            </div>
+          </div>
+        </div>
+        <div class="cli-footer">
+          <span style="font-size:12px; color:var(--muted);">
+            ${c.ultimo_upload ? 'Upload: ' + formatDate(c.ultimo_upload) : 'Sem upload ainda'}
+          </span>
+          <span style="font-size:12px; color:var(--blue); font-weight:600;">Ver perfil →</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterClientes() {
+    const q = document.getElementById('searchClientes').value.toLowerCase();
+    const cards = document.querySelectorAll('.cliente-card');
+    cards.forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(q) ? '' : 'none';
+    });
+  }
+
+  // ── ABRIR PERFIL ──
+  async function abrirPerfil(clienteId) {
+    clienteSelecionado = meusClientes.find(c => c.id === clienteId);
+    if (!clienteSelecionado) return;
+
+    showSection('perfil', null);
+    document.getElementById('sectionTitle').textContent = clienteSelecionado.full_name || clienteSelecionado.email;
+    document.getElementById('sectionSub').textContent   = 'Perfil detalhado do cliente';
+
+    const c = clienteSelecionado;
+    const cor = avatarColor(c.full_name || c.email);
+
+    document.getElementById('perfilAvatar').style.background = cor.bg;
+    document.getElementById('perfilAvatar').style.color      = cor.text;
+    document.getElementById('perfilAvatar').textContent      = initials(c.full_name || c.email);
+    document.getElementById('perfilNome').textContent        = c.full_name || '—';
+    document.getElementById('perfilEmail').textContent       = c.email;
+    document.getElementById('perfilConta').textContent       = c.conta_profit || '—';
+    document.getElementById('perfilUploadData').textContent  = c.ultimo_upload ? formatDate(c.ultimo_upload) : 'Nunca';
+
+    // Métricas
+    const m = c.metricas;
+    if (m) {
+      const pnl = m.pnl_reais ?? 0;
+      document.getElementById('pPnl').textContent       = (pnl >= 0 ? '+' : '') + 'R$' + Math.abs(pnl).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+      document.getElementById('pPnl').style.color       = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+      document.getElementById('pTrades').textContent    = (m.total_trades ?? 0) + ' operações';
+      document.getElementById('pAcerto').textContent    = m.taxa_acerto ? m.taxa_acerto.toFixed(1) + '%' : '—';
+      document.getElementById('pPayoff').textContent    = 'Payoff: ' + (m.payoff ? m.payoff.toFixed(2) : '—');
+      document.getElementById('pDD').textContent        = m.drawdown_max ? '-R$' + m.drawdown_max.toLocaleString('pt-BR', {minimumFractionDigits:2}) : '—';
+      document.getElementById('pFatorLucro').textContent= 'Fator lucro: ' + (m.fator_lucro ? m.fator_lucro.toFixed(2) : '—');
+      document.getElementById('pDias').textContent      = m.dias_operados ?? '—';
+      document.getElementById('pMelhorDia').textContent = m.melhor_dia ? 'Melhor dia: R$' + m.melhor_dia.toLocaleString('pt-BR', {minimumFractionDigits:2}) : 'Melhor dia: —';
+    } else {
+      ['pPnl','pAcerto','pDD','pDias'].forEach(id => document.getElementById(id).textContent = '—');
+      ['pTrades','pPayoff','pFatorLucro','pMelhorDia'].forEach(id => document.getElementById(id).textContent = '—');
+    }
+
+    // Trades
+    const { data: trades } = await sb.from('trades')
+      .select('*')
+      .eq('cliente_id', clienteId)
+      .order('fechamento', { ascending: false })
+      .limit(20);
+
+    const tbodyT = document.getElementById('tbodyTradesPerfil');
+    document.getElementById('perfilTotalTrades').textContent = trades?.length ? trades.length + ' mais recentes' : '';
+    if (!trades?.length) {
+      tbodyT.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma operação ainda.</td></tr>';
+    } else {
+      tbodyT.innerHTML = trades.map(t => `
+        <tr>
+          <td style="font-size:13px;">${formatDateTime(t.fechamento)}</td>
+          <td style="font-weight:600;">${esc(t.ativo)}</td>
+          <td>${t.lado === 'C' ? '<span class="badge badge-green">Compra</span>' : '<span class="badge badge-red">Venda</span>'}</td>
+          <td>${t.qtd_compra || t.qtd_venda || '—'}</td>
+          <td style="font-size:13px; color:var(--muted);">${formatDuracao(t.tempo_operacao_seg)}</td>
+          <td style="font-weight:700; color:${t.resultado_reais >= 0 ? 'var(--green)' : 'var(--red)'}">
+            ${t.resultado_reais >= 0 ? '+' : ''}R$${Math.abs(t.resultado_reais).toLocaleString('pt-BR',{minimumFractionDigits:2})}
+          </td>
+        </tr>`).join('');
+    }
+
+    // Comentários
+    await loadComentariosPerfil(clienteId);
+  }
+
+  async function loadComentariosPerfil(clienteId) {
+    const { data: coms } = await sb.from('comentarios')
+      .select('*')
+      .eq('cliente_id', clienteId)
+      .order('created_at', { ascending: false });
+
+    const lista = document.getElementById('comentariosList');
+    if (!coms?.length) {
+      lista.innerHTML = '<div class="empty">Nenhum comentário ainda. Deixe o primeiro feedback.</div>';
+      return;
+    }
+    lista.innerHTML = coms.map(c => `
+      <div class="comentario-item">
+        <div class="com-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="badge ${c.visibilidade === 'shared' ? 'badge-blue' : 'badge-yellow'}">${c.visibilidade === 'shared' ? 'Para o cliente' : 'Privado'}</span>
+            ${c.pinned ? '<span class="badge badge-green">📌 Fixado</span>' : ''}
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span class="com-meta">${formatDate(c.created_at)}</span>
+            <button class="btn-danger" onclick="deletarComentario('${c.id}')">Deletar</button>
+          </div>
+        </div>
+        <div class="com-texto">${esc(c.conteudo)}</div>
+      </div>`).join('');
+  }
+
+  async function enviarComentario() {
+    if (!clienteSelecionado) return;
+    const texto = document.getElementById('novoComentario').value.trim();
+    if (!texto) { showToast('Escreva um comentário antes de enviar.', 'error'); return; }
+
+    const { error } = await sb.from('comentarios').insert({
+      assessor_id:  currentUser.id,
+      cliente_id:   clienteSelecionado.id,
+      conteudo:     texto,
+      visibilidade: document.getElementById('comentarioVisib').value,
+    });
+
+    if (error) { showToast(error.message, 'error'); return; }
+
+    document.getElementById('novoComentario').value = '';
+    showToast('Feedback enviado!', 'success');
+    loadComentariosPerfil(clienteSelecionado.id);
+
+    // Notificação para o cliente
+    if (document.getElementById('comentarioVisib').value === 'shared') {
+      await sb.from('notificacoes').insert({
+        user_id:   clienteSelecionado.id,
+        tipo:      'novo_comentario',
+        titulo:    'Novo feedback do seu assessor',
+        mensagem:  texto.slice(0, 100) + (texto.length > 100 ? '...' : ''),
+        link:      '/dashboard',
+      });
+    }
+  }
+
+  async function deletarComentario(id) {
+    const { error } = await sb.from('comentarios').delete().eq('id', id);
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast('Comentário removido.', 'success');
+    loadComentariosPerfil(clienteSelecionado.id);
+  }
+
+  function voltarClientes() {
+    clienteSelecionado = null;
+    showSection('clientes', document.querySelectorAll('.nav-item')[1]);
+  }
+
+  // ── OVERVIEW ──
+  async function loadOverview() {
+    if (!meusClientes.length) return;
+    const ids = meusClientes.map(c => c.id);
+
+    // Alertas
+    const alertas = meusClientes.filter(c => c.metricas?.drawdown_max > 500);
+    const alertasEl = document.getElementById('alertasContainer');
+    if (!alertas.length) {
+      alertasEl.innerHTML = '<div class="empty">Nenhum cliente com alerta de drawdown este mês. ✓</div>';
+    } else {
+      alertasEl.innerHTML = alertas.map(c => `
+        <div class="notif-item" onclick="abrirPerfil('${c.id}')" style="cursor:pointer;">
+          <div class="notif-icon" style="background:rgba(239,68,68,.1);">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1.5 13h13L8 2z" stroke="#EF4444" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v3M8 11v.5" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="notif-titulo">${esc(c.full_name || c.email)}</div>
+            <div class="notif-msg">Drawdown máximo: -R$${(c.metricas.drawdown_max).toLocaleString('pt-BR',{minimumFractionDigits:2})} · P&L: ${c.metricas.pnl_reais >= 0 ? '+' : ''}R$${c.metricas.pnl_reais.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div>
+          </div>
+          <span class="badge badge-red" style="margin-left:auto; flex-shrink:0;">Ver perfil →</span>
+        </div>`).join('');
+    }
+
+    // Uploads recentes
+    const { data: uploads } = await sb.from('uploads')
+      .select('*, cliente:cliente_id(full_name, email)')
+      .in('cliente_id', ids)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    const tbody = document.getElementById('tbodyUploads');
+    if (!uploads?.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhum upload ainda.</td></tr>'; return; }
+    tbody.innerHTML = uploads.map(u => `
+      <tr>
+        <td style="font-weight:600; font-size:13px;">${esc(u.cliente?.full_name || u.cliente?.email || '—')}</td>
+        <td style="font-size:12px; color:var(--muted);">${esc(u.nome_arquivo)}</td>
+        <td>${u.total_trades}</td>
+        <td>${statusBadge(u.status)}</td>
+        <td style="font-size:12px; color:var(--muted);">${formatDate(u.created_at)}</td>
+        <td><button class="btn-sm" onclick="abrirPerfil('${u.cliente_id}')">Ver cliente</button></td>
+      </tr>`).join('');
+
+    // Comentários do mês
+    const mesAtual = new Date(); mesAtual.setDate(1); mesAtual.setHours(0,0,0,0);
+    const { count } = await sb.from('comentarios')
+      .select('id', { count: 'exact', head: true })
+      .eq('assessor_id', currentUser.id)
+      .gte('created_at', mesAtual.toISOString());
+    document.getElementById('kpiComentarios').textContent = count ?? 0;
+  }
+
+  // ── NOTIFICAÇÕES ──
+  async function loadNotificacoes() {
+    const { data } = await sb.from('notificacoes')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    const semLer = data?.filter(n => !n.lida).length || 0;
+    document.getElementById('notifDot').style.display = semLer > 0 ? 'block' : 'none';
+
+    const lista = document.getElementById('notifList');
+    if (!data?.length) { lista.innerHTML = '<div class="empty">Nenhuma notificação.</div>'; return; }
+    lista.innerHTML = data.map(n => `
+      <div class="notif-item${!n.lida ? ' nao-lida' : ''}" onclick="lerNotif('${n.id}', this)">
+        <div class="notif-icon" style="background:rgba(0,89,255,.1);">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5a5 5 0 00-5 5v2.5L1.5 11h13L13 9V6.5a5 5 0 00-5-5z" stroke="#0059FF" stroke-width="1.5"/><path d="M6 11v.5a2 2 0 004 0V11" stroke="#0059FF" stroke-width="1.5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div class="notif-titulo">${esc(n.titulo)}</div>
+          <div class="notif-msg">${esc(n.mensagem || '')}</div>
+          <div class="notif-time">${formatDate(n.created_at)}</div>
+        </div>
+        ${!n.lida ? '<div style="width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:4px;"></div>' : ''}
+      </div>`).join('');
+  }
+
+  async function lerNotif(id, el) {
+    await sb.from('notificacoes').update({ lida: true }).eq('id', id);
+    el.classList.remove('nao-lida');
+    el.querySelector('div[style*="border-radius:50%"]')?.remove();
+    document.getElementById('notifDot').style.display = 'none';
+  }
+
+  async function marcarTodasLidas() {
+    await sb.from('notificacoes').update({ lida: true }).eq('user_id', currentUser.id).eq('lida', false);
+    loadNotificacoes();
+    showToast('Todas as notificações foram marcadas como lidas.', 'success');
+  }
+
+  // ── NAVEGAÇÃO ──
+  const secMeta = {
+    overview:     { title: 'Visão Geral',      sub: 'Seus clientes este mês' },
+    clientes:     { title: 'Meus Clientes',    sub: 'Gerencie e acompanhe seus clientes' },
+    notificacoes: { title: 'Notificações',     sub: 'Alertas e atualizações' },
+  };
+
+  function showSection(name, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('sec-' + name)?.classList.add('active');
+    if (btn) btn.classList.add('active');
+    const meta = secMeta[name] || {};
+    document.getElementById('sectionTitle').textContent = meta.title || name;
+    document.getElementById('sectionSub').textContent   = meta.sub  || '';
+    // Mostra busca só na seção de clientes
+    document.getElementById('searchWrap').style.display = name === 'clientes' ? 'block' : 'none';
+  }
+
+  // ── LOGOUT ──
+  async function logout() {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  }
+
+  // ── HELPERS ──
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function initials(s) { const p = (s||'').split(' '); return (p[0]?.[0]||'') + (p[1]?.[0]||p[0]?.[1]||'').toUpperCase(); }
+  function formatDate(iso) { if(!iso) return '—'; return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+  function formatDateTime(iso) { if(!iso) return '—'; return new Date(iso).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+  function formatDuracao(seg) { if(!seg) return '—'; if(seg<60) return seg+'s'; if(seg<3600) return Math.floor(seg/60)+'min'; return Math.floor(seg/3600)+'h '+Math.floor((seg%3600)/60)+'min'; }
+  function statusBadge(s) { const m={done:['badge-green','Concluído'],processing:['badge-yellow','Processando'],error:['badge-red','Erro']}; const[c,l]=m[s]||['badge-gray',s]; return `<span class="badge ${c}">${l}</span>`; }
+  const COLORS = ['#0059FF','#8B5CF6','#22C55E','#F59E0B','#EF4444','#06B6D4','#EC4899'];
+  function avatarColor(name) {
+    const i = (name||'').charCodeAt(0) % COLORS.length;
+    return { bg: COLORS[i] + '22', text: COLORS[i] };
+  }
+  function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type==='success'?'✓  ':'✕  ') + msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(()=>t.classList.remove('show'),3000);
+  }
+
+  init();
+</script>
+</body>
+</html>
