@@ -260,79 +260,111 @@
 
         <!-- Dashboard content -->
         <div id="dash-content">
-          <!-- KPIs -->
-          <div class="kpi-grid">
-            <div class="kpi" id="kpi-pnl">
+
+          <!-- ── ROW 1: KPIs principais ── -->
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px;">
+            <div class="kpi" id="kpi-pnl" style="grid-column:span 1;">
               <div class="kpi-label">P&L Total</div>
-              <div class="kpi-value" id="v-pnl">—</div>
+              <div class="kpi-value" id="v-pnl" style="font-size:20px;">—</div>
               <div class="kpi-sub" id="sub-pnl">resultado líquido</div>
             </div>
             <div class="kpi">
+              <div class="kpi-label">Total de Ops</div>
+              <div class="kpi-value" id="stat-total" style="font-size:20px;">—</div>
+              <div class="kpi-sub" id="sub-stat-dias">— dias operados</div>
+            </div>
+            <div class="kpi">
               <div class="kpi-label">Taxa de Acerto</div>
-              <div class="kpi-value" id="v-wr">—</div>
+              <div class="kpi-value" id="v-wr" style="font-size:20px;">—</div>
               <div class="kpi-sub" id="sub-wr">—</div>
             </div>
             <div class="kpi">
-              <div class="kpi-label">Drawdown Máx.</div>
-              <div class="kpi-value" id="v-dd" style="color:var(--red)">—</div>
-              <div class="kpi-sub">maior sequência negativa</div>
+              <div class="kpi-label">Fator de Lucro</div>
+              <div class="kpi-value" id="v-pf" style="font-size:20px;">—</div>
+              <div class="kpi-sub" id="sub-pf">bruto G / bruto P</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Max Drawdown</div>
+              <div class="kpi-value" id="v-dd" style="color:var(--red);font-size:20px;">—</div>
+              <div class="kpi-sub">maior retração</div>
             </div>
             <div class="kpi">
               <div class="kpi-label">Payoff</div>
-              <div class="kpi-value" id="v-payoff">—</div>
+              <div class="kpi-value" id="v-payoff" style="font-size:20px;">—</div>
               <div class="kpi-sub" id="sub-payoff">ganho médio / perda média</div>
             </div>
-            <div class="kpi">
-              <div class="kpi-label">Fator de Lucro</div>
-              <div class="kpi-value" id="v-pf">—</div>
-              <div class="kpi-sub" id="sub-pf">bruto ganhos / bruto perdas</div>
+          </div>
+
+          <!-- ── ROW 2: Curva de Performance (full-width) ── -->
+          <div class="chart-card" style="margin-bottom:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <div>
+                <div class="chart-title">Curva de Performance</div>
+                <div class="chart-sub">Resultado acumulado ao longo do tempo</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Consistência</div>
+                <div style="font-size:18px;font-weight:800;" id="stat-consistencia">—</div>
+              </div>
+            </div>
+            <div class="chart-wrap" style="height:260px;">
+              <canvas id="chart-equity"></canvas>
             </div>
           </div>
 
-          <!-- Equity + Win Rate -->
-          <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
-            <div class="chart-card">
-              <div class="chart-title">Curva de Equity</div>
-              <div class="chart-sub">Resultado acumulado ao longo do tempo</div>
-              <div class="chart-wrap" style="height:220px;">
-                <canvas id="chart-equity"></canvas>
-              </div>
-            </div>
-            <div class="chart-card">
-              <div class="chart-title">Taxa de Acerto</div>
-              <div class="chart-sub">Ganhos vs perdas</div>
-              <div class="chart-wrap" style="height:180px;">
-                <canvas id="chart-donut"></canvas>
-              </div>
-              <div style="text-align:center;margin-top:6px;">
-                <span id="donut-pct" style="font-size:26px;font-weight:800;">—</span>
-                <span style="font-size:12px;color:var(--muted);margin-left:4px;">de acerto</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Daily PnL + Side -->
+          <!-- ── ROW 3: P&L por Dia | Compra vs Venda ── -->
           <div style="display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:14px;">
             <div class="chart-card">
               <div class="chart-title">P&L por Dia</div>
               <div class="chart-sub">Resultado diário em R$</div>
-              <div class="chart-wrap" style="height:200px;">
+              <div class="chart-wrap" style="height:220px;">
                 <canvas id="chart-daily"></canvas>
               </div>
             </div>
             <div class="chart-card">
               <div class="chart-title">Compra vs Venda</div>
               <div class="chart-sub">Performance por lado da operação</div>
-              <div class="chart-wrap" style="height:200px;">
+              <div class="chart-wrap" style="height:160px;">
                 <canvas id="chart-side"></canvas>
               </div>
+              <!-- mini-stats compra/venda -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;" id="cv-stats"></div>
             </div>
           </div>
 
-          <!-- Hourly Heatmap -->
+          <!-- ── ROW 4: Taxa de Acerto (donut) | Stats rápidos ── -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div class="chart-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div class="chart-title" style="text-align:center;width:100%;">Taxa de Acerto</div>
+              <div class="chart-wrap" style="height:130px;width:130px;">
+                <canvas id="chart-donut"></canvas>
+              </div>
+              <div style="text-align:center;margin-top:4px;">
+                <span id="donut-pct" style="font-size:22px;font-weight:800;">—</span>
+                <span style="font-size:11px;color:var(--muted);margin-left:3px;">acerto</span>
+              </div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Dias Operados</div>
+              <div class="kpi-value" id="stat-dias">—</div>
+              <div class="kpi-sub">dias com operações</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Média por Trade</div>
+              <div class="kpi-value" id="stat-avg">—</div>
+              <div class="kpi-sub">resultado médio</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Melhor Dia</div>
+              <div class="kpi-value" id="stat-best" style="color:var(--green)">—</div>
+              <div class="kpi-sub">maior P&L diário</div>
+            </div>
+          </div>
+
+          <!-- ── ROW 5: Heatmap ── -->
           <div class="chart-card" style="margin-bottom:14px;">
             <div class="chart-title">Heatmap por Horário</div>
-            <div class="chart-sub">Concentração de trades e resultado por hora do dia</div>
+            <div class="chart-sub">Concentração de trades e resultado por hora do pregão</div>
             <div class="heatmap-grid" id="heatmap-grid"></div>
             <div class="heatmap-labels" id="heatmap-labels"></div>
             <div style="display:flex;gap:16px;margin-top:12px;font-size:11px;color:var(--muted);">
@@ -343,41 +375,16 @@
             </div>
           </div>
 
-          <!-- Stats row -->
+          <!-- ── ROW 6: Extra KPIs (Streaks / Best-Worst) ── -->
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;">
             <div class="kpi">
-              <div class="kpi-label">Total de Trades</div>
-              <div class="kpi-value" id="stat-total">—</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-label">Dias Operados</div>
-              <div class="kpi-value" id="stat-dias">—</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-label">Média por Trade</div>
-              <div class="kpi-value" id="stat-avg">—</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-label">Melhor Dia</div>
-              <div class="kpi-value" id="stat-best" style="color:var(--green)">—</div>
-            </div>
-          </div>
-
-          <!-- Extra KPIs: Consistência, Streaks, Best/Worst trade -->
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:14px;">
-            <div class="kpi">
-              <div class="kpi-label">Consistência</div>
-              <div class="kpi-value" id="stat-consistencia">—</div>
-              <div class="kpi-sub">% dias positivos</div>
-            </div>
-            <div class="kpi">
               <div class="kpi-label">Melhor Trade</div>
-              <div class="kpi-value" id="stat-best-trade" style="color:var(--green)">—</div>
+              <div class="kpi-value" id="stat-best-trade" style="color:var(--green);font-size:18px;">—</div>
               <div class="kpi-sub" id="sub-best-trade">—</div>
             </div>
             <div class="kpi">
               <div class="kpi-label">Pior Trade</div>
-              <div class="kpi-value" id="stat-worst-trade" style="color:var(--red)">—</div>
+              <div class="kpi-value" id="stat-worst-trade" style="color:var(--red);font-size:18px;">—</div>
               <div class="kpi-sub" id="sub-worst-trade">—</div>
             </div>
             <div class="kpi">
@@ -1085,8 +1092,28 @@ function renderHeatmap(hourly) {
 function renderStatsRow(m) {
   document.getElementById('stat-total').textContent = m.totalTrades;
   document.getElementById('stat-dias').textContent  = m.dias;
+  const sdEl = document.getElementById('sub-stat-dias');
+  if (sdEl) sdEl.textContent = `${m.dias} dia${m.dias !== 1 ? 's' : ''} operado${m.dias !== 1 ? 's' : ''}`;
   set('stat-avg',  fmtR$(m.avgTrd), m.avgTrd >= 0 ? 'var(--green)' : 'var(--red)');
   set('stat-best', isFinite(m.bestDay) && m.dias > 0 ? fmtR$(m.bestDay) : '—', 'var(--green)');
+
+  // Mini-stats Compra vs Venda
+  const cvEl = document.getElementById('cv-stats');
+  if (cvEl) {
+    const cWr = (m.cWins + m.cLoss) > 0 ? (m.cWins / (m.cWins + m.cLoss) * 100).toFixed(0) : 0;
+    const vWr = (m.vWins + m.vLoss) > 0 ? (m.vWins / (m.vWins + m.vLoss) * 100).toFixed(0) : 0;
+    cvEl.innerHTML = `
+      <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:8px 10px;">
+        <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Compra</div>
+        <div style="font-size:15px;font-weight:800;color:${m.cPnl >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(m.cPnl)}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${m.cWins + m.cLoss} ops · ${cWr}% acerto</div>
+      </div>
+      <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:8px 10px;">
+        <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Venda</div>
+        <div style="font-size:15px;font-weight:800;color:${m.vPnl >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(m.vPnl)}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${m.vWins + m.vLoss} ops · ${vWr}% acerto</div>
+      </div>`;
+  }
 }
 
 /* ============================================================
