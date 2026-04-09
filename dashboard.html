@@ -7,21 +7,22 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
   <style>
     * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
     :root {
-      --blue:   #0059FF;
-      --bg:     #000000;
-      --card:   #0D0D0D;
-      --card-2: #141414;
-      --border: #1E1E1E;
-      --bord-2: #2A2A2A;
-      --text:   #FFFFFF;
-      --muted:  #888888;
-      --mut-2:  #444444;
+      --blue:   #2563FF;
+      --bg:     #07071A;
+      --card:   #0E0F22;
+      --card-2: #151629;
+      --border: rgba(255,255,255,0.08);
+      --bord-2: rgba(255,255,255,0.14);
+      --text:   #EEEEF8;
+      --muted:  #7878A0;
+      --mut-2:  #3C3C5A;
       --green:  #22C55E;
       --red:    #EF4444;
       --yellow: #F59E0B;
@@ -163,6 +164,87 @@
     ::-webkit-scrollbar-thumb { background: var(--bord-2); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--mut-2); }
 
+    /* KPI PNL DESTAQUE */
+    .kpi-pnl-pos { border-color: rgba(34,197,94,0.25) !important; background: linear-gradient(135deg, rgba(34,197,94,0.06), transparent) !important; }
+    .kpi-pnl-neg { border-color: rgba(239,68,68,0.25) !important; background: linear-gradient(135deg, rgba(239,68,68,0.06), transparent) !important; }
+
+    /* SHARE BUTTON */
+    .btn-share {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: linear-gradient(135deg, #1A3A6E, #0E1F4A);
+      color: #7FB3FF; font-size: 13px; font-weight: 600;
+      border: 1px solid rgba(100,160,255,0.25); border-radius: 8px;
+      padding: 8px 16px; cursor: pointer; transition: all .2s;
+    }
+    .btn-share:hover { background: linear-gradient(135deg,#234CAA,#152E6E); border-color: rgba(100,160,255,0.5); color:#A8CDFF; }
+
+    /* SHARE MODAL */
+    .share-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      display: none; align-items: center; justify-content: center;
+      z-index: 9000; backdrop-filter: blur(6px);
+    }
+    .share-overlay.open { display: flex; }
+    .share-modal-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      max-width: 580px; width: 100%; padding: 20px;
+    }
+    .share-modal-actions {
+      display: flex; gap: 10px;
+    }
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #22C55E; color: #000; font-weight: 700; font-size: 14px;
+      border: none; border-radius: 10px; padding: 12px 28px; cursor: pointer;
+      transition: opacity .15s, transform .15s;
+    }
+    .btn-download:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-share-close {
+      background: rgba(255,255,255,0.06); color: #888; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 12px 20px; cursor: pointer; font-size: 14px; font-weight: 500;
+    }
+    .btn-share-close:hover { background: rgba(255,255,255,0.1); color: #ccc; }
+
+    /* SHARE CARD */
+    #share-card {
+      width: 560px; height: 560px;
+      background: #07071A;
+      border-radius: 20px;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      padding: 36px;
+      font-family: 'Inter', sans-serif;
+    }
+    #share-card .sc-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    #share-card .sc-glow {
+      position: absolute; bottom: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 300px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    #share-card .sc-content { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+    #share-card .sc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    #share-card .sc-logo { font-size: 15px; font-weight: 900; letter-spacing: -.02em; color: #fff; }
+    #share-card .sc-period { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #44446A; }
+    #share-card .sc-hero { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    #share-card .sc-result-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #44446A; margin-bottom: 10px; }
+    #share-card .sc-pnl { font-size: 72px; font-weight: 900; line-height: 1; letter-spacing: -.04em; margin-bottom: 8px; }
+    #share-card .sc-return { font-size: 16px; font-weight: 600; margin-bottom: 24px; }
+    #share-card .sc-curve { height: 80px; margin-bottom: 24px; }
+    #share-card .sc-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 20px; }
+    #share-card .sc-stat-val { font-size: 20px; font-weight: 800; color: #fff; }
+    #share-card .sc-stat-lbl { font-size: 10px; font-weight: 600; color: #44446A; text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+    #share-card .sc-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+    #share-card .sc-trader { font-size: 13px; font-weight: 600; color: #55557A; }
+    #share-card .sc-brand { font-size: 11px; color: #33334A; }
+
     /* GUIDE CARD */
     .guide-step { background: var(--card-2); border-radius: 12px; padding: 18px; }
     .guide-num { font-size: 24px; margin-bottom: 10px; }
@@ -249,7 +331,12 @@
         <div class="topbar-title" id="topbar-title">Visão Geral</div>
         <div class="topbar-sub" id="topbar-sub">Análise de performance das suas operações</div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="btn-share" id="btn-share-top" onclick="openShareModal()" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Compartilhar resultado
+        </button>
+      </div>
     </div>
 
     <div class="content">
@@ -868,6 +955,77 @@
 
 <div class="toast-wrap" id="toast-wrap"></div>
 
+<!-- ==================== SHARE MODAL ==================== -->
+<div class="share-overlay" id="share-overlay" onclick="closeShareModal(event)">
+  <div class="share-modal-wrap">
+    <div style="width:100%;display:flex;align-items:center;justify-content:space-between;color:#555570;">
+      <span style="font-size:13px;font-weight:600;">Pré-visualização do card</span>
+      <span style="font-size:12px;color:#444455;">Clique fora para fechar</span>
+    </div>
+
+    <!-- O CARD (capturado pelo html2canvas) -->
+    <div id="share-card">
+      <div class="sc-grid"></div>
+      <div class="sc-glow" id="sc-glow"></div>
+      <div class="sc-content">
+        <div class="sc-top">
+          <div class="sc-logo">ZEVEHUB</div>
+          <div class="sc-period" id="sc-period">—</div>
+        </div>
+        <div class="sc-hero">
+          <div class="sc-result-label">Resultado acumulado</div>
+          <div class="sc-pnl" id="sc-pnl">—</div>
+          <div class="sc-return" id="sc-return">—</div>
+          <div class="sc-curve">
+            <svg id="sc-svg" viewBox="0 0 488 80" style="width:100%;height:80px;" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="scg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" id="scg-stop0"/>
+                  <stop offset="100%" id="scg-stop1"/>
+                </linearGradient>
+              </defs>
+              <path id="sc-area" fill="url(#scg)"/>
+              <path id="sc-line" fill="none" stroke-width="2" stroke-linecap="round"/>
+              <circle id="sc-dot" r="5"/>
+            </svg>
+          </div>
+        </div>
+        <div class="sc-stats">
+          <div>
+            <div class="sc-stat-val" id="sc-wr">—</div>
+            <div class="sc-stat-lbl">Win Rate</div>
+          </div>
+          <div>
+            <div class="sc-stat-val" id="sc-trades">—</div>
+            <div class="sc-stat-lbl">Trades</div>
+          </div>
+          <div>
+            <div class="sc-stat-val" id="sc-dias">—</div>
+            <div class="sc-stat-lbl">Dias op.</div>
+          </div>
+          <div>
+            <div class="sc-stat-val" id="sc-payoff">—</div>
+            <div class="sc-stat-lbl">Payoff</div>
+          </div>
+        </div>
+        <div class="sc-footer">
+          <div class="sc-trader" id="sc-trader">—</div>
+          <div class="sc-brand">app.zevehub.com</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="share-modal-actions">
+      <button class="btn-download" onclick="downloadShareCard()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Baixar imagem
+      </button>
+      <button class="btn-share-close" onclick="document.getElementById('share-overlay').classList.remove('open')">Fechar</button>
+    </div>
+    <p style="font-size:12px;color:#33334A;text-align:center;">Salve a imagem e compartilhe no Instagram ou WhatsApp</p>
+  </div>
+</div>
+
 <!-- ==================== SCRIPT ==================== -->
 <script>
 /* ============================================================
@@ -892,6 +1050,7 @@ let page        = 1;
 const PER_PAGE  = 50;
 let fAtivo      = '', fLado = '', fResult = '';
 let uploads     = [];
+let lastMetrics = null;
 
 /* ============================================================
    INIT
@@ -1097,12 +1256,14 @@ function renderDashboard() {
   try {
     console.log('[renderDashboard] calcMetrics...');
     const m = calcMetrics(filtered);
+    lastMetrics = m;
     console.log('[renderDashboard] pnl:', m.pnl, 'wr:', m.wr, 'total:', m.totalTrades);
     renderKPIs(m);
     console.log('[renderDashboard] KPIs ok');
     renderCharts(m);
     console.log('[renderDashboard] Charts ok');
     renderStatsRow(m);
+    document.getElementById('btn-share-top').style.display = 'inline-flex';
   } catch(err) {
     console.error('[renderDashboard] ERRO:', err.message, err.stack);
     toast('Erro ao renderizar: ' + err.message, 'error');
@@ -1193,7 +1354,8 @@ function fnum(v) { return parseFloat(v) || 0; }
 ============================================================ */
 function renderKPIs(m) {
   const pnlEl = document.getElementById('kpi-pnl');
-  pnlEl.style.borderColor = m.pnl >= 0 ? 'rgba(34,197,94,.25)' : 'rgba(239,68,68,.25)';
+  pnlEl.classList.remove('kpi-pnl-pos', 'kpi-pnl-neg');
+  pnlEl.classList.add(m.pnl >= 0 ? 'kpi-pnl-pos' : 'kpi-pnl-neg');
   set('v-pnl',    fmtR$(m.pnl), m.pnl >= 0 ? 'var(--green)' : 'var(--red)');
   set('sub-pnl',  `${m.totalTrades} operações · ${m.dias} dias`);
   set('v-wr',     fmtPct(m.wr), m.wr >= 50 ? 'var(--green)' : 'var(--yellow)');
@@ -3177,6 +3339,124 @@ function exportCSV(mode) {
   a.click();
   URL.revokeObjectURL(url);
   toast(`CSV exportado — ${trades.length} operações.`, 'success');
+}
+
+/* ============================================================
+   SHARE CARD
+============================================================ */
+function openShareModal() {
+  if (!lastMetrics) return;
+  const m   = lastMetrics;
+  const pos = m.pnl >= 0;
+  const accent = pos ? '#22C55E' : '#EF4444';
+
+  // Period label
+  const periodLabels = { '7d':'Últimos 7 dias', '30d':'Últimos 30 dias', '90d':'Últimos 90 dias',
+    'month':'Este mês', 'all':'Todo o período', 'custom':'Período personalizado' };
+  document.getElementById('sc-period').textContent = periodLabels[period] || 'Todo o período';
+
+  // P&L
+  const pnlEl = document.getElementById('sc-pnl');
+  pnlEl.textContent = fmtR$(m.pnl);
+  pnlEl.style.color = accent;
+
+  // Return / win rate line
+  document.getElementById('sc-return').innerHTML =
+    `<span style="color:${accent};font-weight:700;">${fmtPct(m.wr)}</span> de acerto &nbsp;·&nbsp; ${m.totalTrades} operações`;
+  document.getElementById('sc-return').style.color = '#55557A';
+
+  // Stats
+  document.getElementById('sc-wr').textContent     = fmtPct(m.wr);
+  document.getElementById('sc-wr').style.color      = pos ? '#22C55E' : '#EF4444';
+  document.getElementById('sc-trades').textContent  = m.totalTrades;
+  document.getElementById('sc-dias').textContent    = m.dias;
+  document.getElementById('sc-payoff').textContent  = m.payoff.toFixed(2) + 'x';
+  document.getElementById('sc-payoff').style.color  = m.payoff >= 1 ? '#22C55E' : '#EF4444';
+
+  // Trader name
+  document.getElementById('sc-trader').textContent =
+    profile?.full_name ? '@' + profile.full_name.split(' ')[0].toLowerCase() : '';
+
+  // Glow color
+  const glow = document.getElementById('sc-glow');
+  glow.style.background = pos
+    ? 'radial-gradient(ellipse, rgba(34,197,94,0.12) 0%, transparent 70%)'
+    : 'radial-gradient(ellipse, rgba(239,68,68,0.10) 0%, transparent 70%)';
+
+  // Equity SVG mini-curve
+  _drawShareCurve(m.equity, pos ? '#22C55E' : '#EF4444');
+
+  document.getElementById('share-overlay').classList.add('open');
+}
+
+function _drawShareCurve(equity, color) {
+  if (!equity || equity.length < 2) return;
+  const vals = equity.map(p => p.y);
+  const W = 488, H = 80, pad = 6;
+  const minV = Math.min(...vals);
+  const maxV = Math.max(...vals);
+  const range = maxV - minV || 1;
+  const xs = vals.map((_, i) => (i / (vals.length - 1)) * W);
+  const ys = vals.map(v => pad + (1 - (v - minV) / range) * (H - pad * 2));
+
+  // Smooth line using cubic bezier
+  let linePath = `M ${xs[0]} ${ys[0]}`;
+  for (let i = 1; i < xs.length; i++) {
+    const cpx = (xs[i - 1] + xs[i]) / 2;
+    linePath += ` C ${cpx} ${ys[i-1]}, ${cpx} ${ys[i]}, ${xs[i]} ${ys[i]}`;
+  }
+  const areaPath = linePath + ` L ${xs[xs.length-1]} ${H} L ${xs[0]} ${H} Z`;
+
+  document.getElementById('sc-line').setAttribute('d', linePath);
+  document.getElementById('sc-line').setAttribute('stroke', color);
+  document.getElementById('sc-area').setAttribute('d', areaPath);
+
+  const stop0 = document.getElementById('scg-stop0');
+  const stop1 = document.getElementById('scg-stop1');
+  stop0.setAttribute('stop-color', color);
+  stop0.setAttribute('stop-opacity', '0.18');
+  stop1.setAttribute('stop-color', color);
+  stop1.setAttribute('stop-opacity', '0');
+
+  // End dot
+  const lastX = xs[xs.length - 1];
+  const lastY = ys[ys.length - 1];
+  const dot = document.getElementById('sc-dot');
+  dot.setAttribute('cx', lastX);
+  dot.setAttribute('cy', lastY);
+  dot.setAttribute('fill', color);
+}
+
+function closeShareModal(event) {
+  if (event.target === document.getElementById('share-overlay')) {
+    document.getElementById('share-overlay').classList.remove('open');
+  }
+}
+
+async function downloadShareCard() {
+  const card = document.getElementById('share-card');
+  const btn  = document.querySelector('.btn-download');
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '…';
+
+  try {
+    const canvas = await html2canvas(card, {
+      scale: 2, useCORS: true, backgroundColor: '#07071A',
+      logging: false, width: 560, height: 560,
+    });
+    const link = document.createElement('a');
+    link.download = `resultado_zevehub_${new Date().toISOString().split('T')[0]}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast('Imagem salva com sucesso!', 'success');
+  } catch (e) {
+    toast('Erro ao gerar imagem.', 'error');
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = orig;
+  }
 }
 </script>
 </body>
