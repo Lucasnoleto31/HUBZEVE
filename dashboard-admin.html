@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — ZeveHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
+  <style>
+    * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+    :root {
+      --blue:    #0059FF;
+      --bg:      #000000;
+      --card:    #0D0D0D;
+      --card-2:  #141414;
+      --border:  #1E1E1E;
+      --border-2:#2A2A2A;
+      --text:    #FFFFFF;
+      --muted:   #888888;
+      --muted-2: #444444;
+      --green:   #22C55E;
+      --red:     #EF4444;
+      --yellow:  #F59E0B;
+      --sidebar: 240px;
+    }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); }
+
+    /* ── LAYOUT ── */
+    .layout { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar);
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+    .sidebar-logo { padding: 24px 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo img { height: 28px; width: auto; }
+    .sidebar-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: var(--blue); background: rgba(0,89,255,0.1); border: 1px solid rgba(0,89,255,0.2); border-radius: 4px; padding: 2px 6px; margin-top: 6px; display: inline-block; }
+
+    .sidebar-section { padding: 16px 12px 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--muted-2); text-transform: uppercase; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; margin: 2px 8px;
+      border-radius: 8px; cursor: pointer;
+      font-size: 14px; font-weight: 500; color: var(--muted);
+      transition: all 0.15s; border: none; background: none; width: calc(100% - 16px); text-align: left;
+    }
+    .nav-item:hover { background: var(--card-2); color: var(--text); }
+    .nav-item.active { background: rgba(0,89,255,0.1); color: var(--blue); }
+    .nav-item svg { flex-shrink: 0; }
+
+    .sidebar-footer { margin-top: auto; padding: 16px; border-top: 1px solid var(--border); }
+    .user-chip { display: flex; align-items: center; gap: 10px; }
+    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(0,89,255,0.2); color: var(--blue); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .btn-logout { font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.15s; }
+    .btn-logout:hover { color: var(--red); }
+
+    /* ── MAIN ── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    .topbar {
+      padding: 16px 28px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--card); flex-shrink: 0;
+    }
+    .topbar-title { font-size: 18px; font-weight: 800; }
+    .topbar-sub   { font-size: 13px; color: var(--muted); margin-top: 1px; }
+
+    .content { flex: 1; overflow-y: auto; padding: 28px; }
+
+    /* ── SEÇÕES ── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── CARDS KPI ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .kpi-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px;
+    }
+    .kpi-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .kpi-value { font-size: 28px; font-weight: 800; }
+    .kpi-delta { font-size: 12px; margin-top: 4px; }
+
+    /* ── TABELA ── */
+    .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .table-header h3 { font-size: 15px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 12px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 14px 20px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--card-2); }
+
+    /* ── BADGES ── */
+    .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; }
+    .badge-blue   { background: rgba(0,89,255,0.1);   color: #4D94FF; border: 1px solid rgba(0,89,255,0.2); }
+    .badge-green  { background: rgba(34,197,94,0.1);  color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
+    .badge-yellow { background: rgba(245,158,11,0.1); color: #F59E0B; border: 1px solid rgba(245,158,11,0.2); }
+    .badge-red    { background: rgba(239,68,68,0.1);  color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
+    .badge-gray   { background: rgba(136,136,136,0.1);color: var(--muted); border: 1px solid var(--border-2); }
+
+    /* ── BOTÕES ── */
+    .btn-primary { background: var(--blue); color: #fff; font-weight: 600; font-size: 13px; border: none; border-radius: 8px; padding: 9px 16px; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary:hover { background: #0047CC; }
+    .btn-ghost  { background: var(--card-2); color: var(--muted); font-weight: 600; font-size: 13px; border: 1px solid var(--border-2); border-radius: 8px; padding: 9px 16px; cursor: pointer; transition: all 0.15s; }
+    .btn-ghost:hover  { color: var(--text); border-color: var(--muted); }
+    .btn-danger { background: rgba(239,68,68,0.1); color: var(--red); font-size: 12px; font-weight: 600; border: 1px solid rgba(239,68,68,0.2); border-radius: 6px; padding: 6px 12px; cursor: pointer; transition: all 0.15s; }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+    .btn-sm { background: var(--card-2); color: var(--muted); font-size: 12px; font-weight: 600; border: 1px solid var(--border-2); border-radius: 6px; padding: 6px 12px; cursor: pointer; transition: all 0.15s; }
+    .btn-sm:hover { color: var(--text); border-color: var(--muted); }
+
+    /* ── INPUT ── */
+    .input { background: var(--card-2); border: 1px solid var(--border-2); border-radius: 8px; color: var(--text); font-size: 14px; padding: 10px 14px; outline: none; transition: border-color 0.15s; width: 100%; }
+    .input:focus { border-color: var(--blue); }
+    .input::placeholder { color: var(--muted-2); }
+    .select { background: var(--card-2); border: 1px solid var(--border-2); border-radius: 8px; color: var(--text); font-size: 14px; padding: 10px 14px; outline: none; cursor: pointer; }
+    .select:focus { border-color: var(--blue); }
+    label { font-size: 13px; font-weight: 600; color: #CCC; display: block; margin-bottom: 6px; }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--card); border: 1px solid var(--border-2); border-radius: 16px; padding: 28px; width: 100%; max-width: 460px; }
+    .modal h2 { font-size: 18px; font-weight: 800; margin-bottom: 20px; }
+    .form-row { margin-bottom: 16px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 200;
+      background: var(--card-2); border: 1px solid var(--border-2);
+      border-radius: 10px; padding: 14px 18px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500;
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s; pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: rgba(34,197,94,0.3); }
+    .toast.error   { border-color: rgba(239,68,68,0.3); }
+
+    /* ── SEARCH ── */
+    .search-wrap { position: relative; }
+    .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+    .search-wrap .input { padding-left: 36px; }
+
+    /* ── SKELETON ── */
+    .skel { background: linear-gradient(90deg, var(--border) 25%, var(--border-2) 50%, var(--border) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
+    .empty svg { margin: 0 auto 12px; opacity: 0.3; }
+
+    /* ── TABS INTERNAS ── */
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content; }
+    .tab { font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 7px; cursor: pointer; color: var(--muted); border: none; background: none; transition: all 0.15s; }
+    .tab.active { background: var(--blue); color: #fff; }
+
+    @media (max-width: 900px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .sidebar { width: 60px; }
+      .sidebar-logo img, .nav-item span, .sidebar-section, .sidebar-footer .user-chip div { display: none; }
+      .nav-item { justify-content: center; padding: 12px; margin: 2px 4px; width: calc(100% - 8px); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ═══════════ SIDEBAR ═══════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="zeve logo completo.svg" alt="ZeveHub" />
+      <div class="sidebar-badge">ADMIN</div>
+    </div>
+
+    <div class="sidebar-section">Principal</div>
+
+    <button class="nav-item active" onclick="showSection('overview', this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span>Visão Geral</span>
+    </button>
+
+    <div class="sidebar-section">Gestão</div>
+
+    <button class="nav-item" onclick="showSection('usuarios', this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M2 13c0-3.3 2.7-5 6-5s6 1.7 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>Usuários</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('vinculos', this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 8a2 2 0 100-4 2 2 0 000 4zM6 10a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.5"/><path d="M7.9 8.3l.2.4M8.1 7.7l.2-.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>Vínculos</span>
+    </button>
+
+    <button class="nav-item" onclick="showSection('uploads', this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 10V3M5 6l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>Uploads</span>
+    </button>
+
+    <div class="sidebar-section">Sistema</div>
+
+    <button class="nav-item" onclick="showSection('planos', this)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 8h6M5 11h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>Planos</span>
+    </button>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar" id="userInitials">?</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="userName">Carregando...</div>
+          <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════ MAIN ═══════════ -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="sectionTitle">Visão Geral</div>
+        <div class="topbar-sub" id="sectionSub">Resumo da plataforma</div>
+      </div>
+      <div style="display:flex; gap:10px;" id="topbarActions">
+        <button class="btn-primary" onclick="openModal('modalUsuario')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Novo Usuário
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- ══ SEÇÃO: VISÃO GERAL ══ -->
+      <div class="section active" id="sec-overview">
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Total de Clientes</div>
+            <div class="kpi-value" id="kpiClientes"><div class="skel" style="width:60px;height:36px;"></div></div>
+            <div class="kpi-delta" style="color:var(--muted);">usuários com role cliente</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Assessores</div>
+            <div class="kpi-value" id="kpiAssessores"><div class="skel" style="width:40px;height:36px;"></div></div>
+            <div class="kpi-delta" style="color:var(--muted);">usuários com role assessor</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total de Uploads</div>
+            <div class="kpi-value" id="kpiUploads"><div class="skel" style="width:50px;height:36px;"></div></div>
+            <div class="kpi-delta" style="color:var(--muted);">CSVs processados</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total de Operações</div>
+            <div class="kpi-value" id="kpiTrades"><div class="skel" style="width:70px;height:36px;"></div></div>
+            <div class="kpi-delta" style="color:var(--muted);">trades na plataforma</div>
+          </div>
+        </div>
+
+        <!-- Últimos usuários -->
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Últimos usuários cadastrados</h3>
+            <button class="btn-ghost" onclick="showSection('usuarios', document.querySelector('.nav-item:nth-child(5)'))">Ver todos</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>Role</th>
+                <th>Plano</th>
+                <th>Cadastro</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyRecentes">
+              <tr><td colspan="5"><div class="skel" style="height:40px; margin:4px 0;"></div></td></tr>
+              <tr><td colspan="5"><div class="skel" style="height:40px; margin:4px 0;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- ══ SEÇÃO: USUÁRIOS ══ -->
+      <div class="section" id="sec-usuarios">
+
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+          <div class="search-wrap" style="flex:1; max-width:320px;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="color:var(--muted)"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input class="input" type="text" placeholder="Buscar por nome ou e-mail..." id="searchUsuarios" oninput="filterUsuarios()" />
+          </div>
+          <select class="select" id="filterRole" onchange="filterUsuarios()">
+            <option value="">Todos os roles</option>
+            <option value="cliente">Cliente</option>
+            <option value="assessor">Assessor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Todos os Usuários</h3>
+            <span id="usuariosCount" style="font-size:13px; color:var(--muted);"></span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>Role</th>
+                <th>Conta Profit</th>
+                <th>Cadastro</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyUsuarios">
+              <tr><td colspan="6" class="empty">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- ══ SEÇÃO: VÍNCULOS ══ -->
+      <div class="section" id="sec-vinculos">
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+
+          <!-- Criar vínculo -->
+          <div class="table-wrap" style="padding:24px;">
+            <h3 style="font-size:15px; font-weight:700; margin-bottom:20px;">Vincular Cliente a Assessor</h3>
+            <div class="form-row">
+              <label>Assessor</label>
+              <select class="select" id="vinculoAssessor" style="width:100%;">
+                <option value="">Selecione um assessor...</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Cliente</label>
+              <select class="select" id="vinculoCliente" style="width:100%;">
+                <option value="">Selecione um cliente...</option>
+              </select>
+            </div>
+            <button class="btn-primary" style="width:100%; justify-content:center; margin-top:8px;" onclick="criarVinculo()">
+              Criar Vínculo
+            </button>
+          </div>
+
+          <!-- Lista de vínculos -->
+          <div class="table-wrap">
+            <div class="table-header"><h3>Vínculos Ativos</h3></div>
+            <table>
+              <thead>
+                <tr><th>Assessor</th><th>Cliente</th><th>Ação</th></tr>
+              </thead>
+              <tbody id="tbodyVinculos">
+                <tr><td colspan="3" class="empty">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ══ SEÇÃO: UPLOADS ══ -->
+      <div class="section" id="sec-uploads">
+        <div class="table-wrap">
+          <div class="table-header"><h3>Todos os Uploads</h3></div>
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Arquivo</th>
+                <th>Período</th>
+                <th>Trades</th>
+                <th>Status</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyUploads">
+              <tr><td colspan="6" class="empty">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ SEÇÃO: PLANOS ══ -->
+      <div class="section" id="sec-planos">
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>Planos</h3>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Nome</th><th>Descrição</th><th>Max Uploads/mês</th><th>Status</th></tr>
+            </thead>
+            <tbody id="tbodyPlanos">
+              <tr><td colspan="4" class="empty">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════ MODAL: NOVO USUÁRIO ═══════════ -->
+<div class="modal-overlay" id="modalUsuario">
+  <div class="modal">
+    <h2>Novo Usuário</h2>
+    <div class="form-row">
+      <label>Nome completo</label>
+      <input class="input" type="text" id="newName" placeholder="João da Silva" />
+    </div>
+    <div class="form-row">
+      <label>E-mail</label>
+      <input class="input" type="email" id="newEmail" placeholder="joao@email.com" />
+    </div>
+    <div class="form-row">
+      <label>Senha</label>
+      <input class="input" type="password" id="newPassword" placeholder="Mínimo 6 caracteres" />
+    </div>
+    <div class="form-row">
+      <label>Role</label>
+      <select class="select" id="newRole" style="width:100%;">
+        <option value="cliente">Cliente</option>
+        <option value="assessor">Assessor</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Conta Profit (opcional)</label>
+      <input class="input" type="text" id="newContaProfit" placeholder="Ex: 2345745" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('modalUsuario')">Cancelar</button>
+      <button class="btn-primary" onclick="criarUsuario()">Criar Usuário</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODAL: EDITAR ROLE ═══════════ -->
+<div class="modal-overlay" id="modalEditRole">
+  <div class="modal">
+    <h2>Editar Usuário</h2>
+    <input type="hidden" id="editUserId" />
+    <div class="form-row">
+      <label>Nome</label>
+      <input class="input" type="text" id="editName" />
+    </div>
+    <div class="form-row">
+      <label>Role</label>
+      <select class="select" id="editRole" style="width:100%;">
+        <option value="cliente">Cliente</option>
+        <option value="assessor">Assessor</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Conta Profit</label>
+      <input class="input" type="text" id="editContaProfit" />
+    </div>
+    <div class="form-row">
+      <label>Status</label>
+      <select class="select" id="editAtivo" style="width:100%;">
+        <option value="true">Ativo</option>
+        <option value="false">Inativo</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('modalEditRole')">Cancelar</button>
+      <button class="btn-primary" onclick="salvarEdicao()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+
+<script>
+  const { createClient } = supabase;
+  const sb = createClient(
+    'https://bwrcznmovaigpfmezzrw.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3cmN6bm1vdmFpZ3BmbWV6enJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTA5NzMsImV4cCI6MjA5MTMyNjk3M30.tn12u4ZWnrVc-YlGaP6W6cIhbfBViKLPlKT0FhqmH8U'
+  );
+
+  let allUsers = [];
+  let currentUser = null;
+
+  // ── INIT ──
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+
+    // Verifica se é admin
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+    if (!profile || profile.role !== 'admin') { window.location.href = 'login.html'; return; }
+
+    currentUser = profile;
+    document.getElementById('userName').textContent = profile.full_name || profile.email;
+    document.getElementById('userInitials').textContent = (profile.full_name || profile.email).slice(0,2).toUpperCase();
+
+    loadOverview();
+    loadUsuarios();
+    loadVinculos();
+    loadUploads();
+    loadPlanos();
+  }
+
+  // ── OVERVIEW ──
+  async function loadOverview() {
+    const [clientes, assessores, uploads, trades] = await Promise.all([
+      sb.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'cliente'),
+      sb.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'assessor'),
+      sb.from('uploads').select('id', { count: 'exact', head: true }),
+      sb.from('trades').select('id', { count: 'exact', head: true }),
+    ]);
+
+    document.getElementById('kpiClientes').textContent   = clientes.count ?? 0;
+    document.getElementById('kpiAssessores').textContent = assessores.count ?? 0;
+    document.getElementById('kpiUploads').textContent    = uploads.count ?? 0;
+    document.getElementById('kpiTrades').textContent     = (trades.count ?? 0).toLocaleString('pt-BR');
+
+    // Últimos usuários
+    const { data: recentes } = await sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(5);
+    renderTbodyRecentes(recentes || []);
+  }
+
+  function renderTbodyRecentes(users) {
+    const tbody = document.getElementById('tbodyRecentes');
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">Nenhum usuário.</td></tr>'; return; }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>
+          <div style="font-weight:600;">${esc(u.full_name || '—')}</div>
+          <div style="font-size:12px; color:var(--muted);">${esc(u.email)}</div>
+        </td>
+        <td>${roleBadge(u.role)}</td>
+        <td><span class="badge badge-gray">Conveniado</span></td>
+        <td style="color:var(--muted); font-size:13px;">${formatDate(u.created_at)}</td>
+        <td>${u.ativo ? '<span class="badge badge-green">Ativo</span>' : '<span class="badge badge-red">Inativo</span>'}</td>
+      </tr>`).join('');
+  }
+
+  // ── USUÁRIOS ──
+  async function loadUsuarios() {
+    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+    allUsers = data || [];
+    renderUsuarios(allUsers);
+  }
+
+  function renderUsuarios(users) {
+    const tbody = document.getElementById('tbodyUsuarios');
+    document.getElementById('usuariosCount').textContent = `${users.length} usuário(s)`;
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhum usuário encontrado.</td></tr>'; return; }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>
+          <div style="font-weight:600;">${esc(u.full_name || '—')}</div>
+          <div style="font-size:12px; color:var(--muted);">${esc(u.email)}</div>
+        </td>
+        <td>${roleBadge(u.role)}</td>
+        <td style="font-size:13px; color:var(--muted);">${esc(u.conta_profit || '—')}</td>
+        <td style="font-size:13px; color:var(--muted);">${formatDate(u.created_at)}</td>
+        <td>${u.ativo ? '<span class="badge badge-green">Ativo</span>' : '<span class="badge badge-red">Inativo</span>'}</td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-sm" onclick='openEditModal(${JSON.stringify(u)})'>Editar</button>
+            <button class="btn-danger" onclick="toggleAtivo('${u.id}', ${u.ativo})">${u.ativo ? 'Desativar' : 'Ativar'}</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  function filterUsuarios() {
+    const q    = document.getElementById('searchUsuarios').value.toLowerCase();
+    const role = document.getElementById('filterRole').value;
+    const filtered = allUsers.filter(u => {
+      const matchQ    = !q || u.full_name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q);
+      const matchRole = !role || u.role === role;
+      return matchQ && matchRole;
+    });
+    renderUsuarios(filtered);
+  }
+
+  // ── CRIAR USUÁRIO ──
+  async function criarUsuario() {
+    const name     = document.getElementById('newName').value.trim();
+    const email    = document.getElementById('newEmail').value.trim();
+    const password = document.getElementById('newPassword').value;
+    const role     = document.getElementById('newRole').value;
+    const conta    = document.getElementById('newContaProfit').value.trim();
+
+    if (!name || !email || !password) { showToast('Preencha todos os campos obrigatórios.', 'error'); return; }
+    if (password.length < 6) { showToast('Senha deve ter no mínimo 6 caracteres.', 'error'); return; }
+
+    // Cria o usuário via auth admin (necessita service role — aqui usamos a anon key via signUp)
+    const { data, error } = await sb.auth.signUp({
+      email, password,
+      options: { data: { full_name: name, role } }
+    });
+
+    if (error) { showToast(error.message, 'error'); return; }
+
+    // Atualiza profile com role e conta_profit corretos
+    if (data.user) {
+      await sb.from('profiles').upsert({
+        id: data.user.id,
+        full_name: name,
+        email,
+        role,
+        conta_profit: conta || null,
+      });
+    }
+
+    showToast('Usuário criado com sucesso!', 'success');
+    closeModal('modalUsuario');
+    document.getElementById('newName').value = '';
+    document.getElementById('newEmail').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('newContaProfit').value = '';
+    loadUsuarios();
+    loadOverview();
+  }
+
+  // ── EDITAR USUÁRIO ──
+  function openEditModal(u) {
+    document.getElementById('editUserId').value      = u.id;
+    document.getElementById('editName').value        = u.full_name || '';
+    document.getElementById('editRole').value        = u.role;
+    document.getElementById('editContaProfit').value = u.conta_profit || '';
+    document.getElementById('editAtivo').value       = String(u.ativo);
+    openModal('modalEditRole');
+  }
+
+  async function salvarEdicao() {
+    const id    = document.getElementById('editUserId').value;
+    const name  = document.getElementById('editName').value.trim();
+    const role  = document.getElementById('editRole').value;
+    const conta = document.getElementById('editContaProfit').value.trim();
+    const ativo = document.getElementById('editAtivo').value === 'true';
+
+    const { error } = await sb.from('profiles').update({
+      full_name: name, role, conta_profit: conta || null, ativo
+    }).eq('id', id);
+
+    if (error) { showToast(error.message, 'error'); return; }
+
+    showToast('Usuário atualizado!', 'success');
+    closeModal('modalEditRole');
+    loadUsuarios();
+    loadOverview();
+  }
+
+  async function toggleAtivo(id, ativo) {
+    const { error } = await sb.from('profiles').update({ ativo: !ativo }).eq('id', id);
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast(ativo ? 'Usuário desativado.' : 'Usuário ativado!', 'success');
+    loadUsuarios();
+  }
+
+  // ── VÍNCULOS ──
+  async function loadVinculos() {
+    const [{ data: vinculos }, { data: assessores }, { data: clientes }] = await Promise.all([
+      sb.from('assessor_cliente').select('*, assessor:assessor_id(full_name, email), cliente:cliente_id(full_name, email)').eq('ativo', true),
+      sb.from('profiles').select('id, full_name, email').eq('role', 'assessor').eq('ativo', true),
+      sb.from('profiles').select('id, full_name, email').eq('role', 'cliente').eq('ativo', true),
+    ]);
+
+    // Preenche selects
+    const selA = document.getElementById('vinculoAssessor');
+    const selC = document.getElementById('vinculoCliente');
+    selA.innerHTML = '<option value="">Selecione um assessor...</option>' +
+      (assessores || []).map(a => `<option value="${a.id}">${esc(a.full_name || a.email)}</option>`).join('');
+    selC.innerHTML = '<option value="">Selecione um cliente...</option>' +
+      (clientes || []).map(c => `<option value="${c.id}">${esc(c.full_name || c.email)}</option>`).join('');
+
+    // Renderiza tabela
+    const tbody = document.getElementById('tbodyVinculos');
+    if (!vinculos?.length) { tbody.innerHTML = '<tr><td colspan="3" class="empty">Nenhum vínculo.</td></tr>'; return; }
+    tbody.innerHTML = vinculos.map(v => `
+      <tr>
+        <td style="font-size:13px;">${esc(v.assessor?.full_name || v.assessor?.email || '—')}</td>
+        <td style="font-size:13px;">${esc(v.cliente?.full_name  || v.cliente?.email  || '—')}</td>
+        <td><button class="btn-danger" onclick="removerVinculo('${v.id}')">Remover</button></td>
+      </tr>`).join('');
+  }
+
+  async function criarVinculo() {
+    const aid = document.getElementById('vinculoAssessor').value;
+    const cid = document.getElementById('vinculoCliente').value;
+    if (!aid || !cid) { showToast('Selecione assessor e cliente.', 'error'); return; }
+
+    const { error } = await sb.from('assessor_cliente').upsert(
+      { assessor_id: aid, cliente_id: cid, ativo: true },
+      { onConflict: 'assessor_id,cliente_id' }
+    );
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast('Vínculo criado!', 'success');
+    loadVinculos();
+  }
+
+  async function removerVinculo(id) {
+    const { error } = await sb.from('assessor_cliente').update({ ativo: false }).eq('id', id);
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast('Vínculo removido.', 'success');
+    loadVinculos();
+  }
+
+  // ── UPLOADS ──
+  async function loadUploads() {
+    const { data } = await sb.from('uploads')
+      .select('*, cliente:cliente_id(full_name, email)')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    const tbody = document.getElementById('tbodyUploads');
+    if (!data?.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhum upload.</td></tr>'; return; }
+    tbody.innerHTML = data.map(u => `
+      <tr>
+        <td style="font-size:13px;">${esc(u.cliente?.full_name || u.cliente?.email || '—')}</td>
+        <td style="font-size:12px; color:var(--muted);">${esc(u.nome_arquivo)}</td>
+        <td style="font-size:12px; color:var(--muted);">${u.periodo_inicio ? formatDateShort(u.periodo_inicio) + ' – ' + formatDateShort(u.periodo_fim) : '—'}</td>
+        <td>${u.total_trades}</td>
+        <td>${statusBadge(u.status)}</td>
+        <td style="font-size:12px; color:var(--muted);">${formatDate(u.created_at)}</td>
+      </tr>`).join('');
+  }
+
+  // ── PLANOS ──
+  async function loadPlanos() {
+    const { data } = await sb.from('planos').select('*').order('created_at');
+    const tbody = document.getElementById('tbodyPlanos');
+    if (!data?.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty">Nenhum plano.</td></tr>'; return; }
+    tbody.innerHTML = data.map(p => `
+      <tr>
+        <td style="font-weight:600;">${esc(p.nome)}</td>
+        <td style="font-size:13px; color:var(--muted);">${esc(p.descricao || '—')}</td>
+        <td>${p.max_uploads_mes}</td>
+        <td>${p.ativo ? '<span class="badge badge-green">Ativo</span>' : '<span class="badge badge-red">Inativo</span>'}</td>
+      </tr>`).join('');
+  }
+
+  // ── NAVEGAÇÃO ──
+  const sectionMeta = {
+    overview:  { title: 'Visão Geral',   sub: 'Resumo da plataforma' },
+    usuarios:  { title: 'Usuários',      sub: 'Gerencie todos os usuários da plataforma' },
+    vinculos:  { title: 'Vínculos',      sub: 'Vincule clientes aos seus assessores' },
+    uploads:   { title: 'Uploads',       sub: 'Histórico de CSVs enviados' },
+    planos:    { title: 'Planos',        sub: 'Planos de acesso disponíveis' },
+  };
+
+  function showSection(name, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('sec-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+    const meta = sectionMeta[name] || {};
+    document.getElementById('sectionTitle').textContent = meta.title || name;
+    document.getElementById('sectionSub').textContent   = meta.sub || '';
+  }
+
+  // ── MODAL ──
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+  });
+
+  // ── TOAST ──
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = type === 'success' ? '✓  ' + msg : '✕  ' + msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── LOGOUT ──
+  async function logout() {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  }
+
+  // ── HELPERS ──
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function formatDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
+  }
+  function formatDateShort(iso) {
+    if (!iso) return '—';
+    return new Date(iso + 'T00:00:00').toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' });
+  }
+  function roleBadge(role) {
+    const map = { admin: 'badge-blue', assessor: 'badge-yellow', cliente: 'badge-green' };
+    return `<span class="badge ${map[role] || 'badge-gray'}">${role}</span>`;
+  }
+  function statusBadge(s) {
+    const map = { done: ['badge-green','Concluído'], processing: ['badge-yellow','Processando'], error: ['badge-red','Erro'] };
+    const [cls, label] = map[s] || ['badge-gray', s];
+    return `<span class="badge ${cls}">${label}</span>`;
+  }
+
+  init();
+</script>
+
+</body>
+</html>

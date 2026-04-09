@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacidade — ZeveHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    :root {
+      --blue: #0059FF;
+      --bg: #000000;
+      --card: #0D0D0D;
+      --border: #1E1E1E;
+      --border-2: #2A2A2A;
+      --text: #FFFFFF;
+      --muted: #888888;
+      --muted-2: #444444;
+    }
+    body { background-color: var(--bg); color: var(--text); }
+    nav { border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; }
+    .btn-primary { background: var(--blue); color: #fff; font-weight: 700; border-radius: 8px; transition: all 0.2s; }
+    .btn-primary:hover { background: #0047CC; transform: translateY(-1px); }
+    .badge { background: rgba(0,89,255,0.1); color: var(--blue); border: 1px solid rgba(0,89,255,0.2); border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 4px 14px; display: inline-block; }
+    .section-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 16px; }
+    .section-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+    .section-card p, .section-card li { font-size: 15px; line-height: 1.75; color: var(--muted); }
+    .section-card ul { list-style: disc; padding-left: 20px; margin-top: 8px; }
+    .section-card li { margin-bottom: 6px; }
+    .divider { height: 1px; background: linear-gradient(to right, transparent, var(--border-2), transparent); margin: 8px 0; }
+    footer { border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="landing.html">
+      <img src="zeve logo completo.svg" alt="ZeveHub" style="height: 32px; width: auto;" />
+    </a>
+    <a href="login.html" class="btn-primary px-5 py-2.5 text-sm">Acessar Hub →</a>
+  </div>
+</nav>
+
+<!-- CONTEÚDO -->
+<main class="max-w-3xl mx-auto px-6 py-20">
+
+  <div class="mb-12">
+    <span class="badge mb-4">Política de Privacidade</span>
+    <h1 class="text-4xl font-black mt-4 mb-3">Privacidade e proteção<br/>dos seus dados</h1>
+    <p style="color: var(--muted);">Última atualização: abril de 2025 · Em conformidade com a LGPD (Lei nº 13.709/2018)</p>
+  </div>
+
+  <div class="section-card">
+    <h2>1. Quem somos</h2>
+    <p>O ZeveHub é uma plataforma de análise de performance operada pela <strong style="color: var(--text);">Zeve Assessoria</strong>, disponibilizada exclusivamente a clientes conveniados. Atuamos como controladores dos dados pessoais tratados nesta plataforma.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>2. Quais dados coletamos</h2>
+    <p>Coletamos apenas os dados necessários para o funcionamento da plataforma:</p>
+    <ul>
+      <li><strong style="color: var(--text);">Dados de cadastro:</strong> nome completo, e-mail e número de conta na plataforma Profit.</li>
+      <li><strong style="color: var(--text);">Dados de operações:</strong> arquivos CSV exportados da plataforma Profit contendo histórico de trades.</li>
+      <li><strong style="color: var(--text);">Dados de uso:</strong> logs de acesso, uploads realizados e interações com a plataforma.</li>
+      <li><strong style="color: var(--text);">Comunicações:</strong> comentários e feedbacks trocados entre cliente e assessor dentro do Hub.</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2>3. Como usamos seus dados</h2>
+    <p>Seus dados são usados exclusivamente para:</p>
+    <ul>
+      <li>Gerar seu dashboard de performance e métricas de trading.</li>
+      <li>Permitir que seu assessor acompanhe e analise suas operações.</li>
+      <li>Enviar notificações relacionadas à plataforma (novos feedbacks, uploads processados).</li>
+      <li>Melhorar a experiência e funcionalidades do ZeveHub.</li>
+      <li>Cumprir obrigações legais e regulatórias.</li>
+    </ul>
+    <p style="margin-top: 12px;">Não utilizamos seus dados para fins publicitários nem os vendemos a terceiros.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>4. Compartilhamento de dados</h2>
+    <p>Seus dados podem ser compartilhados apenas nas seguintes situações:</p>
+    <ul>
+      <li><strong style="color: var(--text);">Com seu assessor vinculado:</strong> que terá acesso às suas operações e métricas de performance.</li>
+      <li><strong style="color: var(--text);">Com prestadores de serviço:</strong> como Supabase (armazenamento e banco de dados) e Vercel (hospedagem), que atuam como operadores sob contrato de confidencialidade.</li>
+      <li><strong style="color: var(--text);">Por obrigação legal:</strong> quando exigido por autoridade competente.</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2>5. Armazenamento e segurança</h2>
+    <p>Seus dados são armazenados em servidores seguros com criptografia em trânsito (TLS) e em repouso. O acesso é controlado por autenticação e por políticas de segurança em nível de banco de dados (Row Level Security). Realizamos backups periódicos e monitoramos acessos indevidos.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>6. Por quanto tempo guardamos seus dados</h2>
+    <p>Seus dados são mantidos enquanto sua conta estiver ativa. Após encerramento do vínculo com a assessoria, seus dados podem ser mantidos por até 5 anos para cumprimento de obrigações legais, após o que serão deletados ou anonimizados.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>7. Seus direitos (LGPD)</h2>
+    <p>Você tem direito a:</p>
+    <ul>
+      <li>Confirmar a existência de tratamento dos seus dados.</li>
+      <li>Acessar os dados que temos sobre você.</li>
+      <li>Corrigir dados incompletos, inexatos ou desatualizados.</li>
+      <li>Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários.</li>
+      <li>Portabilidade dos dados para outro serviço.</li>
+      <li>Revogar o consentimento a qualquer momento.</li>
+    </ul>
+    <p style="margin-top: 12px;">Para exercer seus direitos, entre em contato pelo WhatsApp: <strong style="color: var(--text);">+55 62 9994-4855</strong></p>
+  </div>
+
+  <div class="section-card">
+    <h2>8. Cookies</h2>
+    <p>Utilizamos apenas cookies essenciais para autenticação e funcionamento da sessão. Não utilizamos cookies de rastreamento ou publicidade de terceiros.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>9. Alterações nesta política</h2>
+    <p>Podemos atualizar esta política periodicamente. Notificaremos usuários sobre mudanças relevantes por e-mail ou pela própria plataforma. A versão mais recente estará sempre disponível nesta página.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>10. Contato</h2>
+    <p>Dúvidas sobre privacidade? Fale conosco:</p>
+    <ul>
+      <li>WhatsApp: <strong style="color: var(--text);">+55 62 9994-4855</strong></li>
+      <li>Plataforma: acesse a página de <a href="suporte.html" style="color: var(--blue);">Suporte</a></li>
+    </ul>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <a href="landing.html">
+        <img src="zeve logo completo.svg" alt="ZeveHub" style="height: 26px; width: auto; opacity: 0.85;" />
+      </a>
+      <div class="flex gap-8 text-sm" style="color: var(--muted);">
+        <a href="privacidade.html" style="color: var(--blue);">Privacidade</a>
+        <a href="termos-de-uso.html" class="hover:text-white transition-colors">Termos de Uso</a>
+        <a href="suporte.html" class="hover:text-white transition-colors">Suporte</a>
+      </div>
+      <p class="text-sm" style="color: var(--muted-2);">© 2025 Zeve Assessoria. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

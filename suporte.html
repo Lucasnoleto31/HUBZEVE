@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suporte — ZeveHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    :root {
+      --blue: #0059FF;
+      --bg: #000000;
+      --card: #0D0D0D;
+      --card-2: #141414;
+      --border: #1E1E1E;
+      --border-2: #2A2A2A;
+      --text: #FFFFFF;
+      --muted: #888888;
+      --muted-2: #444444;
+      --green: #22C55E;
+    }
+    body { background-color: var(--bg); color: var(--text); }
+    nav { border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; }
+    .btn-primary { background: var(--blue); color: #fff; font-weight: 700; border-radius: 8px; transition: all 0.2s; display: inline-block; text-align: center; }
+    .btn-primary:hover { background: #0047CC; box-shadow: 0 0 24px rgba(0,89,255,0.4); transform: translateY(-1px); }
+    .btn-wpp { background: #25D366; color: #fff; font-weight: 700; border-radius: 8px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 10px; }
+    .btn-wpp:hover { background: #1eba57; box-shadow: 0 0 24px rgba(37,211,102,0.35); transform: translateY(-1px); }
+    .badge { background: rgba(0,89,255,0.1); color: var(--blue); border: 1px solid rgba(0,89,255,0.2); border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 4px 14px; display: inline-block; }
+    .contact-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; transition: all 0.2s; }
+    .contact-card:hover { border-color: rgba(0,89,255,0.3); background: var(--card-2); }
+    .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 8px; }
+    .faq-question { padding: 20px 24px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: color 0.2s; }
+    .faq-question:hover { color: var(--blue); }
+    .faq-answer { padding: 0 24px 20px; font-size: 15px; line-height: 1.75; color: var(--muted); display: none; }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-question { color: var(--blue); }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--blue); }
+    .faq-icon { transition: transform 0.2s; font-size: 20px; font-weight: 300; color: var(--muted); }
+    footer { border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="landing.html">
+      <img src="zeve logo completo.svg" alt="ZeveHub" style="height: 32px; width: auto;" />
+    </a>
+    <a href="login.html" class="btn-primary px-5 py-2.5 text-sm">Acessar Hub →</a>
+  </div>
+</nav>
+
+<!-- CONTEÚDO -->
+<main class="max-w-4xl mx-auto px-6 py-20">
+
+  <!-- Header -->
+  <div class="text-center mb-16">
+    <span class="badge mb-4">Suporte</span>
+    <h1 class="text-4xl md:text-5xl font-black mt-4 mb-4">Como podemos ajudar?</h1>
+    <p class="text-lg max-w-xl mx-auto" style="color: var(--muted);">Nossa equipe está disponível para tirar dúvidas, resolver problemas técnicos e ajudar você a extrair o máximo do ZeveHub.</p>
+  </div>
+
+  <!-- Cards de contato -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-20">
+
+    <!-- WhatsApp -->
+    <div class="contact-card flex flex-col">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background: rgba(37,211,102,0.1);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#25D366">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2">WhatsApp</h3>
+      <p class="text-sm mb-6 flex-1" style="color: var(--muted);">Fale diretamente com nossa equipe. Atendimento de segunda a sexta, das 8h às 18h. Retorno em até 2 horas no horário comercial.</p>
+      <a href="https://wa.me/5562999448550" target="_blank" class="btn-wpp px-6 py-3 text-sm justify-center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Chamar no WhatsApp · +55 62 9994-4855
+      </a>
+    </div>
+
+    <!-- Horário e Info -->
+    <div class="contact-card">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background: rgba(0,89,255,0.1);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="#0059FF" stroke-width="2"/>
+          <path d="M12 7v5l3 3" stroke="#0059FF" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold mb-2">Horário de Atendimento</h3>
+      <div class="space-y-3 mb-6">
+        <div class="flex justify-between items-center py-2" style="border-bottom: 1px solid var(--border);">
+          <span class="text-sm" style="color: var(--muted);">Segunda a Sexta</span>
+          <span class="text-sm font-semibold">08h00 — 18h00</span>
+        </div>
+        <div class="flex justify-between items-center py-2" style="border-bottom: 1px solid var(--border);">
+          <span class="text-sm" style="color: var(--muted);">Sábado</span>
+          <span class="text-sm font-semibold">09h00 — 13h00</span>
+        </div>
+        <div class="flex justify-between items-center py-2">
+          <span class="text-sm" style="color: var(--muted);">Domingo e Feriados</span>
+          <span class="text-sm" style="color: var(--muted);">Fechado</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 p-3 rounded-lg" style="background: rgba(34,197,94,0.07); border: 1px solid rgba(34,197,94,0.15);">
+        <div class="w-2 h-2 rounded-full" style="background: var(--green);"></div>
+        <span class="text-sm" style="color: var(--green);">Equipe online agora</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FAQ -->
+  <div>
+    <h2 class="text-2xl font-black mb-8">Perguntas frequentes</h2>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        Como faço o upload do relatório do Profit?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Acesse a plataforma Profit, vá em <strong>Relatórios → Operações Realizadas</strong>, selecione o período desejado e exporte em formato CSV. Em seguida, acesse o ZeveHub, vá em <strong>Uploads → Novo Upload</strong> e arraste o arquivo para a área indicada. O sistema processa automaticamente em segundos.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        Qual período devo selecionar no Profit ao exportar?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Você pode exportar qualquer período — dias, semanas ou meses completos. Recomendamos exportar mês a mês para manter o histórico organizado. O ZeveHub identifica automaticamente o período do arquivo e atualiza as métricas correspondentes.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        Posso subir relatórios de meses anteriores?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Sim. Você pode fazer upload de relatórios de qualquer período passado. O sistema consolida todos os uploads e reconstrói sua curva de equity e métricas históricas automaticamente.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        Meu assessor consegue ver minhas operações sem eu autorizar?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Seu assessor vinculado tem acesso às suas operações como parte do serviço de assessoria contratado. Esse acesso é limitado ao seu assessor designado — nenhum outro usuário da plataforma tem visibilidade dos seus dados. Administradores têm acesso para fins de suporte técnico.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        O que fazer se meu arquivo CSV der erro no upload?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Certifique-se de que o arquivo foi exportado diretamente pelo Profit sem modificações. Não abra o CSV no Excel antes de subir, pois isso pode alterar a formatação dos números. Se o erro persistir, envie o arquivo por WhatsApp para nossa equipe de suporte: <strong>+55 62 9994-4855</strong>.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        Como funciona o cálculo do Drawdown Máximo?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        O Drawdown Máximo é calculado sobre a curva de equity acumulada. O sistema identifica o maior pico anterior e calcula a queda máxima a partir desse pico. É a forma mais precisa de medir o risco real de perda que você enfrentou no período.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        Não sou conveniado. Como posso acessar o ZeveHub?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        O ZeveHub é um benefício exclusivo dos planos de assessoria da Zeve. Para ter acesso, entre em contato via WhatsApp <strong>+55 62 9994-4855</strong> e conheça nossos planos de assessoria para day traders.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">
+        Esqueci minha senha. Como recuperar?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer">
+        Na tela de login, clique em <strong>"Esqueci minha senha"</strong>. Um link de redefinição será enviado para o e-mail cadastrado. Se não receber em alguns minutos, verifique a caixa de spam ou entre em contato com o suporte.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CTA final -->
+  <div class="mt-16 text-center p-10 rounded-2xl" style="background: var(--card); border: 1px solid var(--border);">
+    <h3 class="text-2xl font-black mb-3">Não encontrou o que procurava?</h3>
+    <p class="mb-6" style="color: var(--muted);">Nossa equipe responde em até 2 horas no horário comercial.</p>
+    <a href="https://wa.me/5562999448550" target="_blank" class="btn-wpp px-8 py-4 text-base mx-auto">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Falar com o Suporte · +55 62 9994-4855
+    </a>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <a href="landing.html">
+        <img src="zeve logo completo.svg" alt="ZeveHub" style="height: 26px; width: auto; opacity: 0.85;" />
+      </a>
+      <div class="flex gap-8 text-sm" style="color: var(--muted);">
+        <a href="privacidade.html" class="hover:text-white transition-colors">Privacidade</a>
+        <a href="termos-de-uso.html" class="hover:text-white transition-colors">Termos de Uso</a>
+        <a href="suporte.html" style="color: var(--blue);">Suporte</a>
+      </div>
+      <p class="text-sm" style="color: var(--muted-2);">© 2025 Zeve Assessoria. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(el) {
+    el.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
