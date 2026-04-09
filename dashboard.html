@@ -3054,52 +3054,27 @@ async function renderRanking() {
 }
 
 async function loadRankingData() {
-  // Fetch all trades (requires RLS to allow reads by authenticated users)
-  const [{ data: trades }, { data: profiles }, { data: lastUploads }] = await Promise.all([
-    sb.from('trades').select('cliente_id, resultado_reais, is_winner, data_trade'),
-    sb.from('profiles').select('id, full_name, email').eq('role', 'cliente').eq('ativo', true),
-    sb.from('uploads').select('cliente_id, created_at').order('created_at', { ascending: false }),
-  ]);
+  // Usa RPC com SECURITY DEFINER para contornar RLS e retornar dados agregados de todos os clientes
+  const { data, error } = await sb.rpc('get_ranking');
 
-  if (!trades?.length) {
+  if (error || !data?.length) {
     document.getElementById('tbody-ranking').innerHTML =
-      '<tr><td colspan="8" class="td-empty">Ranking indisponível — permissões de leitura necessárias.</td></tr>';
+      `<tr><td colspan="8" class="td-empty">${error ? 'Erro: ' + error.message : 'Nenhum dado disponível ainda.'}</td></tr>`;
     return;
   }
 
-  // Last upload per client
-  const lastUpMap = {};
-  (lastUploads || []).forEach(u => { if (!lastUpMap[u.cliente_id]) lastUpMap[u.cliente_id] = u.created_at; });
-
-  // Profile map
-  const profMap = {};
-  (profiles || []).forEach(p => { profMap[p.id] = p; });
-
-  // Aggregate per client
-  const byClient = {};
-  trades.forEach(t => {
-    const id = t.cliente_id;
-    if (!byClient[id]) byClient[id] = { pnl: 0, trades: 0, wins: 0, days: new Set() };
-    byClient[id].pnl    += fnum(t.resultado_reais);
-    byClient[id].trades++;
-    if (t.is_winner) byClient[id].wins++;
-    if (t.data_trade) byClient[id].days.add(t.data_trade);
-  });
-
-  rankingData = Object.entries(byClient)
-    .filter(([id]) => profMap[id]) // only clients we have profiles for
-    .map(([id, s]) => ({
-      id,
-      name:       profMap[id]?.full_name || profMap[id]?.email || '—',
-      pnl:        s.pnl,
-      trades:     s.trades,
-      wins:       s.wins,
-      wr:         s.trades ? (s.wins / s.trades) * 100 : 0,
-      dias:       s.days.size,
-      avg:        s.trades ? s.pnl / s.trades : 0,
-      lastUpload: lastUpMap[id] || null,
-      isMe:       id === profile.id,
-    }));
+  rankingData = data.map(r => ({
+    id:         r.cliente_id,
+    name:       r.full_name || '—',
+    pnl:        parseFloat(r.pnl_total)   || 0,
+    trades:     parseInt(r.total_trades)  || 0,
+    wins:       parseInt(r.wins)          || 0,
+    wr:         r.total_trades > 0 ? (r.wins / r.total_trades) * 100 : 0,
+    dias:       parseInt(r.dias_operados) || 0,
+    avg:        r.total_trades > 0 ? (parseFloat(r.pnl_total) / r.total_trades) : 0,
+    lastUpload: r.last_upload || null,
+    isMe:       r.cliente_id === profile.id,
+  }));
 }
 
 function applyRankingSort() {
