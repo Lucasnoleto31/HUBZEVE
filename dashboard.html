@@ -222,6 +222,10 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Exportar
     </button>
+    <button class="nav-item" id="nav-ranking" onclick="showSection('ranking',this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l4-4 4 4"/><path d="M12 2v10.3"/><path d="M4.5 15.5l3-3 2.5 2.5 3-3 2.5 2.5 3-3"/><line x1="3" y1="21" x2="21" y2="21"/></svg>
+      Ranking
+    </button>
 
     <div class="sb-section">Conta</div>
     <a class="nav-item" href="perfil.html" style="text-decoration:none;">
@@ -815,6 +819,49 @@
         </div>
       </div>
 
+      <!-- ==================== RANKING ==================== -->
+      <div id="sec-ranking" class="section">
+
+        <!-- KPI sua posição -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="ranking-kpis"></div>
+
+        <!-- Tabela ranking -->
+        <div class="table-wrap">
+          <div class="table-header" style="flex-wrap:wrap;gap:10px;">
+            <h3>Ranking de Clientes</h3>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <select class="filter-select" id="ranking-sort" onchange="applyRankingSort()">
+                <option value="pnl">Ordenar por P&L</option>
+                <option value="wr">Ordenar por Win Rate</option>
+                <option value="trades">Ordenar por Total Trades</option>
+                <option value="avg">Ordenar por Média/Trade</option>
+              </select>
+              <span id="ranking-count" style="font-size:13px;color:var(--muted);"></span>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:40px;">#</th>
+                  <th>Cliente</th>
+                  <th style="text-align:right;">P&L Total</th>
+                  <th style="text-align:right;">Win Rate</th>
+                  <th style="text-align:right;">Trades</th>
+                  <th style="text-align:right;">Dias Op.</th>
+                  <th style="text-align:right;">Média/Trade</th>
+                  <th>Último Upload</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-ranking">
+                <tr><td colspan="8" class="td-empty">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /layout -->
@@ -890,6 +937,7 @@ const TITLES = {
   metas:      ['Metas',         'Acompanhe seus objetivos diários e mensais'],
   consistencia:['Consistência', 'Análise de regularidade e distribuição de resultados'],
   exportar:   ['Exportar',      'Baixe seus dados em CSV ou gere um relatório'],
+  ranking:    ['Ranking',       'Compare sua performance com os demais clientes da plataforma'],
 };
 
 function showSection(name, btn) {
@@ -907,6 +955,7 @@ function showSection(name, btn) {
   if (name === 'metas')       renderMetas();
   if (name === 'consistencia')renderConsistencia();
   if (name === 'exportar')    renderExportar();
+  if (name === 'ranking')     renderRanking();
 }
 
 /* ============================================================
@@ -2988,6 +3037,136 @@ function renderExportar() {
   document.getElementById('export-preview').innerHTML =
     block('Todas as operações', mA, all) +
     (fil !== all ? block('Período filtrado (Visão Geral)', mF, fil) : '');
+}
+
+/* ============================================================
+   RANKING
+============================================================ */
+let rankingData   = [];
+let rankingLoaded = false;
+
+async function renderRanking() {
+  if (!rankingLoaded) {
+    rankingLoaded = true;
+    await loadRankingData();
+  }
+  applyRankingSort();
+}
+
+async function loadRankingData() {
+  // Fetch all trades (requires RLS to allow reads by authenticated users)
+  const [{ data: trades }, { data: profiles }, { data: lastUploads }] = await Promise.all([
+    sb.from('trades').select('cliente_id, resultado_reais, is_winner, data_trade'),
+    sb.from('profiles').select('id, full_name, email').eq('role', 'cliente').eq('ativo', true),
+    sb.from('uploads').select('cliente_id, created_at').order('created_at', { ascending: false }),
+  ]);
+
+  if (!trades?.length) {
+    document.getElementById('tbody-ranking').innerHTML =
+      '<tr><td colspan="8" class="td-empty">Ranking indisponível — permissões de leitura necessárias.</td></tr>';
+    return;
+  }
+
+  // Last upload per client
+  const lastUpMap = {};
+  (lastUploads || []).forEach(u => { if (!lastUpMap[u.cliente_id]) lastUpMap[u.cliente_id] = u.created_at; });
+
+  // Profile map
+  const profMap = {};
+  (profiles || []).forEach(p => { profMap[p.id] = p; });
+
+  // Aggregate per client
+  const byClient = {};
+  trades.forEach(t => {
+    const id = t.cliente_id;
+    if (!byClient[id]) byClient[id] = { pnl: 0, trades: 0, wins: 0, days: new Set() };
+    byClient[id].pnl    += fnum(t.resultado_reais);
+    byClient[id].trades++;
+    if (t.is_winner) byClient[id].wins++;
+    if (t.data_trade) byClient[id].days.add(t.data_trade);
+  });
+
+  rankingData = Object.entries(byClient)
+    .filter(([id]) => profMap[id]) // only clients we have profiles for
+    .map(([id, s]) => ({
+      id,
+      name:       profMap[id]?.full_name || profMap[id]?.email || '—',
+      pnl:        s.pnl,
+      trades:     s.trades,
+      wins:       s.wins,
+      wr:         s.trades ? (s.wins / s.trades) * 100 : 0,
+      dias:       s.days.size,
+      avg:        s.trades ? s.pnl / s.trades : 0,
+      lastUpload: lastUpMap[id] || null,
+      isMe:       id === profile.id,
+    }));
+}
+
+function applyRankingSort() {
+  const sort = document.getElementById('ranking-sort')?.value || 'pnl';
+  const sorted = [...rankingData].sort((a, b) => {
+    if (sort === 'wr')     return b.wr     - a.wr;
+    if (sort === 'trades') return b.trades - a.trades;
+    if (sort === 'avg')    return b.avg    - a.avg;
+    return b.pnl - a.pnl;
+  });
+
+  document.getElementById('ranking-count').textContent = `${sorted.length} clientes`;
+
+  // My position in current sort
+  const myPos = sorted.findIndex(d => d.isMe) + 1;
+  const me    = sorted.find(d => d.isMe);
+
+  // KPIs
+  document.getElementById('ranking-kpis').innerHTML = me ? `
+    <div class="kpi" style="border-color:rgba(0,89,255,.35);background:rgba(0,89,255,.05);">
+      <div class="kpi-label">Sua Posição</div>
+      <div class="kpi-value" style="color:var(--blue);">#${myPos}</div>
+      <div class="kpi-sub">de ${sorted.length} clientes</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Seu P&L Total</div>
+      <div class="kpi-value" style="color:${me.pnl >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(me.pnl)}</div>
+      <div class="kpi-sub">${me.trades} operações</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Sua Win Rate</div>
+      <div class="kpi-value" style="color:${me.wr >= 50 ? 'var(--green)' : 'var(--yellow)'};">${fmtPct(me.wr)}</div>
+      <div class="kpi-sub">${me.wins} ganhos · ${me.trades - me.wins} perdas</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Melhor do Ranking</div>
+      <div class="kpi-value" style="color:var(--yellow);">${fmtR$(sorted[0]?.pnl ?? 0)}</div>
+      <div class="kpi-sub">${escHtml(sorted[0]?.name ?? '—')}</div>
+    </div>` : '';
+
+  // Medal for top 3
+  const medal = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+
+  const rows = sorted.map((d, i) => {
+    const isMe  = d.isMe;
+    const hl    = isMe ? 'background:rgba(0,89,255,.07);' : '';
+    const name  = isMe
+      ? `<span style="color:var(--blue);font-weight:700;">${escHtml(d.name)} <span style="font-size:10px;background:rgba(0,89,255,.15);color:var(--blue);border-radius:4px;padding:1px 6px;margin-left:4px;">Você</span></span>`
+      : escHtml(d.name);
+    const lastUp = d.lastUpload
+      ? new Date(d.lastUpload).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' })
+      : '—';
+    return `<tr style="${hl}">
+      <td style="font-weight:700;color:var(--muted);">${medal(i)} ${i + 1}</td>
+      <td>${name}</td>
+      <td style="text-align:right;font-weight:700;color:${d.pnl >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(d.pnl)}</td>
+      <td style="text-align:right;color:${d.wr >= 50 ? 'var(--green)' : 'var(--red)'};">${fmtPct(d.wr)}</td>
+      <td style="text-align:right;color:var(--muted);">${d.trades.toLocaleString('pt-BR')}</td>
+      <td style="text-align:right;color:var(--muted);">${d.dias}</td>
+      <td style="text-align:right;color:${d.avg >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(d.avg)}</td>
+      <td style="font-size:12px;color:var(--muted);">${lastUp}</td>
+    </tr>`;
+  });
+
+  document.getElementById('tbody-ranking').innerHTML = rows.length
+    ? rows.join('')
+    : '<tr><td colspan="8" class="td-empty">Nenhum dado disponível.</td></tr>';
 }
 
 function exportCSV(mode) {
