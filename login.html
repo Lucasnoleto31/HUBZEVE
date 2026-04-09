@@ -6,498 +6,442 @@
   <title>Entrar — ZeveHub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
   <style>
-    * { font-family: 'Inter', sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --blue:     #0059FF;
-      --blue-dim: #0047CC;
-      --bg:       #000000;
-      --card:     #0D0D0D;
-      --card-2:   #141414;
-      --border:   #1E1E1E;
-      --border-2: #2A2A2A;
-      --text:     #FFFFFF;
-      --muted:    #888888;
-      --muted-2:  #444444;
-      --green:    #22C55E;
-      --red:      #EF4444;
+    html, body { height: 100%; }
+
+    body {
+      background: #000;
+      color: #E0E0EC;
+      font-family: 'Space Grotesk', sans-serif;
+      display: flex;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    html, body { height: 100%; margin: 0; }
-    body { background-color: var(--bg); color: var(--text); display: flex; }
-
-    /* ── LADO ESQUERDO ── */
-    .left-panel {
-      width: 52%;
-      background: var(--card);
-      border-right: 1px solid var(--border);
+    /* ─── LEFT PANEL ──────────────────── */
+    .left {
+      width: 48%;
+      background: #050508;
+      border-right: 1px solid rgba(255,255,255,0.06);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 48px;
+      padding: 40px 48px;
       position: relative;
       overflow: hidden;
     }
 
-    /* grade de pontos de fundo */
-    .left-panel::before {
-      content: '';
+    .left-glow {
       position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle, #1E1E1E 1px, transparent 1px);
-      background-size: 28px 28px;
-      opacity: 0.6;
-      pointer-events: none;
-    }
-
-    /* brilho azul no centro-baixo */
-    .left-panel::after {
-      content: '';
-      position: absolute;
-      bottom: -80px;
+      bottom: -100px;
       left: 50%;
       transform: translateX(-50%);
-      width: 500px;
-      height: 300px;
-      background: radial-gradient(ellipse, rgba(0,89,255,0.18) 0%, transparent 70%);
+      width: 480px;
+      height: 320px;
+      background: radial-gradient(ellipse, rgba(0,230,118,0.07) 0%, transparent 65%);
       pointer-events: none;
     }
 
-    /* ── LADO DIREITO ── */
-    .right-panel {
+    /* ─── RIGHT PANEL ─────────────────── */
+    .right {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 48px 40px;
-      background: var(--bg);
+      background: #000;
     }
 
-    /* ── INPUTS ── */
-    .input-group { position: relative; }
-
-    .input-field {
+    .form-box {
       width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border-2);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 15px;
-      padding: 14px 16px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      box-sizing: border-box;
+      max-width: 360px;
     }
 
-    .input-field::placeholder { color: var(--muted-2); }
+    /* ─── INPUTS ──────────────────────── */
+    .field { margin-bottom: 18px; }
 
-    .input-field:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(0,89,255,0.12);
-    }
-
-    .input-field.error {
-      border-color: var(--red);
-      box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
-    }
-
-    .input-label {
+    .field label {
       display: block;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
+      color: #999;
       margin-bottom: 7px;
-      color: #CCCCCC;
     }
 
-    /* toggle senha */
+    .input-wrap { position: relative; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      background: #0C0C14;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 10px;
+      color: #E8E8F0;
+      font-size: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      padding: 13px 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input::placeholder { color: #333345; }
+
+    input:focus {
+      border-color: rgba(0,230,118,0.4);
+      box-shadow: 0 0 0 3px rgba(0,230,118,0.07);
+    }
+
+    input.error {
+      border-color: rgba(255,68,68,0.5);
+      box-shadow: 0 0 0 3px rgba(255,68,68,0.07);
+    }
+
     .eye-btn {
       position: absolute;
-      right: 14px;
+      right: 13px;
       top: 50%;
       transform: translateY(-50%);
       background: none;
       border: none;
       cursor: pointer;
-      color: var(--muted);
+      color: #444455;
       padding: 4px;
-      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
     }
-    .eye-btn:hover { color: var(--text); }
+    .eye-btn:hover { color: #888; }
 
-    /* ── BOTÃO PRINCIPAL ── */
-    .btn-primary {
+    /* ─── ALERTS ──────────────────────── */
+    .alert {
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 13px;
+      display: none;
+      align-items: flex-start;
+      gap: 9px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+    .alert svg { flex-shrink: 0; margin-top: 1px; }
+    .alert.error   { background: rgba(255,68,68,0.06);   border: 1px solid rgba(255,68,68,0.18);   color: #FFB3B3; }
+    .alert.success { background: rgba(0,230,118,0.06);   border: 1px solid rgba(0,230,118,0.18);   color: #A7F3D0; }
+
+    /* ─── BUTTONS ─────────────────────── */
+    .btn-main {
       width: 100%;
-      background: var(--blue);
-      color: #fff;
+      background: #00E676;
+      color: #000;
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
+      font-family: 'Space Grotesk', sans-serif;
       border: none;
       border-radius: 10px;
-      padding: 15px;
+      padding: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: opacity 0.15s, transform 0.15s;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
     }
-    .btn-primary:hover {
-      background: #1A6EFF;
-      box-shadow: 0 0 28px rgba(0,89,255,0.4);
+    .btn-main:hover:not(:disabled) {
+      opacity: 0.88;
       transform: translateY(-1px);
     }
-    .btn-primary:active { transform: translateY(0); }
-    .btn-primary:disabled {
-      opacity: 0.5;
+    .btn-main:active { transform: translateY(0); }
+    .btn-main:disabled {
+      opacity: 0.45;
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
     }
 
-    /* ── SPINNER ── */
+    .btn-back {
+      background: #0C0C14;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      color: #666;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-back:hover { color: #ccc; border-color: rgba(255,255,255,0.2); }
+
+    /* ─── SPINNER ─────────────────────── */
     .spinner {
-      width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(0,0,0,0.25);
+      border-top-color: #000;
       border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      animation: spin 0.65s linear infinite;
       display: none;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── DIVISOR ── */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--muted-2);
-      font-size: 12px;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border-2);
-    }
-
-    /* ── MÉTRICAS DO PAINEL ESQUERDO ── */
-    .metric-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .metric-row:last-child { border-bottom: none; }
-
-    /* ── ALERTAS ── */
-    .alert {
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-size: 13px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-    }
-    .alert.error  { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #FCA5A5; }
-    .alert.success{ background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);  color: #86EFAC; }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      .left-panel { display: none; }
-      .right-panel { padding: 40px 24px; }
+    /* ─── RESPONSIVE ──────────────────── */
+    @media (max-width: 700px) {
+      .left { display: none; }
+      .right { padding: 36px 24px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════
-     PAINEL ESQUERDO — Branding
-═══════════════════════════════════════════ -->
-<div class="left-panel">
+<!-- ─────────────────────────────────────
+     LEFT — Branding
+───────────────────────────────────── -->
+<div class="left">
+  <div class="left-glow"></div>
 
   <!-- Logo -->
-  <div style="position: relative; z-index: 1;">
-    <a href="landing.html">
-      <img src="zeve logo completo.svg" alt="ZeveHub" style="height: 34px; width: auto;" />
+  <div style="position:relative;z-index:1;">
+    <a href="landing.html" style="display:inline-block;">
+      <img src="zeve logo completo.svg" alt="ZeveHub" style="height:26px;width:auto;opacity:0.85;" />
     </a>
   </div>
 
-  <!-- Conteúdo central -->
-  <div style="position: relative; z-index: 1;">
+  <!-- Center content -->
+  <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0;">
 
-    <p class="text-sm font-semibold mb-3" style="color: var(--blue); letter-spacing: 0.06em; text-transform: uppercase;">Dashboard de Performance</p>
-    <h2 class="text-3xl font-black mb-4 leading-snug">Seus dados.<br/>Suas métricas.<br/>Sua evolução.</h2>
-    <p class="text-sm leading-relaxed mb-10" style="color: var(--muted); max-width: 340px;">Acesse o hub exclusivo da assessoria Zeve e descubra com precisão o que está travando — e o que está impulsionando — seus resultados como day trader.</p>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#00E676;margin-bottom:16px;">Dashboard de Performance</p>
 
-    <!-- Mini dashboard de preview -->
-    <div style="background: var(--card-2); border: 1px solid var(--border-2); border-radius: 14px; padding: 20px;">
+    <h2 style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:#fff;margin-bottom:16px;">
+      Seus trades contam<br/>uma história.<br/><span style="color:#00E676;">Você já a leu?</span>
+    </h2>
 
-      <!-- KPIs -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
-        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px;">
-          <p style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">P&L Janeiro</p>
-          <p style="font-size: 20px; font-weight: 800; color: var(--green);">+R$ 4.280</p>
+    <p style="font-size:14px;color:#555570;line-height:1.75;max-width:320px;margin-bottom:40px;">
+      Importe seus relatórios do Profit e descubra com clareza o que está funcionando e o que está te custando dinheiro.
+    </p>
+
+    <!-- 3 features -->
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,0.05);">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 10L4 7l3 2.5L11.5 3.5" stroke="#00E676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px;">
-          <p style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">Taxa de Acerto</p>
-          <p style="font-size: 20px; font-weight: 800;">64,2%</p>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#ccc;margin-bottom:1px;">Curva de equity e drawdown</div>
+          <div style="font-size:12px;color:#444455;">Veja onde seu capital realmente foi</div>
         </div>
       </div>
-
-      <!-- Equity curve mini -->
-      <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px;">
-        <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">Curva de Equity</p>
-        <svg viewBox="0 0 280 60" style="width:100%; height:60px;">
-          <defs>
-            <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#0059FF" stop-opacity="0.2"/>
-              <stop offset="100%" stop-color="#0059FF" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path d="M0 50 L25 47 L50 40 L65 43 L85 32 L105 35 L125 22 L145 19 L165 26 L185 14 L205 16 L225 6 L250 9 L270 3 L280 2 L280 60 L0 60Z" fill="url(#g)"/>
-          <path d="M0 50 L25 47 L50 40 L65 43 L85 32 L105 35 L125 22 L145 19 L165 26 L185 14 L205 16 L225 6 L250 9 L270 3 L280 2" fill="none" stroke="#0059FF" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="280" cy="2" r="3.5" fill="#0059FF"/>
-        </svg>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,0.05);">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#00E676" stroke-width="1.4"/><path d="M7 4.5v2.5l1.5 1.5" stroke="#00E676" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#ccc;margin-bottom:1px;">Heatmap de horários</div>
+          <div style="font-size:12px;color:#444455;">Descubra quando você ganha e quando perde</div>
+        </div>
       </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 10.5h2V7H2v3.5zM6 10.5h2V4H6v6.5zM10 10.5h2V1.5h-2V10.5z" stroke="#00E676" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#ccc;margin-bottom:1px;">Métricas avançadas</div>
+          <div style="font-size:12px;color:#444455;">Payoff, consistência, fator de lucro e mais</div>
+        </div>
+      </div>
+    </div>
 
+    <!-- mini equity decoration -->
+    <div style="margin-top:36px;padding:16px;background:#0A0A12;border:1px solid rgba(255,255,255,0.05);border-radius:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:#444455;letter-spacing:.04em;">EQUITY — JAN 2025</span>
+        <span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:#00E676;font-weight:600;">+R$ 4.280</span>
+      </div>
+      <svg viewBox="0 0 300 56" style="width:100%;display:block;" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="gl" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00E676" stop-opacity=".18"/>
+            <stop offset="100%" stop-color="#00E676" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0 48 C10 46,18 43,28 40 C38 37,42 43,54 38 C66 33,72 27,86 22 C100 17,104 24,118 19 C132 14,138 12,154 8 C170 4,174 12,190 8 C206 4,212 2,228 1 C244 0,252 6,268 3 C284 0,292 2,300 1 L300 56 L0 56 Z" fill="url(#gl)"/>
+        <path d="M0 48 C10 46,18 43,28 40 C38 37,42 43,54 38 C66 33,72 27,86 22 C100 17,104 24,118 19 C132 14,138 12,154 8 C170 4,174 12,190 8 C206 4,212 2,228 1 C244 0,252 6,268 3 C284 0,292 2,300 1" fill="none" stroke="#00E676" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="300" cy="1" r="3" fill="#00E676"/>
+      </svg>
     </div>
   </div>
 
-  <!-- Rodapé esquerdo -->
-  <div style="position: relative; z-index: 1;">
-    <p style="font-size: 12px; color: var(--muted-2);">© 2025 Zeve Assessoria · Acesso exclusivo para conveniados</p>
+  <!-- Footer -->
+  <div style="position:relative;z-index:1;">
+    <p style="font-size:11px;font-family:'JetBrains Mono',monospace;color:#2A2A3A;">© 2025 Zeve Assessoria</p>
   </div>
-
 </div>
 
 
-<!-- ═══════════════════════════════════════════
-     PAINEL DIREITO — Formulário
-═══════════════════════════════════════════ -->
-<div class="right-panel">
-  <div style="width: 100%; max-width: 380px;">
+<!-- ─────────────────────────────────────
+     RIGHT — Forms
+───────────────────────────────────── -->
+<div class="right">
+  <div class="form-box">
 
-    <!-- Logo mobile -->
-    <div class="md:hidden mb-10 flex justify-center">
-      <img src="zeve logo completo.svg" alt="ZeveHub" style="height: 30px; width: auto;" />
+    <!-- Mobile logo -->
+    <div style="display:none;justify-content:center;margin-bottom:36px;" class="mobile-logo">
+      <img src="zeve logo completo.svg" alt="ZeveHub" style="height:26px;opacity:.85;" />
     </div>
 
-    <!-- Header do form -->
-    <div style="margin-bottom: 32px;">
-      <h1 style="font-size: 26px; font-weight: 800; margin-bottom: 6px;">Bem-vindo de volta</h1>
-      <p style="font-size: 14px; color: var(--muted);">Entre com suas credenciais para acessar o Hub.</p>
+    <!-- Error / Success alerts -->
+    <div class="alert error" id="alertError">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="#FF6B6B" stroke-width="1.4"/><path d="M7.5 4.5v3M7.5 10v.5" stroke="#FF6B6B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="alertErrorMsg"></span>
+    </div>
+    <div class="alert success" id="alertSuccess">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="#00E676" stroke-width="1.4"/><path d="M4.5 7.5l2 2 4-4" stroke="#00E676" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span id="alertSuccessMsg"></span>
     </div>
 
-    <!-- Alerta de erro -->
-    <div class="alert error" id="alertError" style="margin-bottom: 16px;">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="7" stroke="#EF4444" stroke-width="1.5"/>
-        <path d="M8 5v3M8 10.5v.5" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span id="alertErrorMsg">E-mail ou senha incorretos.</span>
-    </div>
 
-    <!-- Alerta de sucesso -->
-    <div class="alert success" id="alertSuccess" style="margin-bottom: 16px;">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="7" stroke="#22C55E" stroke-width="1.5"/>
-        <path d="M5 8l2 2 4-4" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span id="alertSuccessMsg">Link enviado! Verifique seu e-mail.</span>
-    </div>
-
-    <!-- FORMULÁRIO DE LOGIN -->
+    <!-- ═══ LOGIN FORM ═══ -->
     <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
 
-      <!-- E-mail -->
-      <div style="margin-bottom: 18px;">
-        <label class="input-label" for="email">E-mail</label>
-        <div class="input-group">
-          <input
-            type="email"
-            id="email"
-            class="input-field"
-            placeholder="seuemail@exemplo.com"
-            autocomplete="email"
-            required
-          />
-        </div>
+      <div style="margin-bottom:28px;">
+        <h1 style="font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;letter-spacing:-.02em;color:#fff;margin-bottom:6px;">Bem-vindo de volta</h1>
+        <p style="font-size:14px;color:#555570;">Entre na sua conta para continuar.</p>
       </div>
 
-      <!-- Senha -->
-      <div style="margin-bottom: 10px;">
-        <label class="input-label" for="password">Senha</label>
-        <div class="input-group">
-          <input
-            type="password"
-            id="password"
-            class="input-field"
-            placeholder="••••••••"
-            autocomplete="current-password"
-            style="padding-right: 48px;"
-            required
-          />
-          <button type="button" class="eye-btn" onclick="togglePassword()" id="eyeBtn" title="Mostrar senha">
-            <!-- Ícone olho fechado -->
-            <svg id="eyeOff" width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M14.12 14.12A3 3 0 119.88 9.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <!-- Ícone olho aberto -->
-            <svg id="eyeOn" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:none;">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-            </svg>
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="voce@email.com" autocomplete="email" required />
+      </div>
+
+      <div class="field" style="margin-bottom:10px;">
+        <label for="password">Senha</label>
+        <div class="input-wrap">
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px;" required />
+          <button type="button" class="eye-btn" onclick="togglePassword()" title="Mostrar senha">
+            <svg id="eyeOff" width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14.12 14.12A3 3 0 119.88 9.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg id="eyeOn" width="17" height="17" viewBox="0 0 24 24" fill="none" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
           </button>
         </div>
       </div>
 
-      <!-- Esqueci a senha -->
-      <div style="text-align: right; margin-bottom: 24px;">
-        <a href="#" onclick="showForgotPassword(event)" style="font-size: 13px; color: var(--blue); text-decoration: none; font-weight: 500;">
-          Esqueci minha senha
-        </a>
+      <div style="text-align:right;margin-bottom:22px;">
+        <a href="#" onclick="showForgotPassword(event)" style="font-size:13px;color:#555570;text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555570'">Esqueci minha senha</a>
       </div>
 
-      <!-- Botão entrar -->
-      <button type="submit" class="btn-primary" id="btnLogin">
+      <button type="submit" class="btn-main" id="btnLogin">
         <div class="spinner" id="spinner"></div>
-        <span id="btnText">Entrar no Hub</span>
-        <svg id="btnArrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <span id="btnText">Entrar</span>
+        <svg id="btnArrow" width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 7.5h9M8.5 4l3.5 3.5-3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+
+      <p style="text-align:center;font-size:13px;color:#444455;margin-top:20px;">
+        Ainda não tem conta?
+        <a href="#" onclick="showRegister(event)" style="color:#00E676;font-weight:600;text-decoration:none;margin-left:4px;">Criar uma conta</a>
+      </p>
 
     </form>
 
-    <!-- ── FORGOT PASSWORD (oculto) ── -->
+
+    <!-- ═══ FORGOT PASSWORD ═══ -->
     <form id="forgotForm" onsubmit="handleForgot(event)" novalidate style="display:none;">
 
-      <div style="margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
-        <button type="button" onclick="showLogin()" style="background: var(--card); border: 1px solid var(--border-2); border-radius: 8px; color: var(--muted); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+        <button type="button" onclick="showLogin()" class="btn-back">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
         <div>
-          <h2 style="font-size: 18px; font-weight: 800; margin: 0 0 2px;">Redefinir senha</h2>
-          <p style="font-size: 13px; color: var(--muted); margin: 0;">Enviaremos um link para o seu e-mail.</p>
+          <h2 style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:3px;">Redefinir senha</h2>
+          <p style="font-size:13px;color:#555570;">Vamos te enviar um link por e-mail.</p>
         </div>
       </div>
 
-      <div style="margin-bottom: 20px;">
-        <label class="input-label" for="forgotEmail">E-mail cadastrado</label>
-        <input
-          type="email"
-          id="forgotEmail"
-          class="input-field"
-          placeholder="seuemail@exemplo.com"
-          required
-        />
+      <div class="field">
+        <label for="forgotEmail">Seu e-mail</label>
+        <input type="email" id="forgotEmail" placeholder="voce@email.com" required />
       </div>
 
-      <button type="submit" class="btn-primary" id="btnForgot">
+      <button type="submit" class="btn-main" id="btnForgot">
         <div class="spinner" id="spinnerForgot"></div>
-        <span id="btnForgotText">Enviar link de redefinição</span>
+        <span id="btnForgotText">Enviar link</span>
       </button>
 
     </form>
 
-    <!-- Link para cadastro -->
-    <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:22px;">
-      Ainda não tem conta?
-      <a href="#" onclick="showRegister(event)" style="color:var(--blue);font-weight:600;text-decoration:none;margin-left:4px;">Criar cadastro</a>
-    </p>
 
-    <!-- ── FORMULÁRIO DE CADASTRO (oculto) ── -->
+    <!-- ═══ REGISTER FORM ═══ -->
     <form id="registerForm" onsubmit="handleRegister(event)" novalidate style="display:none;">
 
-      <div style="margin-bottom:20px;display:flex;align-items:center;gap:10px;">
-        <button type="button" onclick="showLogin()" style="background:var(--card);border:1px solid var(--border-2);border-radius:8px;color:var(--muted);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+        <button type="button" onclick="showLogin()" class="btn-back">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
         <div>
-          <h2 style="font-size:20px;font-weight:800;margin:0 0 2px;">Criar cadastro</h2>
-          <p style="font-size:13px;color:var(--muted);margin:0;">Sua conta ficará pendente de aprovação.</p>
+          <h2 style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:3px;">Criar uma conta</h2>
+          <p style="font-size:13px;color:#555570;">Aguarde a aprovação da assessoria para acessar.</p>
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <label class="input-label" for="regName">Nome completo</label>
-        <input type="text" id="regName" class="input-field" placeholder="João da Silva" autocomplete="name" required />
+      <div class="field">
+        <label for="regName">Nome completo</label>
+        <input type="text" id="regName" placeholder="Como você se chama" autocomplete="name" required />
       </div>
 
-      <div style="margin-bottom:16px;">
-        <label class="input-label" for="regEmail">E-mail</label>
-        <input type="email" id="regEmail" class="input-field" placeholder="seuemail@exemplo.com" autocomplete="email" required />
+      <div class="field">
+        <label for="regEmail">E-mail</label>
+        <input type="email" id="regEmail" placeholder="voce@email.com" autocomplete="email" required />
       </div>
 
-      <div style="margin-bottom:16px;">
-        <label class="input-label" for="regPassword">Senha</label>
-        <div class="input-group">
-          <input type="password" id="regPassword" class="input-field" placeholder="Mínimo 6 caracteres" style="padding-right:48px;" required />
+      <div class="field">
+        <label for="regPassword">Crie uma senha</label>
+        <div class="input-wrap">
+          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" style="padding-right:44px;" required />
           <button type="button" class="eye-btn" onclick="toggleRegPassword()">
-            <svg id="regEyeOff" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14.12 14.12A3 3 0 119.88 9.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            <svg id="regEyeOn" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
+            <svg id="regEyeOff" width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14.12 14.12A3 3 0 119.88 9.88" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg id="regEyeOn" width="17" height="17" viewBox="0 0 24 24" fill="none" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
           </button>
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <label class="input-label" for="regConfirm">Confirmar senha</label>
-        <input type="password" id="regConfirm" class="input-field" placeholder="Repita a senha" required />
+      <div class="field">
+        <label for="regConfirm">Confirme a senha</label>
+        <input type="password" id="regConfirm" placeholder="Repita a senha" required />
       </div>
 
-      <div style="margin-bottom:24px;">
-        <label class="input-label" for="regContaProfit">Conta Profit <span style="color:var(--muted);font-weight:400;">(opcional)</span></label>
-        <input type="text" id="regContaProfit" class="input-field" placeholder="Ex: 2345745" />
+      <div class="field" style="margin-bottom:22px;">
+        <label for="regContaProfit">Conta Profit <span style="color:#333345;font-weight:400;">(opcional)</span></label>
+        <input type="text" id="regContaProfit" placeholder="Ex: 2345745" />
       </div>
 
-      <button type="submit" class="btn-primary" id="btnRegister">
+      <button type="submit" class="btn-main" id="btnRegister">
         <div class="spinner" id="spinnerReg"></div>
         <span id="btnRegText">Solicitar acesso</span>
       </button>
 
     </form>
 
-    <!-- Divisor -->
-    <div class="divider" style="margin: 28px 0;">Precisa de ajuda?</div>
 
-    <!-- Link suporte -->
-    <a href="suporte.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; border-radius: 10px; background: var(--card); border: 1px solid var(--border-2); color: var(--muted); font-size: 14px; font-weight: 500; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='#0059FF'; this.style.color='#fff';" onmouseout="this.style.borderColor='var(--border-2)'; this.style.color='var(--muted)';">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Falar com o suporte
-    </a>
-
-    <!-- Texto de acesso exclusivo -->
-    <p style="text-align: center; font-size: 12px; color: var(--muted-2); margin-top: 24px; line-height: 1.6;">
-      Acesso exclusivo para conveniados da Assessoria Zeve.<br/>
-      <a href="suporte.html" style="color: var(--muted); text-decoration: underline;">Não é conveniado? Saiba como ser.</a>
-    </p>
+    <!-- Support link, shown across all states -->
+    <div style="margin-top:32px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);padding-top:24px;">
+      <a href="suporte.html" style="font-size:13px;color:#333345;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .15s;" onmouseover="this.style.color='#777'" onmouseout="this.style.color='#333345'">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 1.5h10a.8.8 0 01.8.8v5.4a.8.8 0 01-.8.8H4L1 10.5V2.3a.8.8 0 01.5-.8z" stroke="currentColor" stroke-width="1.2"/></svg>
+        Precisa de ajuda? Fale com o suporte
+      </a>
+    </div>
 
   </div>
 </div>
 
 
 <script>
-  // ── Supabase client ──
   const { createClient } = supabase;
   const sb = createClient(
     'https://bwrcznmovaigpfmezzrw.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3cmN6bm1vdmFpZ3BmbWV6enJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTA5NzMsImV4cCI6MjA5MTMyNjk3M30.tn12u4ZWnrVc-YlGaP6W6cIhbfBViKLPlKT0FhqmH8U'
   );
 
-  // ── Toggle senha ──
   function togglePassword() {
     const input = document.getElementById('password');
     const eyeOff = document.getElementById('eyeOff');
@@ -513,7 +457,6 @@
     }
   }
 
-  // ── Alternar entre formulários ──
   const FORMS = ['loginForm', 'forgotForm', 'registerForm'];
   function showOnly(id) {
     FORMS.forEach(f => {
@@ -530,9 +473,7 @@
     if (email) document.getElementById('forgotEmail').value = email;
   }
 
-  function showLogin() {
-    showOnly('loginForm');
-  }
+  function showLogin() { showOnly('loginForm'); }
 
   function showRegister(e) {
     e.preventDefault();
@@ -549,7 +490,6 @@
     else                           { input.type = 'password'; off.style.display = 'block'; on.style.display = 'none';  }
   }
 
-  // ── Alertas ──
   function showError(msg) {
     const el = document.getElementById('alertError');
     document.getElementById('alertErrorMsg').textContent = msg;
@@ -569,22 +509,19 @@
     document.getElementById('alertSuccess').style.display = 'none';
   }
 
-  // ── Validação de e-mail ──
   function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  // ── Login ──
   async function handleLogin(e) {
     e.preventDefault();
     hideAlerts();
 
-    const email    = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
+    const email         = document.getElementById('email').value.trim();
+    const password      = document.getElementById('password').value;
     const emailField    = document.getElementById('email');
     const passwordField = document.getElementById('password');
 
-    // Validação
     emailField.classList.remove('error');
     passwordField.classList.remove('error');
 
@@ -607,7 +544,6 @@
       return;
     }
 
-    // Loading
     const btn     = document.getElementById('btnLogin');
     const spinner = document.getElementById('spinner');
     const text    = document.getElementById('btnText');
@@ -622,35 +558,32 @@
 
     btn.disabled = false;
     spinner.style.display = 'none';
-    text.textContent = 'Entrar no Hub';
+    text.textContent = 'Entrar';
     arrow.style.display = 'block';
 
     if (error) {
-      console.error('Login error:', error.message);
       const msg = error.message || '';
       if (msg.toLowerCase().includes('email not confirmed')) {
-        showError('E-mail ainda não confirmado. Verifique sua caixa de entrada (incluindo spam).');
+        showError('E-mail ainda não confirmado. Verifique sua caixa de entrada.');
       } else if (msg.toLowerCase().includes('invalid login credentials') || msg.toLowerCase().includes('invalid email or password')) {
-        showError('E-mail ou senha incorretos. Verifique suas credenciais.');
+        showError('E-mail ou senha incorretos.');
       } else if (msg.toLowerCase().includes('too many requests')) {
-        showError('Muitas tentativas. Aguarde alguns minutos e tente novamente.');
+        showError('Muitas tentativas. Aguarde alguns minutos.');
       } else {
         showError('Erro ao entrar: ' + msg);
       }
       return;
     }
 
-    // Busca perfil para verificar status e redirecionar
     const { data: profile } = await sb
       .from('profiles')
       .select('role, ativo')
       .eq('id', data.user.id)
       .single();
 
-    // Conta pendente de aprovação
     if (!profile?.ativo) {
       await sb.auth.signOut();
-      showError('Sua conta está pendente de aprovação pela Assessoria Zeve. Você será notificado quando o acesso for liberado.');
+      showError('Sua conta ainda está pendente de aprovação pela Assessoria Zeve.');
       return;
     }
 
@@ -660,7 +593,6 @@
     else                          window.location.href = 'dashboard.html';
   }
 
-  // ── Cadastro ──
   async function handleRegister(e) {
     e.preventDefault();
     hideAlerts();
@@ -671,32 +603,29 @@
     const confirm = document.getElementById('regConfirm').value;
     const conta   = document.getElementById('regContaProfit').value.trim();
 
-    // Validações
-    if (!name)                         { showError('Informe seu nome completo.');           document.getElementById('regName').focus(); return; }
-    if (!email || !isValidEmail(email)){ showError('Informe um e-mail válido.');            document.getElementById('regEmail').focus(); return; }
-    if (!pass || pass.length < 6)      { showError('A senha deve ter pelo menos 6 caracteres.'); document.getElementById('regPassword').focus(); return; }
-    if (pass !== confirm)              { showError('As senhas não coincidem.');              document.getElementById('regConfirm').focus(); return; }
+    if (!name)                          { showError('Informe seu nome.');                          document.getElementById('regName').focus();     return; }
+    if (!email || !isValidEmail(email)) { showError('Informe um e-mail válido.');                  document.getElementById('regEmail').focus();    return; }
+    if (!pass || pass.length < 6)       { showError('A senha precisa ter pelo menos 6 caracteres.'); document.getElementById('regPassword').focus(); return; }
+    if (pass !== confirm)               { showError('As senhas não coincidem.');                   document.getElementById('regConfirm').focus();  return; }
 
     const btn     = document.getElementById('btnRegister');
     const spinner = document.getElementById('spinnerReg');
     const text    = document.getElementById('btnRegText');
     btn.disabled = true; spinner.style.display = 'block'; text.textContent = 'Enviando...';
 
-    // Cria conta no Auth
     const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
 
     btn.disabled = false; spinner.style.display = 'none'; text.textContent = 'Solicitar acesso';
 
     if (error) {
       if (error.message?.toLowerCase().includes('already registered')) {
-        showError('Este e-mail já está cadastrado. Tente fazer login.');
+        showError('Esse e-mail já está cadastrado. Tente fazer login.');
       } else {
         showError('Erro ao cadastrar: ' + error.message);
       }
       return;
     }
 
-    // Garante que o perfil existe com ativo=false (pendente)
     if (data.user) {
       await sb.from('profiles').upsert({
         id:           data.user.id,
@@ -706,14 +635,11 @@
         ativo:        false,
         conta_profit: conta || null,
       }, { onConflict: 'id' });
-
-      // Se o Supabase fez login automático após signUp, desloga
       await sb.auth.signOut();
     }
 
-    // Mostra tela de sucesso
     showOnly('loginForm');
-    showSuccess('Cadastro realizado! Sua conta está pendente de aprovação pela Assessoria Zeve. Entraremos em contato em breve.');
+    showSuccess('Cadastro realizado! Assim que a assessoria aprovar seu acesso, você receberá uma confirmação.');
     document.getElementById('regName').value = '';
     document.getElementById('regEmail').value = '';
     document.getElementById('regPassword').value = '';
@@ -721,7 +647,6 @@
     document.getElementById('regContaProfit').value = '';
   }
 
-  // ── Recuperar senha ──
   async function handleForgot(e) {
     e.preventDefault();
     hideAlerts();
@@ -733,6 +658,7 @@
     if (!email || !isValidEmail(email)) {
       emailField.classList.add('error');
       emailField.focus();
+      showError('Informe um e-mail válido.');
       return;
     }
 
@@ -748,14 +674,14 @@
 
     btn.disabled = false;
     spinner.style.display = 'none';
-    text.textContent = 'Enviar link de redefinição';
+    text.textContent = 'Enviar link';
 
     if (error) {
       showError('Não foi possível enviar o link. Tente novamente.');
       return;
     }
 
-    showSuccess('Link enviado! Verifique sua caixa de entrada e spam.');
+    showSuccess('Link enviado! Confira sua caixa de entrada e a pasta de spam.');
   }
 </script>
 

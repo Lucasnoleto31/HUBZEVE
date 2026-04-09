@@ -204,9 +204,10 @@
 
     <div class="sidebar-section">Gestão</div>
 
-    <button class="nav-item" onclick="showSection('usuarios', this)">
+    <button class="nav-item" onclick="showSection('usuarios', this)" id="navUsuarios">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M2 13c0-3.3 2.7-5 6-5s6 1.7 6 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       <span>Usuários</span>
+      <span id="badgePendentes" style="display:none;background:#EF4444;color:#fff;font-size:10px;font-weight:700;border-radius:100px;padding:1px 7px;margin-left:auto;line-height:1.7;">0</span>
     </button>
 
     <button class="nav-item" onclick="showSection('vinculos', this)">
@@ -294,6 +295,23 @@
             <div class="kpi-value" id="kpiTrades"><div class="skel" style="width:70px;height:36px;"></div></div>
             <div class="kpi-delta" style="color:var(--muted);">trades na plataforma</div>
           </div>
+          <div class="kpi-card" id="kpiPendentesCard" onclick="showSection('usuarios', document.getElementById('navUsuarios')); setTimeout(()=>filterSoPendentes(), 100);" style="cursor:pointer; border-color:rgba(239,68,68,0.25); display:none;">
+            <div class="kpi-label" style="color:#EF4444;">Pendentes de Aprovação</div>
+            <div class="kpi-value" id="kpiPendentes" style="color:#EF4444;">0</div>
+            <div class="kpi-delta" style="color:#EF4444;">clique para ver e aprovar</div>
+          </div>
+        </div>
+
+        <!-- Pendentes quick list (visível só quando há pendentes) -->
+        <div id="pendentesAlert" style="display:none; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2); border-radius:12px; padding:16px 20px; margin-bottom:20px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#EF4444" stroke-width="1.5"/><path d="M8 5v3M8 10.5v.5" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span style="font-size:13px; font-weight:700; color:#EF4444;">Cadastros aguardando aprovação</span>
+            </div>
+            <button class="btn-sm" onclick="showSection('usuarios', document.getElementById('navUsuarios')); setTimeout(()=>filterSoPendentes(), 100);" style="border-color:rgba(239,68,68,0.3); color:#EF4444;">Ver todos</button>
+          </div>
+          <div id="pendentesListQuick" style="display:flex; flex-direction:column; gap:6px;"></div>
         </div>
 
         <!-- Últimos usuários -->
@@ -335,6 +353,7 @@
             <option value="assessor">Assessor</option>
             <option value="admin">Admin</option>
           </select>
+          <button id="btnSoPendentes" class="btn-ghost" onclick="toggleSoPendentes()" style="border-color:rgba(239,68,68,0.3); color:#EF4444;">Pendentes</button>
           <button class="btn-ghost" onclick="exportUsuariosCSV()" style="margin-left:auto;">⬇ Exportar CSV</button>
         </div>
 
@@ -810,9 +829,43 @@
     document.getElementById('kpiUploads').textContent    = uploads.count ?? 0;
     document.getElementById('kpiTrades').textContent     = (trades.count ?? 0).toLocaleString('pt-BR');
 
+    // Pendentes de aprovação
+    const { data: pendentes } = await sb.from('profiles').select('id, full_name, email, created_at').eq('ativo', false).order('created_at', { ascending: false });
+    const qtd = (pendentes || []).length;
+    const badge = document.getElementById('badgePendentes');
+    const kpiCard = document.getElementById('kpiPendentesCard');
+    const alertEl = document.getElementById('pendentesAlert');
+    document.getElementById('kpiPendentes').textContent = qtd;
+    if (qtd > 0) {
+      badge.textContent = qtd;
+      badge.style.display = 'inline-block';
+      kpiCard.style.display = 'block';
+      alertEl.style.display = 'block';
+      document.getElementById('pendentesListQuick').innerHTML = pendentes.map(u => `
+        <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.3); border-radius:8px; padding:10px 14px;">
+          <div>
+            <div style="font-size:13px; font-weight:600;">${esc(u.full_name || '—')}</div>
+            <div style="font-size:12px; color:var(--muted);">${esc(u.email)} · cadastro ${formatDate(u.created_at)}</div>
+          </div>
+          <button class="btn-sm" style="background:rgba(34,197,94,0.1); border-color:rgba(34,197,94,0.3); color:#22C55E;" onclick="aprovarUsuario('${u.id}')">Aprovar</button>
+        </div>`).join('');
+    } else {
+      badge.style.display = 'none';
+      kpiCard.style.display = 'none';
+      alertEl.style.display = 'none';
+    }
+
     // Últimos usuários
     const { data: recentes } = await sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(10);
     renderTbodyRecentes(recentes || []);
+  }
+
+  async function aprovarUsuario(id) {
+    const { error } = await sb.from('profiles').update({ ativo: true }).eq('id', id);
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast('Usuário aprovado e ativado!', 'success');
+    loadOverview();
+    loadUsuarios();
   }
 
   function renderTbodyRecentes(users) {
@@ -832,9 +885,30 @@
   }
 
   // ── USUÁRIOS ──
+  let soPendentes = false;
+  function toggleSoPendentes() {
+    soPendentes = !soPendentes;
+    const btn = document.getElementById('btnSoPendentes');
+    if (soPendentes) {
+      btn.style.background = 'rgba(239,68,68,0.12)';
+      btn.textContent = 'Pendentes ✕';
+    } else {
+      btn.style.background = '';
+      btn.textContent = 'Pendentes';
+    }
+    filterUsuarios();
+  }
+  function filterSoPendentes() {
+    if (!soPendentes) toggleSoPendentes();
+  }
+
   async function loadUsuarios() {
     const { data } = await sb.from('profiles').select('*, plano:plano_id(nome)').order('created_at', { ascending: false }).limit(10000);
     allUsers = data || [];
+    // Atualiza badge do nav
+    const pendQtd = allUsers.filter(u => !u.ativo).length;
+    const badge = document.getElementById('badgePendentes');
+    if (badge) { badge.textContent = pendQtd; badge.style.display = pendQtd > 0 ? 'inline-block' : 'none'; }
     renderUsuarios(allUsers);
   }
 
@@ -866,9 +940,10 @@
     const q    = document.getElementById('searchUsuarios').value.toLowerCase();
     const role = document.getElementById('filterRole').value;
     const filtered = allUsers.filter(u => {
-      const matchQ    = !q || u.full_name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q);
-      const matchRole = !role || u.role === role;
-      return matchQ && matchRole;
+      const matchQ       = !q || u.full_name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q);
+      const matchRole    = !role || u.role === role;
+      const matchPendente = !soPendentes || !u.ativo;
+      return matchQ && matchRole && matchPendente;
     });
     renderUsuarios(filtered);
   }

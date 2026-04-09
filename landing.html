@@ -1,438 +1,879 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZeveHub — Análise de Performance para Day Traders</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZeveHub — Performance para Day Traders</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
-    * { font-family: 'Inter', sans-serif; }
-
     :root {
-      --orange:     #0059FF;
-      --orange-dim: #0047CC;
-      --orange-glow: rgba(0, 89, 255, 0.15);
-      --bg:         #000000;
-      --card:       #0D0D0D;
-      --card-2:     #141414;
-      --border:     #1E1E1E;
-      --border-2:   #2A2A2A;
-      --text:       #FFFFFF;
-      --muted:      #888888;
-      --muted-2:    #444444;
-      --green:      #22C55E;
-      --red:        #EF4444;
+      --green: #00E676;
+      --red:   #FF4444;
+      --blue:  #4488FF;
+      --muted: #555570;
+      --border: rgba(255,255,255,0.07);
     }
 
-    body { background-color: var(--bg); color: var(--text); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Gradient de fundo no hero */
-    .hero-bg {
-      background:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,89,255,0.12) 0%, transparent 70%),
-        var(--bg);
-    }
+    html { scroll-behavior: smooth; }
 
-    /* Glow no botão CTA */
-    .btn-primary {
-      background: var(--orange);
-      color: #fff;
-      font-weight: 700;
-      border-radius: 8px;
-      transition: all 0.2s;
-      box-shadow: 0 0 0 0 rgba(0,89,255,0);
-    }
-    .btn-primary:hover {
-      background: #3378FF;
-      box-shadow: 0 0 24px rgba(0,89,255,0.4);
-      transform: translateY(-1px);
+    body {
+      background: #000;
+      color: #E8E8F0;
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border-2);
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-    .btn-ghost:hover {
-      border-color: var(--orange);
-      color: var(--orange);
+    h1, h2, h3, .display {
+      font-family: 'Syne', sans-serif;
     }
 
-    /* Cards */
-    .feature-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      transition: all 0.25s;
-    }
-    .feature-card:hover {
-      border-color: rgba(0,89,255,0.4);
-      background: var(--card-2);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(0,89,255,0.08);
-    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
 
-    /* Badge de acento */
-    .badge-orange {
-      background: rgba(0,89,255,0.1);
-      color: var(--orange);
-      border: 1px solid rgba(0,89,255,0.2);
-      border-radius: 100px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 4px 14px;
-      display: inline-block;
-    }
-
-    /* Linha divisória com glow */
-    .divider-glow {
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--border-2), transparent);
-    }
-
-    /* Texto gradiente laranja */
-    .text-gradient {
-      background: linear-gradient(135deg, #0059FF, #4D94FF);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* Barra de métricas animada */
-    .stat-bar {
-      background: linear-gradient(90deg, var(--orange) 0%, #66AAFF 100%);
-      border-radius: 2px;
-    }
-
-    /* Step circle */
-    .step-circle {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: rgba(0,89,255,0.1);
-      border: 2px solid rgba(0,89,255,0.3);
-      color: var(--orange);
-      font-weight: 800;
-      font-size: 18px;
+    /* ─── NAV ─────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 999;
+      height: 56px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
     }
 
-    /* Mockup do dashboard */
-    .dashboard-mock {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
+    .nav-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color .15s;
+    }
+    .nav-link:hover { color: #E8E8F0; }
+
+    .btn-cta {
+      background: var(--green);
+      color: #000;
+      font-weight: 700;
+      font-size: 13px;
+      font-family: 'Space Grotesk', sans-serif;
+      padding: 8px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity .15s, transform .15s;
+      display: inline-block;
+    }
+    .btn-cta:hover { opacity: .88; transform: translateY(-1px); }
+
+    .btn-outline {
+      color: #E8E8F0;
+      font-weight: 600;
+      font-size: 15px;
+      font-family: 'Space Grotesk', sans-serif;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: border-color .2s, background .2s;
+      display: inline-block;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.04); }
+
+    .btn-green-lg {
+      background: var(--green);
+      color: #000;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: 'Space Grotesk', sans-serif;
+      padding: 13px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity .15s, transform .15s;
+      display: inline-block;
+    }
+    .btn-green-lg:hover { opacity: .88; transform: translateY(-1px); }
+
+    /* ─── HERO ─────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 100px 32px 60px;
+      position: relative;
       overflow: hidden;
     }
 
-    .mock-topbar {
-      background: #101010;
+    /* noise texture overlay */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: .6;
+    }
+
+    /* top glow */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 500px;
+      background: radial-gradient(ellipse, rgba(0,230,118,.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-headline {
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: #fff;
+    }
+
+    .hero-headline .accent {
+      color: var(--green);
+    }
+
+    /* ─── STAT STRIP ───────────────────────── */
+    .stat-strip {
+      border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 12px 20px;
+      background: #080808;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .stat-cell {
+      padding: 32px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.6rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ─── DASHBOARD MOCKUP ─────────────────── */
+    .dash-wrap {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow:
+        0 0 0 1px rgba(0,230,118,.06),
+        0 48px 120px rgba(0,0,0,.9),
+        0 0 80px rgba(0,230,118,.04);
+    }
+    .dash-bar {
+      background: #111;
+      border-bottom: 1px solid var(--border);
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 7px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-url {
+      margin: 0 auto;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 3px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #444460;
+    }
+    .dash-body {
+      background: #0A0A10;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 420px;
+    }
+    .dash-sidebar {
+      background: #070710;
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .dash-nav-item {
+      padding: 9px 20px;
+      font-size: 12px;
+      color: var(--muted);
       display: flex;
       align-items: center;
       gap: 8px;
+      cursor: default;
+    }
+    .dash-nav-item.active {
+      color: var(--green);
+      background: rgba(0,230,118,.06);
+      border-left: 2px solid var(--green);
+    }
+    .dash-nav-item svg { opacity: .6; }
+    .dash-nav-item.active svg { opacity: 1; }
+    .dash-content {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .kpi {
+      background: #0F0F18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .kpi-lbl {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .kpi-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1;
+    }
+    .kpi-change {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 10px;
+      flex: 1;
+    }
+    .panel {
+      background: #0F0F18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      overflow: hidden;
+    }
+    .panel-label {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
     }
 
-    .mock-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-    /* Mini bar chart */
-    .bar-item { border-radius: 4px 4px 0 0; }
-
-    /* Glow line no nav */
-    nav {
+    /* ─── FEATURES ─────────────────────────── */
+    .feat-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+      padding: 48px 0;
       border-bottom: 1px solid var(--border);
-      background: rgba(10,10,10,0.9);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 50;
+    }
+    .feat-row:last-child { border-bottom: none; }
+    .feat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      padding-top: 4px;
+    }
+    .feat-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+    .feat-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      padding-top: 4px;
     }
 
-    /* Linha conectora nos steps */
-    .step-connector {
-      width: 2px;
-      background: linear-gradient(to bottom, rgba(0,89,255,0.3), transparent);
-      height: 40px;
-      margin: 8px 0 8px 23px;
+    /* ─── SECTION HEADER ───────────────────── */
+    .s-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 14px;
+    }
+    .s-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .s-sub {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-top: 14px;
     }
 
-    /* Scroll suave */
-    html { scroll-behavior: smooth; }
+    /* ─── STEP ─────────────────────────────── */
+    .step {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .step-badge {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: rgba(0,230,118,.1);
+      border: 1px solid rgba(0,230,118,.2);
+      color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .step-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
 
-    /* Assessor card */
-    .assessor-feature {
-      border-left: 3px solid var(--orange);
-      padding-left: 16px;
+    /* ─── ASSESSOR PANEL ───────────────────── */
+    .client-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0F0F18;
+      transition: border-color .15s;
+    }
+    .client-row:hover { border-color: rgba(255,255,255,.12); }
+    .avatar {
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ─── CTA BLOCK ────────────────────────── */
+    .cta-block {
+      background: #050508;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 80px 40px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .cta-block::before {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(0,230,118,.1), transparent 65%);
+      pointer-events: none;
+    }
+
+    /* ─── FOOTER ───────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      background: #000;
+    }
+
+    /* ─── SCROLLBAR ─────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+
+    /* ─── RESPONSIVE ────────────────────────── */
+    @media (max-width: 768px) {
+      .stat-strip { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .feat-row { grid-template-columns: 1fr; gap: 8px; }
+      .feat-num { display: none; }
+      .dash-body { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .charts-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- =========================================================
-     NAVBAR
-========================================================= -->
+<!-- ══════════════════════════════════════
+     NAV
+══════════════════════════════════════ -->
 <nav>
-  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-    <!-- Logo -->
-    <div class="flex items-center gap-3">
-      <img src="zeve logo completo.svg" alt="ZeveHub" style="height: 32px; width: auto;" />
-    </div>
-
-    <!-- Links -->
-    <div class="hidden md:flex items-center gap-8 text-sm" style="color: var(--muted);">
-      <a href="#funcionalidades" class="hover:text-white transition-colors">Funcionalidades</a>
-      <a href="#como-funciona" class="hover:text-white transition-colors">Como Funciona</a>
-      <a href="#assessores" class="hover:text-white transition-colors">Assessores</a>
-    </div>
-
-    <!-- CTA -->
-    <a href="login.html" class="btn-primary px-5 py-2.5 text-sm">
-      Acessar Hub →
-    </a>
+  <img src="zeve logo completo.svg" alt="ZeveHub" style="height:20px;opacity:.85;"/>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <a href="#funcionalidades" class="nav-link hidden md:inline">Funcionalidades</a>
+    <a href="#como-funciona"   class="nav-link hidden md:inline">Como funciona</a>
+    <a href="#assessores"      class="nav-link hidden md:inline">Assessores</a>
+    <a href="login.html" class="btn-cta">Acessar Hub →</a>
   </div>
 </nav>
 
 
-<!-- =========================================================
+<!-- ══════════════════════════════════════
      HERO
-========================================================= -->
-<section class="hero-bg pt-24 pb-20 px-6">
-  <div class="max-w-7xl mx-auto">
+══════════════════════════════════════ -->
+<section class="hero">
+  <div style="max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1;">
+    <div style="display:grid;grid-template-columns:1fr 420px;gap:64px;align-items:center;" class="lg:grid">
 
-    <!-- Badge -->
-    <div class="flex justify-center mb-6">
-      <span class="badge-orange">Exclusivo para Conveniados da Assessoria Zeve</span>
-    </div>
+      <!-- Copy -->
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:100px;padding:5px 14px;margin-bottom:28px;">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;display:inline-block;"></span>
+          <span style="font-size:12px;color:var(--green);font-weight:600;letter-spacing:.04em;">EXCLUSIVO PARA CONVENIADOS ZEVE</span>
+        </div>
 
-    <!-- Headline -->
-    <h1 class="text-center text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight mb-6">
-      Pare de operar no escuro.<br/>
-      <span class="text-gradient">Conheça sua performance</span><br/>
-      com precisão cirúrgica.
-    </h1>
+        <h1 class="hero-headline">
+          Pare de<br/>
+          operar no<br/>
+          <span class="accent">escuro.</span>
+        </h1>
 
-    <!-- Subheadline -->
-    <p class="text-center text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style="color: var(--muted);">
-      Importe seus relatórios do Profit e descubra exatamente o que está travando sua evolução como day trader. Dashboard completo, métricas avançadas e feedback direto do seu assessor — tudo em um lugar.
-    </p>
+        <p style="font-size:17px;color:#888899;line-height:1.7;margin:28px 0 36px;max-width:480px;font-weight:400;">
+          Importe seus relatórios do Profit e veja exatamente o que está destruindo sua consistência. Métricas reais, curva de equity, análise de drawdown — tudo em segundos.
+        </p>
 
-    <!-- CTAs -->
-    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-20">
-      <a href="login.html" class="btn-primary px-8 py-4 text-base text-center">
-        Acessar meu Dashboard →
-      </a>
-      <a href="#como-funciona" class="btn-ghost px-8 py-4 text-base text-center">
-        Ver como funciona
-      </a>
-    </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="login.html" class="btn-green-lg">Acessar meu Dashboard →</a>
+          <a href="#como-funciona" class="btn-outline">Ver como funciona</a>
+        </div>
 
-    <!-- Dashboard Mockup -->
-    <div class="dashboard-mock max-w-5xl mx-auto shadow-2xl" style="box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border);">
-
-      <!-- Topbar do mockup -->
-      <div class="mock-topbar">
-        <div class="mock-dot" style="background:#EF4444;"></div>
-        <div class="mock-dot" style="background:#F59E0B;"></div>
-        <div class="mock-dot" style="background:#22C55E;"></div>
-        <div class="flex-1 flex justify-center">
-          <div class="text-xs px-16 py-1 rounded-md" style="background:#1A1A1A; color: var(--muted);">
-            app.zevehub.com/dashboard
+        <!-- inline mini stats -->
+        <div style="display:flex;gap:32px;margin-top:48px;padding-top:32px;border-top:1px solid var(--border);flex-wrap:wrap;">
+          <div>
+            <div class="mono" style="font-size:1.6rem;font-weight:600;color:#fff;">1.500<span style="color:var(--green);">+</span></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">traders conveniados</div>
+          </div>
+          <div>
+            <div class="mono" style="font-size:1.6rem;font-weight:600;color:#fff;">100<span style="color:var(--green);">%</span></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">compatível Profit</div>
+          </div>
+          <div>
+            <div class="mono" style="font-size:1.6rem;font-weight:600;color:#fff;">12<span style="color:var(--green);">+</span></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">métricas avançadas</div>
           </div>
         </div>
       </div>
 
-      <!-- Conteúdo do mockup -->
-      <div class="p-6">
-
-        <!-- Header do dash -->
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <p class="text-xs mb-1" style="color: var(--muted);">Bem-vindo de volta,</p>
-            <p class="font-bold text-lg">João Silva &nbsp;<span style="color: var(--muted); font-weight:400; font-size:14px;">· WING25</span></p>
+      <!-- Right: compact terminal panel -->
+      <div style="background:#080810;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.8);" class="hidden lg:block">
+        <!-- terminal header -->
+        <div style="background:#0A0A14;border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;gap:6px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#EF4444;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:#22C55E;"></div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs px-3 py-1 rounded-full" style="background:rgba(34,197,94,0.1); color: #22C55E; border: 1px solid rgba(34,197,94,0.2);">● Ao vivo</span>
-            <span class="text-xs px-3 py-1 rounded" style="background: var(--card-2); color: var(--muted);">Jan 2025</span>
-          </div>
+          <div class="mono" style="font-size:10px;color:#444455;">dashboard — João Silva</div>
+          <div style="width:36px;"></div>
         </div>
 
-        <!-- KPI Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <!-- P&L -->
-          <div class="rounded-xl p-4" style="background: var(--card-2); border: 1px solid var(--border);">
-            <p class="text-xs mb-2" style="color: var(--muted);">P&L do Mês</p>
-            <p class="font-black text-2xl" style="color: #22C55E;">+R$ 4.280</p>
-            <p class="text-xs mt-1" style="color: #22C55E;">▲ 12.4% vs mês ant.</p>
+        <div style="padding:20px;">
+          <!-- P&L headline -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase;font-weight:500;">P&L ACUMULADO — JAN/25</div>
+            <div class="mono" style="font-size:2.4rem;font-weight:600;color:var(--green);line-height:1;">+R$ 4.280</div>
+            <div class="mono" style="font-size:12px;color:var(--green);margin-top:4px;">▲ 12,4% vs mês anterior</div>
           </div>
-          <!-- Taxa de Acerto -->
-          <div class="rounded-xl p-4" style="background: var(--card-2); border: 1px solid var(--border);">
-            <p class="text-xs mb-2" style="color: var(--muted);">Taxa de Acerto</p>
-            <p class="font-black text-2xl">64,2%</p>
-            <p class="text-xs mt-1" style="color: var(--muted);">128 ops analisadas</p>
-          </div>
-          <!-- Drawdown -->
-          <div class="rounded-xl p-4" style="background: var(--card-2); border: 1px solid var(--border);">
-            <p class="text-xs mb-2" style="color: var(--muted);">Drawdown Máx.</p>
-            <p class="font-black text-2xl" style="color: #EF4444;">-R$ 890</p>
-            <p class="text-xs mt-1" style="color: var(--muted);">Dia 07/01</p>
-          </div>
-          <!-- Payoff -->
-          <div class="rounded-xl p-4" style="background: var(--card-2); border: 1px solid var(--border);">
-            <p class="text-xs mb-2" style="color: var(--muted);">Payoff</p>
-            <p class="font-black text-2xl">1.84</p>
-            <p class="text-xs mt-1" style="color: var(--muted);">Fator lucro: 3.2</p>
-          </div>
-        </div>
 
-        <!-- Gráficos mock -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-          <!-- Equity Curve -->
-          <div class="md:col-span-2 rounded-xl p-4" style="background: var(--card-2); border: 1px solid var(--border);">
-            <p class="text-xs font-semibold mb-4" style="color: var(--muted);">CURVA DE EQUITY</p>
-            <svg viewBox="0 0 340 90" class="w-full" style="height:90px;">
+          <!-- equity mini chart -->
+          <div style="background:#050510;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase;">Curva de Equity</div>
+            <svg viewBox="0 0 360 80" style="width:100%;display:block;" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="gLine" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#0059FF" stop-opacity="0.25"/>
-                  <stop offset="100%" stop-color="#0059FF" stop-opacity="0"/>
+                <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00E676" stop-opacity=".2"/>
+                  <stop offset="100%" stop-color="#00E676" stop-opacity="0"/>
                 </linearGradient>
               </defs>
-              <!-- Área abaixo da linha -->
-              <path d="M0 75 L20 72 L45 65 L60 68 L80 55 L100 58 L120 42 L145 38 L165 45 L185 30 L210 32 L230 18 L255 22 L275 12 L300 8 L320 5 L340 3 L340 90 L0 90 Z"
-                    fill="url(#gLine)"/>
-              <!-- Linha principal -->
-              <path d="M0 75 L20 72 L45 65 L60 68 L80 55 L100 58 L120 42 L145 38 L165 45 L185 30 L210 32 L230 18 L255 22 L275 12 L300 8 L320 5 L340 3"
-                    fill="none" stroke="#0059FF" stroke-width="2" stroke-linecap="round"/>
-              <!-- Ponto atual -->
-              <circle cx="340" cy="3" r="4" fill="#0059FF"/>
+              <path d="M0 72 C10 70, 20 68, 30 65 C40 62, 46 67, 56 63 C66 59, 72 54, 84 48 C96 42, 100 50, 112 44 C124 38, 130 36, 144 30 C158 24, 162 34, 174 28 C186 22, 192 18, 208 14 C224 10, 228 20, 244 14 C260 8, 266 6, 280 4 C294 2, 300 8, 316 4 C332 0, 344 2, 360 1 L360 80 L0 80 Z" fill="url(#g)"/>
+              <path d="M0 72 C10 70, 20 68, 30 65 C40 62, 46 67, 56 63 C66 59, 72 54, 84 48 C96 42, 100 50, 112 44 C124 38, 130 36, 144 30 C158 24, 162 34, 174 28 C186 22, 192 18, 208 14 C224 10, 228 20, 244 14 C260 8, 266 6, 280 4 C294 2, 300 8, 316 4 C332 0, 344 2, 360 1" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="360" cy="1" r="3.5" fill="#00E676"/>
             </svg>
           </div>
 
-          <!-- Heatmap de horários simplificado -->
-          <div class="rounded-xl p-4" style="background: var(--card-2); border: 1px solid var(--border);">
-            <p class="text-xs font-semibold mb-3" style="color: var(--muted);">HORÁRIOS LUCRATIVOS</p>
-            <div class="space-y-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs w-10" style="color: var(--muted);">09h</span>
-                <div class="flex-1 h-4 rounded" style="background: var(--border);"><div class="h-4 rounded" style="background: rgba(0,89,255,0.8); width: 85%;"></div></div>
-                <span class="text-xs w-12 text-right" style="color: #22C55E;">+R$1.240</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs w-10" style="color: var(--muted);">10h</span>
-                <div class="flex-1 h-4 rounded" style="background: var(--border);"><div class="h-4 rounded" style="background: rgba(0,89,255,0.5); width: 55%;"></div></div>
-                <span class="text-xs w-12 text-right" style="color: #22C55E;">+R$720</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs w-10" style="color: var(--muted);">11h</span>
-                <div class="flex-1 h-4 rounded" style="background: var(--border);"><div class="h-4 rounded" style="background: rgba(239,68,68,0.6); width: 35%;"></div></div>
-                <span class="text-xs w-12 text-right" style="color: #EF4444;">-R$420</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs w-10" style="color: var(--muted);">14h</span>
-                <div class="flex-1 h-4 rounded" style="background: var(--border);"><div class="h-4 rounded" style="background: rgba(0,89,255,0.3); width: 28%;"></div></div>
-                <span class="text-xs w-12 text-right" style="color: #22C55E;">+R$290</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs w-10" style="color: var(--muted);">15h</span>
-                <div class="flex-1 h-4 rounded" style="background: var(--border);"><div class="h-4 rounded" style="background: rgba(239,68,68,0.4); width: 22%;"></div></div>
-                <span class="text-xs w-12 text-right" style="color: #EF4444;">-R$310</span>
-              </div>
+          <!-- 2x2 kpis -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+            <div style="background:#050510;border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Acerto</div>
+              <div class="mono" style="font-size:1.1rem;font-weight:600;color:#fff;">64,2%</div>
+            </div>
+            <div style="background:#050510;border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Payoff</div>
+              <div class="mono" style="font-size:1.1rem;font-weight:600;color:#fff;">1.84</div>
+            </div>
+            <div style="background:#050510;border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Max DD</div>
+              <div class="mono" style="font-size:1.1rem;font-weight:600;color:var(--red);">−R$890</div>
+            </div>
+            <div style="background:#050510;border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Ops</div>
+              <div class="mono" style="font-size:1.1rem;font-weight:600;color:#fff;">128</div>
             </div>
           </div>
 
+          <!-- recent trades -->
+          <div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase;">Últimas operações</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:6px;background:#050510;border:1px solid rgba(0,230,118,.08);">
+                <span class="mono" style="font-size:11px;color:#aaa;">WIN ·  09:17</span>
+                <span class="mono" style="font-size:11px;color:var(--green);font-weight:600;">+R$ 480</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:6px;background:#050510;border:1px solid rgba(255,68,68,.08);">
+                <span class="mono" style="font-size:11px;color:#aaa;">WIN ·  10:42</span>
+                <span class="mono" style="font-size:11px;color:var(--red);font-weight:600;">−R$ 240</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:6px;background:#050510;border:1px solid rgba(0,230,118,.08);">
+                <span class="mono" style="font-size:11px;color:#aaa;">WDO ·  11:05</span>
+                <span class="mono" style="font-size:11px;color:var(--green);font-weight:600;">+R$ 360</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- Fim mockup -->
 
+    </div>
   </div>
 </section>
 
 
-<!-- =========================================================
-     STATS BAR
-========================================================= -->
-<div class="divider-glow"></div>
-<section class="py-12 px-6" style="background: var(--card);">
-  <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-    <div>
-      <p class="text-4xl font-black text-gradient">1.500+</p>
-      <p class="text-sm mt-1" style="color: var(--muted);">traders conveniados</p>
+<!-- ══════════════════════════════════════
+     STAT STRIP
+══════════════════════════════════════ -->
+<div class="stat-strip">
+  <div class="stat-cell">
+    <div class="stat-num">1.500<span style="color:var(--green);">+</span></div>
+    <div class="stat-label">traders conveniados</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">12</div>
+    <div class="stat-label">métricas avançadas</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num" style="color:var(--green);">100%</div>
+    <div class="stat-label">compatível com Profit</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">0</div>
+    <div class="stat-label">configuração necessária</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     FULL DASHBOARD PREVIEW
+══════════════════════════════════════ -->
+<section style="padding:96px 32px;background:#000;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div class="s-eyebrow">Plataforma</div>
+      <h2 class="s-title">O dashboard que você<br/>merecia ter.</h2>
+      <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">Tudo centralizado. Sem planilha, sem achismo, sem perda de tempo.</p>
     </div>
-    <div>
-      <p class="text-4xl font-black text-gradient">12</p>
-      <p class="text-sm mt-1" style="color: var(--muted);">métricas avançadas</p>
-    </div>
-    <div>
-      <p class="text-4xl font-black text-gradient">100%</p>
-      <p class="text-sm mt-1" style="color: var(--muted);">compatível com Profit</p>
-    </div>
-    <div>
-      <p class="text-4xl font-black text-gradient">0</p>
-      <p class="text-sm mt-1" style="color: var(--muted);">configuração necessária</p>
+
+    <div class="dash-wrap">
+      <div class="dash-bar">
+        <div class="dot" style="background:#EF4444;"></div>
+        <div class="dot" style="background:#F59E0B;"></div>
+        <div class="dot" style="background:#22C55E;"></div>
+        <div class="dash-url">app.zevehub.com/dashboard</div>
+      </div>
+      <div class="dash-body">
+
+        <!-- Sidebar -->
+        <div class="dash-sidebar">
+          <div style="padding:0 16px 16px;border-bottom:1px solid var(--border);margin-bottom:8px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;">ZEVEHUB</div>
+          </div>
+          <div class="dash-nav-item active">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="#00E676" stroke-width="1.3"/><rect x="7" y="1" width="5" height="5" rx="1" stroke="#00E676" stroke-width="1.3"/><rect x="1" y="7" width="5" height="5" rx="1" stroke="#00E676" stroke-width="1.3"/><rect x="7" y="7" width="5" height="5" rx="1" stroke="#00E676" stroke-width="1.3"/></svg>
+            Visão Geral
+          </div>
+          <div class="dash-nav-item">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 10L4.5 7L7 9.5L10.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Histórico
+          </div>
+          <div class="dash-nav-item">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 4v2.5l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Horários
+          </div>
+          <div class="dash-nav-item">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5L8 5h3.5L9 7.5l1 3.5-3.5-2-3.5 2 1-3.5L1.5 5H5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            Metas
+          </div>
+          <div class="dash-nav-item">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 9l2.5-3 3 2.5L11 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="9" r="2" stroke="currentColor" stroke-width="1.2"/></svg>
+            Risco
+          </div>
+          <div style="padding:16px 16px 6px;font-size:10px;color:#333344;letter-spacing:.08em;text-transform:uppercase;margin-top:4px;">Análise</div>
+          <div class="dash-nav-item">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="7" width="2.5" height="4" rx=".5" stroke="currentColor" stroke-width="1.2"/><rect x="5.5" y="4.5" width="2.5" height="6.5" rx=".5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="2" width="2.5" height="9" rx=".5" stroke="currentColor" stroke-width="1.2"/></svg>
+            Comparativo
+          </div>
+          <div class="dash-nav-item">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 11.5L5 7l3 2.5 3.5-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Consistência
+          </div>
+          <div class="dash-nav-item">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 4h9M2 6.5h6M2 9h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Exportar
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="dash-content">
+          <!-- header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Bem-vindo,</div>
+              <div style="font-size:14px;font-weight:600;color:#fff;">João Silva <span class="mono" style="font-size:11px;color:var(--muted);font-weight:400;">· WING25</span></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span>
+              <span class="mono" style="font-size:11px;color:var(--green);">Jan 2025</span>
+            </div>
+          </div>
+
+          <!-- KPIs -->
+          <div class="kpis">
+            <div class="kpi">
+              <div class="kpi-lbl">P&L Mês</div>
+              <div class="kpi-val" style="color:var(--green);">+4.280</div>
+              <div class="kpi-change" style="color:var(--green);">▲ 12,4%</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-lbl">Taxa Acerto</div>
+              <div class="kpi-val">64,2%</div>
+              <div class="kpi-change" style="color:var(--muted);">128 ops</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-lbl">Drawdown Máx.</div>
+              <div class="kpi-val" style="color:var(--red);">−890</div>
+              <div class="kpi-change" style="color:var(--muted);">07 Jan</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-lbl">Payoff</div>
+              <div class="kpi-val">1.84</div>
+              <div class="kpi-change" style="color:var(--muted);">FL 3.2</div>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="charts-row" style="flex:1;">
+            <div class="panel">
+              <div class="panel-label">Curva de Equity — Jan 2025</div>
+              <svg viewBox="0 0 400 110" style="width:100%;display:block;" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="eq2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#00E676" stop-opacity=".18"/>
+                    <stop offset="100%" stop-color="#00E676" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- grid -->
+                <line x1="0" y1="27" x2="400" y2="27" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+                <line x1="0" y1="54" x2="400" y2="54" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+                <line x1="0" y1="81" x2="400" y2="81" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+                <!-- area -->
+                <path d="M0 98 C8 95,15 91,24 86 C33 81,38 88,50 83 C62 78,68 70,80 64 C92 58,96 65,110 59 C124 53,130 50,144 44 C158 38,162 46,178 40 C194 34,200 30,218 24 C236 18,240 28,258 22 C276 16,282 12,300 8 C318 4,326 10,344 6 C362 2,374 4,400 2 L400 110 L0 110 Z" fill="url(#eq2)"/>
+                <path d="M0 98 C8 95,15 91,24 86 C33 81,38 88,50 83 C62 78,68 70,80 64 C92 58,96 65,110 59 C124 53,130 50,144 44 C158 38,162 46,178 40 C194 34,200 30,218 24 C236 18,240 28,258 22 C276 16,282 12,300 8 C318 4,326 10,344 6 C362 2,374 4,400 2" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="400" cy="2" r="4" fill="#00E676"/>
+                <circle cx="400" cy="2" r="8" fill="rgba(0,230,118,.2)"/>
+              </svg>
+            </div>
+
+            <div class="panel">
+              <div class="panel-label">Horários Lucrativos</div>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="mono" style="font-size:10px;color:var(--muted);width:24px;">09h</span>
+                  <div style="flex:1;background:#0A0A14;border-radius:3px;height:9px;overflow:hidden;"><div style="width:85%;height:100%;background:var(--green);border-radius:3px;opacity:.8;"></div></div>
+                  <span class="mono" style="font-size:10px;color:var(--green);width:40px;text-align:right;">+1.2k</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="mono" style="font-size:10px;color:var(--muted);width:24px;">10h</span>
+                  <div style="flex:1;background:#0A0A14;border-radius:3px;height:9px;overflow:hidden;"><div style="width:58%;height:100%;background:var(--green);border-radius:3px;opacity:.55;"></div></div>
+                  <span class="mono" style="font-size:10px;color:var(--green);width:40px;text-align:right;">+720</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="mono" style="font-size:10px;color:var(--muted);width:24px;">11h</span>
+                  <div style="flex:1;background:#0A0A14;border-radius:3px;height:9px;overflow:hidden;"><div style="width:32%;height:100%;background:var(--red);border-radius:3px;opacity:.7;"></div></div>
+                  <span class="mono" style="font-size:10px;color:var(--red);width:40px;text-align:right;">−420</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="mono" style="font-size:10px;color:var(--muted);width:24px;">14h</span>
+                  <div style="flex:1;background:#0A0A14;border-radius:3px;height:9px;overflow:hidden;"><div style="width:26%;height:100%;background:var(--green);border-radius:3px;opacity:.45;"></div></div>
+                  <span class="mono" style="font-size:10px;color:var(--green);width:40px;text-align:right;">+290</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="mono" style="font-size:10px;color:var(--muted);width:24px;">15h</span>
+                  <div style="flex:1;background:#0A0A14;border-radius:3px;height:9px;overflow:hidden;"><div style="width:20%;height:100%;background:var(--red);border-radius:3px;opacity:.5;"></div></div>
+                  <span class="mono" style="font-size:10px;color:var(--red);width:40px;text-align:right;">−310</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </section>
-<div class="divider-glow"></div>
 
 
-<!-- =========================================================
-     COMO FUNCIONA
-========================================================= -->
-<section id="como-funciona" class="py-24 px-6">
-  <div class="max-w-3xl mx-auto">
+<!-- ══════════════════════════════════════
+     FEATURES
+══════════════════════════════════════ -->
+<section id="funcionalidades" style="padding:96px 32px;background:#050508;border-top:1px solid var(--border);">
+  <div style="max-width:1100px;margin:0 auto;">
 
-    <div class="text-center mb-16">
-      <span class="badge-orange mb-4">Simples de usar</span>
-      <h2 class="text-4xl md:text-5xl font-black mt-4">3 passos para<br/><span class="text-gradient">dominar sua performance</span></h2>
+    <div style="margin-bottom:64px;">
+      <div class="s-eyebrow">Funcionalidades</div>
+      <h2 class="s-title">Tudo que você precisa saber<br/>sobre si mesmo como trader.</h2>
     </div>
 
-    <!-- Steps -->
     <div>
-
-      <!-- Step 1 -->
-      <div class="flex gap-6 items-start">
-        <div class="flex flex-col items-center">
-          <div class="step-circle">1</div>
-          <div class="step-connector"></div>
-        </div>
-        <div class="pb-8">
-          <h3 class="text-xl font-bold mb-2">Exporte o relatório no Profit</h3>
-          <p style="color: var(--muted);">Acesse a aba de relatórios na plataforma Profit, selecione o período desejado e exporte o arquivo CSV. Todo trader conveniado já sabe fazer isso.</p>
-        </div>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="flex gap-6 items-start">
-        <div class="flex flex-col items-center">
-          <div class="step-circle">2</div>
-          <div class="step-connector"></div>
-        </div>
-        <div class="pb-8">
-          <h3 class="text-xl font-bold mb-2">Faça o upload no ZeveHub</h3>
-          <p style="color: var(--muted);">Arraste o arquivo para o Hub. Em segundos, nosso sistema processa centenas de operações, normaliza os dados e popula todo o seu painel automaticamente.</p>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="flex gap-6 items-start">
-        <div class="flex flex-col items-center">
-          <div class="step-circle">3</div>
-        </div>
+      <div class="feat-row">
+        <div class="feat-num">01</div>
         <div>
-          <h3 class="text-xl font-bold mb-2">Analise. Evolua. Lucre mais.</h3>
-          <p style="color: var(--muted);">Seu dashboard está pronto. Identifique padrões, descubra seus horários mais lucrativos, entenda o que está destruindo sua consistência — e receba o feedback do seu assessor direto na plataforma.</p>
+          <div class="feat-title">Curva de Equity</div>
+        </div>
+        <div class="feat-desc">Visualize a evolução real do seu capital. Identifique em qual momento você começou a sair do plano, onde estão os maiores drawdowns e como se deu a recuperação.</div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-num">02</div>
+        <div>
+          <div class="feat-title">Heatmap de Horários</div>
+        </div>
+        <div class="feat-desc">Descubra seu melhor e pior horário. A maioria dos traders perde dinheiro em 1 ou 2 janelas específicas que destroem o resultado da semana inteira.</div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-num">03</div>
+        <div>
+          <div class="feat-title">Controle de Drawdown</div>
+        </div>
+        <div class="feat-desc">Curva de drawdown detalhada, top 10 eventos de perda do pico ao fundo e porcentagem consumida do capital. Entenda o risco real da sua operação.</div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-num">04</div>
+        <div>
+          <div class="feat-title">Análise de Consistência</div>
+        </div>
+        <div class="feat-desc">Streaks de vitória e derrota, média móvel de 10 dias, histograma de distribuição de resultados. O que fundos quantitativos analisam, aplicado ao seu trading pessoal.</div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-num">05</div>
+        <div>
+          <div class="feat-title">Metas e Calendário</div>
+        </div>
+        <div class="feat-desc">Defina metas diárias e mensais, acompanhe o progresso em um calendário visual colorido e saiba em quantos dias você realmente bateu seu objetivo.</div>
+      </div>
+      <div class="feat-row">
+        <div class="feat-num">06</div>
+        <div>
+          <div class="feat-title">Feedback do Assessor</div>
+        </div>
+        <div class="feat-desc">Seu assessor analisa os dados reais das suas operações e deixa comentários diretamente no Hub. Sem achismo — com os números na tela.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     COMO FUNCIONA
+══════════════════════════════════════ -->
+<section id="como-funciona" style="padding:96px 32px;background:#000;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="margin-bottom:56px;">
+      <div class="s-eyebrow">Como Funciona</div>
+      <h2 class="s-title">3 passos para parar<br/>de operar no escuro.</h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;">
+
+      <div class="step">
+        <div class="step-badge">01</div>
+        <div>
+          <div class="step-title">Exporte o relatório no Profit</div>
+          <p class="step-desc" style="margin-top:8px;">Acesse a aba de relatórios na plataforma Profit, selecione o período e exporte o CSV. 30 segundos no máximo.</p>
+        </div>
+        <div style="background:#080810;border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:4px;">
+          <div class="mono" style="font-size:11px;color:var(--muted);margin-bottom:4px;">📂 relatorio_jan2025.csv</div>
+          <div style="height:2px;background:#111;border-radius:1px;"><div style="height:2px;width:100%;background:var(--green);border-radius:1px;"></div></div>
+          <div class="mono" style="font-size:10px;color:var(--green);margin-top:4px;">✓ Pronto para upload</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-badge">02</div>
+        <div>
+          <div class="step-title">Faça o upload no ZeveHub</div>
+          <p class="step-desc" style="margin-top:8px;">Arraste o arquivo. Em segundos, centenas de operações são processadas e todo o painel é atualizado automaticamente.</p>
+        </div>
+        <div style="background:#080810;border:1px solid rgba(0,230,118,.15);border-radius:10px;padding:14px;margin-top:4px;">
+          <div class="mono" style="font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:.04em;">PROCESSANDO...</div>
+          <div style="height:2px;background:#111;border-radius:1px;"><div style="height:2px;width:100%;background:var(--green);border-radius:1px;transition:width 2s;"></div></div>
+          <div class="mono" style="font-size:10px;color:var(--green);margin-top:5px;">✓ 347 operações processadas</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-badge">03</div>
+        <div>
+          <div class="step-title">Analise. Evolua. Lucre mais.</div>
+          <p class="step-desc" style="margin-top:8px;">Dashboard pronto. Identifique padrões, descubra os horários que destroem seu resultado e receba feedback do assessor.</p>
+        </div>
+        <div style="background:#080810;border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:4px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div><div class="mono" style="font-size:11px;color:var(--green);">+R$4.280</div><div style="font-size:10px;color:var(--muted);">P&L</div></div>
+          <div><div class="mono" style="font-size:11px;color:#fff;">64,2%</div><div style="font-size:10px;color:var(--muted);">Acerto</div></div>
         </div>
       </div>
 
@@ -441,217 +882,113 @@
 </section>
 
 
-<!-- =========================================================
-     FUNCIONALIDADES
-========================================================= -->
-<section id="funcionalidades" class="py-24 px-6" style="background: linear-gradient(to bottom, var(--bg), var(--card), var(--bg));">
-  <div class="max-w-6xl mx-auto">
-
-    <div class="text-center mb-16">
-      <span class="badge-orange mb-4">O que você tem acesso</span>
-      <h2 class="text-4xl md:text-5xl font-black mt-4">Tudo que um trader<br/><span class="text-gradient">sério precisa saber</span></h2>
-      <p class="mt-4 text-lg max-w-xl mx-auto" style="color: var(--muted);">Chega de adivinhar. Aqui, cada decisão é tomada com dados reais das suas próprias operações.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-
-      <!-- Card 1 -->
-      <div class="feature-card p-6">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background: rgba(0,89,255,0.12);">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M3 16L8 10L12 13L17 6" stroke="#0059FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M3 19h16" stroke="#0059FF" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <h3 class="font-bold text-lg mb-2">Curva de Equity</h3>
-        <p class="text-sm leading-relaxed" style="color: var(--muted);">Visualize a evolução do seu capital ao longo do tempo. Identifique drawdowns, picos e padrões de consistência que os números frios não mostram.</p>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="feature-card p-6">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background: rgba(34,197,94,0.1);">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="11" r="8" stroke="#22C55E" stroke-width="2"/>
-            <path d="M11 7v4l3 3" stroke="#22C55E" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <h3 class="font-bold text-lg mb-2">Heatmap de Horários</h3>
-        <p class="text-sm leading-relaxed" style="color: var(--muted);">Descubra em quais horários você ganha e em quais você perde dinheiro. A maioria dos traders tem 1-2 horas que destroem o resultado do dia inteiro.</p>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="feature-card p-6">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background: rgba(0,89,255,0.12);">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <rect x="3" y="12" width="4" height="7" rx="1" fill="#0059FF" fill-opacity="0.3" stroke="#0059FF" stroke-width="1.5"/>
-            <rect x="9" y="7" width="4" height="12" rx="1" fill="#0059FF" fill-opacity="0.5" stroke="#0059FF" stroke-width="1.5"/>
-            <rect x="15" y="3" width="4" height="16" rx="1" fill="#0059FF" stroke="#0059FF" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <h3 class="font-bold text-lg mb-2">Métricas Avançadas</h3>
-        <p class="text-sm leading-relaxed" style="color: var(--muted);">Taxa de acerto, payoff, fator de lucro, MAE/MFE, sequências de ganho e perda. As métricas que fundos quantitativos usam, na sua mão.</p>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="feature-card p-6">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background: rgba(239,68,68,0.1);">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M11 3v2M11 17v2M3 11H5M17 11h2" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
-            <path d="M5.6 5.6l1.4 1.4M14.9 14.9l1.4 1.4M5.6 16.4l1.4-1.4M14.9 7.1l1.4-1.4" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="11" cy="11" r="3" stroke="#EF4444" stroke-width="2"/>
-          </svg>
-        </div>
-        <h3 class="font-bold text-lg mb-2">Controle de Drawdown</h3>
-        <p class="text-sm leading-relaxed" style="color: var(--muted);">Monitore seu drawdown máximo diário e histórico. Saiba exatamente quando você ultrapassou seus limites e por quê isso aconteceu.</p>
-      </div>
-
-      <!-- Card 5 -->
-      <div class="feature-card p-6">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background: rgba(0,89,255,0.12);">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M4 6h14M4 10h10M4 14h6" stroke="#0059FF" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="17" cy="16" r="3" stroke="#0059FF" stroke-width="1.5"/>
-            <path d="M17 15v1l1 1" stroke="#0059FF" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <h3 class="font-bold text-lg mb-2">Histórico Completo</h3>
-        <p class="text-sm leading-relaxed" style="color: var(--muted);">Todas as suas operações organizadas em tabela com filtros por data, ativo, lado (compra/venda) e resultado. Busque qualquer trade em segundos.</p>
-      </div>
-
-      <!-- Card 6 -->
-      <div class="feature-card p-6">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background: rgba(139,92,246,0.1);">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M18 8C18 11.3 15.3 14 12 14C8.7 14 6 11.3 6 8C6 4.7 8.7 2 12 2C15.3 2 18 4.7 18 8Z" stroke="#8B5CF6" stroke-width="1.8"/>
-            <path d="M4 20C4 17.2 7.6 15 12 15C16.4 15 20 17.2 20 20" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round"/>
-            <path d="M7 8h2M11 8h2" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <h3 class="font-bold text-lg mb-2">Feedback do Assessor</h3>
-        <p class="text-sm leading-relaxed" style="color: var(--muted);">Seu assessor analisa suas operações diretamente no Hub e deixa comentários específicos sobre o que melhorar. Troca de nível com quem conhece seus números.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-<!-- =========================================================
+<!-- ══════════════════════════════════════
      PARA ASSESSORES
-========================================================= -->
-<section id="assessores" class="py-24 px-6">
-  <div class="max-w-6xl mx-auto">
+══════════════════════════════════════ -->
+<section id="assessores" style="padding:96px 32px;background:#050508;border-top:1px solid var(--border);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-      <!-- Texto -->
       <div>
-        <span class="badge-orange mb-6">Para Assessores</span>
-        <h2 class="text-4xl md:text-5xl font-black mt-4 mb-6 leading-tight">
-          Acompanhe todos os seus<br/><span class="text-gradient">clientes em um painel</span>
-        </h2>
-        <p class="text-lg mb-10 leading-relaxed" style="color: var(--muted);">
-          Chega de depender de prints de WhatsApp para entender a performance do seu cliente. Com o ZeveHub, você enxerga os dados reais de todos os conveniados — e age antes que os problemas virem crises.
-        </p>
+        <div class="s-eyebrow">Para Assessores</div>
+        <h2 class="s-title" style="margin-bottom:20px;">Todos os seus clientes.<br/>Um único painel.</h2>
+        <p style="font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:36px;">Chega de print de WhatsApp. Você vê os dados reais de todos os conveniados — e age antes que os problemas virem crises.</p>
 
-        <div class="space-y-6">
-          <div class="assessor-feature">
-            <h4 class="font-bold mb-1">Visão consolidada da carteira</h4>
-            <p class="text-sm" style="color: var(--muted);">Veja o P&L, drawdown e taxa de acerto de cada cliente num único painel com busca e filtros.</p>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--border);">
+            <div style="width:4px;border-radius:2px;background:var(--green);flex-shrink:0;"></div>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:#fff;margin-bottom:4px;">Visão consolidada da carteira</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.6;">P&L, drawdown e taxa de acerto de cada cliente num único painel com busca e filtros.</div>
+            </div>
           </div>
-          <div class="assessor-feature">
-            <h4 class="font-bold mb-1">Comentários e análises inline</h4>
-            <p class="text-sm" style="color: var(--muted);">Analise as operações do cliente e deixe feedback diretamente no Hub. Ele recebe notificação em tempo real.</p>
+          <div style="display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--border);">
+            <div style="width:4px;border-radius:2px;background:var(--green);flex-shrink:0;"></div>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:#fff;margin-bottom:4px;">Comentários inline</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.6;">Analise as operações e deixe feedback diretamente no Hub. O cliente recebe notificação.</div>
+            </div>
           </div>
-          <div class="assessor-feature">
-            <h4 class="font-bold mb-1">Identifique padrões destrutivos</h4>
-            <p class="text-sm" style="color: var(--muted);">Veja quem está operando nos horários errados, forçando revenge trades ou ultrapassando limites de drawdown.</p>
+          <div style="display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--border);">
+            <div style="width:4px;border-radius:2px;background:var(--green);flex-shrink:0;"></div>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:#fff;margin-bottom:4px;">Identifique padrões destrutivos</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.6;">Quem opera no horário errado, quem força revenge trade, quem ultrapassa o limite de DD.</div>
+            </div>
           </div>
-          <div class="assessor-feature">
-            <h4 class="font-bold mb-1">Histórico de acompanhamento</h4>
-            <p class="text-sm" style="color: var(--muted);">Todos os feedbacks ficam registrados. Mostre a evolução do cliente ao longo do tempo — e o valor real da assessoria.</p>
+          <div style="display:flex;gap:16px;padding:18px 0;">
+            <div style="width:4px;border-radius:2px;background:var(--green);flex-shrink:0;"></div>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:#fff;margin-bottom:4px;">Histórico completo</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.6;">Todos os feedbacks registrados. Mostre a evolução e o valor real da assessoria ao longo do tempo.</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Mock painel assessor -->
-      <div class="dashboard-mock" style="box-shadow: 0 24px 60px rgba(0,0,0,0.5);">
-        <div class="mock-topbar">
-          <div class="mock-dot" style="background:#EF4444;"></div>
-          <div class="mock-dot" style="background:#F59E0B;"></div>
-          <div class="mock-dot" style="background:#22C55E;"></div>
-          <span class="text-xs ml-4" style="color: var(--muted);">Painel do Assessor</span>
+      <!-- Assessor mockup -->
+      <div style="background:#080810;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.7);">
+        <div style="background:#0A0A14;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:6px;">
+          <div style="width:9px;height:9px;border-radius:50%;background:#EF4444;"></div>
+          <div style="width:9px;height:9px;border-radius:50%;background:#F59E0B;"></div>
+          <div style="width:9px;height:9px;border-radius:50%;background:#22C55E;"></div>
+          <span class="mono" style="font-size:10px;color:#333344;margin-left:8px;">painel do assessor</span>
         </div>
-        <div class="p-5">
-          <div class="flex items-center justify-between mb-4">
-            <p class="font-semibold text-sm">Meus Clientes</p>
-            <span class="text-xs px-2 py-1 rounded" style="background: var(--card-2); color: var(--muted);">23 ativos</span>
+        <div style="padding:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:600;color:#fff;">Meus Clientes</div>
+            <span class="mono" style="font-size:11px;color:var(--green);background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.15);padding:3px 10px;border-radius:100px;">23 ativos</span>
           </div>
 
-          <!-- Lista de clientes mock -->
-          <div class="space-y-2">
-            <!-- Cliente 1 -->
-            <div class="flex items-center justify-between p-3 rounded-xl" style="background: var(--card-2); border: 1px solid var(--border);">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background: rgba(0,89,255,0.2); color: var(--orange);">JS</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+            <div class="client-row">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="avatar" style="background:rgba(0,230,118,.1);color:var(--green);">PR</div>
                 <div>
-                  <p class="text-sm font-semibold">João Silva</p>
-                  <p class="text-xs" style="color: var(--muted);">47 ops · WING25</p>
+                  <div style="font-size:12px;font-weight:600;color:#fff;">Pedro Rocha</div>
+                  <div class="mono" style="font-size:10px;color:var(--muted);">62 ops · WING25</div>
                 </div>
               </div>
-              <div class="text-right">
-                <p class="text-sm font-bold" style="color: #22C55E;">+R$2.840</p>
-                <p class="text-xs" style="color: var(--muted);">68% acerto</p>
+              <div style="text-align:right;">
+                <div class="mono" style="font-size:12px;font-weight:600;color:var(--green);">+R$5.670</div>
+                <div style="font-size:10px;color:var(--muted);">72% acerto</div>
               </div>
             </div>
-            <!-- Cliente 2 -->
-            <div class="flex items-center justify-between p-3 rounded-xl" style="background: var(--card-2); border: 1px solid rgba(239,68,68,0.2);">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background: rgba(239,68,68,0.15); color: #EF4444;">MC</div>
+            <div class="client-row">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="avatar" style="background:rgba(68,136,255,.1);color:var(--blue);">JS</div>
                 <div>
-                  <p class="text-sm font-semibold">Maria Costa</p>
-                  <p class="text-xs" style="color: var(--muted);">31 ops · WDOH25</p>
+                  <div style="font-size:12px;font-weight:600;color:#fff;">João Silva</div>
+                  <div class="mono" style="font-size:10px;color:var(--muted);">47 ops · WING25</div>
                 </div>
               </div>
-              <div class="text-right">
-                <p class="text-sm font-bold" style="color: #EF4444;">-R$1.120</p>
-                <p class="text-xs" style="color: #EF4444;">⚠ DD alto</p>
+              <div style="text-align:right;">
+                <div class="mono" style="font-size:12px;font-weight:600;color:var(--green);">+R$2.840</div>
+                <div style="font-size:10px;color:var(--muted);">68% acerto</div>
               </div>
             </div>
-            <!-- Cliente 3 -->
-            <div class="flex items-center justify-between p-3 rounded-xl" style="background: var(--card-2); border: 1px solid var(--border);">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background: rgba(34,197,94,0.15); color: #22C55E;">PR</div>
+            <div class="client-row" style="border-color:rgba(255,68,68,.12);">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="avatar" style="background:rgba(255,68,68,.1);color:var(--red);">MC</div>
                 <div>
-                  <p class="text-sm font-semibold">Pedro Rocha</p>
-                  <p class="text-xs" style="color: var(--muted);">62 ops · WING25</p>
+                  <div style="font-size:12px;font-weight:600;color:#fff;">Maria Costa</div>
+                  <div class="mono" style="font-size:10px;color:var(--muted);">31 ops · WDOH25</div>
                 </div>
               </div>
-              <div class="text-right">
-                <p class="text-sm font-bold" style="color: #22C55E;">+R$5.670</p>
-                <p class="text-xs" style="color: var(--muted);">72% acerto</p>
-              </div>
-            </div>
-            <!-- Cliente 4 -->
-            <div class="flex items-center justify-between p-3 rounded-xl" style="background: var(--card-2); border: 1px solid var(--border);">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background: rgba(0,89,255,0.15); color: var(--orange);">AL</div>
-                <div>
-                  <p class="text-sm font-semibold">Ana Lima</p>
-                  <p class="text-xs" style="color: var(--muted);">28 ops · WING25</p>
-                </div>
-              </div>
-              <div class="text-right">
-                <p class="text-sm font-bold" style="color: #22C55E;">+R$890</p>
-                <p class="text-xs" style="color: var(--muted);">54% acerto</p>
+              <div style="text-align:right;">
+                <div class="mono" style="font-size:12px;font-weight:600;color:var(--red);">−R$1.120</div>
+                <div style="font-size:10px;color:var(--red);">⚠ DD alto</div>
               </div>
             </div>
           </div>
 
-          <!-- Comentário do assessor -->
-          <div class="mt-4 p-3 rounded-xl" style="background: rgba(139,92,246,0.05); border: 1px solid rgba(139,92,246,0.15);">
-            <p class="text-xs font-semibold mb-1" style="color: #8B5CF6;">💬 Seu comentário para Maria Costa</p>
-            <p class="text-xs" style="color: var(--muted);">Maria, você está operando em excesso entre 11h-12h. Esse horário representou 80% do seu drawdown em Janeiro. Recomendo parar às 11h30.</p>
+          <!-- comment -->
+          <div style="background:rgba(139,92,246,.05);border:1px solid rgba(139,92,246,.15);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;font-weight:600;color:#8B5CF6;margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 1.5h8a.8.8 0 01.8.8v4.5a.8.8 0 01-.8.8H3.5L1 9.5V2.3a.8.8 0 01.5-.8z" stroke="#8B5CF6" stroke-width="1.1"/></svg>
+              Análise para Maria Costa
+            </div>
+            <p style="font-size:12px;color:var(--muted);line-height:1.6;">Maria, você opera em excesso entre 11h–12h. Esse horário representou 80% do drawdown em Janeiro. Recomendo encerrar às 11h30.</p>
           </div>
         </div>
       </div>
@@ -661,63 +998,49 @@
 </section>
 
 
-<!-- =========================================================
+<!-- ══════════════════════════════════════
      CTA FINAL
-========================================================= -->
-<section class="py-24 px-6">
-  <div class="max-w-4xl mx-auto">
-    <div class="rounded-2xl p-12 text-center relative overflow-hidden" style="background: var(--card); border: 1px solid var(--border);">
-
-      <!-- Glow de fundo -->
-      <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0,89,255,0.1), transparent);"></div>
-
-      <div class="relative">
-        <span class="badge-orange mb-6">Acesso exclusivo</span>
-        <h2 class="text-4xl md:text-5xl font-black mt-4 mb-4 leading-tight">
-          Você já é conveniado.<br/><span class="text-gradient">O Hub está esperando por você.</span>
+══════════════════════════════════════ -->
+<section style="padding:80px 32px;background:#000;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div class="cta-block">
+      <div style="position:relative;z-index:1;">
+        <div class="mono" style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:20px;">Acesso exclusivo para conveniados</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.04em;color:#fff;line-height:1.05;margin-bottom:16px;">
+          Você já é conveniado.<br/>O Hub está esperando.
         </h2>
-        <p class="text-lg mb-10 max-w-xl mx-auto" style="color: var(--muted);">
-          O ZeveHub é um benefício incluso no seu plano de assessoria. Nenhum custo adicional. Acesse agora com seu e-mail cadastrado.
+        <p style="font-size:15px;color:var(--muted);max-width:480px;margin:0 auto 36px;line-height:1.7;">
+          Nenhum custo adicional. Benefício incluso no seu plano de assessoria. Acesse agora com seu e-mail cadastrado.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="login.html" class="btn-primary px-10 py-4 text-base text-center inline-block">
-            Criar minha conta →
-          </a>
-          <a href="https://wa.me" class="btn-ghost px-10 py-4 text-base text-center inline-block">
-            Falar com a Assessoria
-          </a>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="login.html" class="btn-green-lg" style="font-size:16px;padding:15px 36px;">Criar minha conta →</a>
+          <a href="https://wa.me" class="btn-outline" style="font-size:15px;">Falar com a Assessoria</a>
         </div>
-        <p class="text-xs mt-6" style="color: var(--muted-2);">Ainda não é conveniado? Fale com a equipe Zeve e conheça nossos planos.</p>
+        <p class="mono" style="font-size:11px;color:#222235;margin-top:24px;">Ainda não é conveniado? Fale com a equipe Zeve.</p>
       </div>
     </div>
   </div>
 </section>
 
 
-<!-- =========================================================
+<!-- ══════════════════════════════════════
      FOOTER
-========================================================= -->
-<footer style="border-top: 1px solid var(--border);">
-  <div class="max-w-7xl mx-auto px-6 py-12">
-    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-
-      <!-- Logo -->
-      <div class="flex items-center gap-3">
-        <img src="zeve logo completo.svg" alt="ZeveHub" style="height: 26px; width: auto; opacity: 0.85;" />
-      </div>
-
-      <!-- Links -->
-      <div class="flex gap-8 text-sm" style="color: var(--muted);">
-        <a href="privacidade.html" class="hover:text-white transition-colors">Privacidade</a>
-        <a href="termos-de-uso.html" class="hover:text-white transition-colors">Termos de Uso</a>
-        <a href="suporte.html" class="hover:text-white transition-colors">Suporte</a>
-      </div>
-
-      <!-- Direitos -->
-      <p class="text-sm" style="color: var(--muted-2);">© 2025 Zeve Assessoria. Todos os direitos reservados.</p>
+══════════════════════════════════════ -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <img src="zeve logo completo.svg" alt="ZeveHub" style="height:20px;opacity:.6;"/>
+    <div style="display:flex;gap:24px;font-size:13px;color:var(--muted);">
+      <a href="privacidade.html" style="color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">Privacidade</a>
+      <a href="termos-de-uso.html" style="color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">Termos de Uso</a>
+      <a href="suporte.html" style="color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">Suporte</a>
     </div>
+    <p class="mono" style="font-size:11px;color:#222235;">© 2025 Zeve Assessoria</p>
   </div>
 </footer>
+
+<style>
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+</style>
 
 </body>
 </html>
