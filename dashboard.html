@@ -575,7 +575,14 @@ async function loadTrades() {
     .eq('cliente_id', profile.id)
     .order('abertura', { ascending: true });
 
-  if (error) { console.error('loadTrades:', error); return; }
+  console.log('[loadTrades] error:', error);
+  console.log('[loadTrades] total trades:', data?.length);
+  console.log('[loadTrades] sample:', data?.[0]);
+
+  if (error) {
+    toast('Erro ao carregar operações: ' + error.message, 'error');
+    return;
+  }
   allTrades = data || [];
   buildAtivoFilter();
   applyPeriod();
