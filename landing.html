@@ -78,14 +78,42 @@
       padding: 100px 32px 60px; position: relative; overflow: hidden;
     }
 
-    /* hero top glow */
-    .hero-glow {
-      position: absolute; top: -160px; left: 50%; transform: translateX(-50%);
-      width: 900px; height: 600px; pointer-events: none;
-      background: radial-gradient(ellipse, rgba(13,30,149,.14) 0%, transparent 60%);
-      animation: heroPulse 5s ease-in-out infinite;
+    /* Hero background image */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      overflow: hidden;
     }
-    @keyframes heroPulse { 0%,100%{opacity:.7;transform:translateX(-50%) scale(1)} 50%{opacity:1;transform:translateX(-50%) scale(1.08)} }
+    .hero-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      filter: brightness(.45) saturate(.7);
+      animation: kenBurnsHero 22s ease-in-out infinite alternate;
+      transform-origin: center center;
+    }
+    @keyframes kenBurnsHero {
+      0%   { transform: scale(1)    translateX(0)    translateY(0); }
+      50%  { transform: scale(1.05) translateX(-1%)  translateY(.5%); }
+      100% { transform: scale(1.08) translateX(1%)   translateY(-.5%); }
+    }
+    /* gradient overlays: left dark for text, bottom dark for ticker */
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, rgba(8,8,8,.85) 0%, rgba(8,8,8,.55) 55%, rgba(8,8,8,.1) 100%),
+        linear-gradient(to bottom, rgba(8,8,8,.3) 0%, transparent 40%, rgba(8,8,8,.6) 100%);
+      pointer-events: none;
+    }
+
+    /* hero top glow — subtle blue atmosphere on top of photo */
+    .hero-glow {
+      position: absolute; top: -80px; left: 20%; z-index: 1;
+      width: 600px; height: 500px; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(13,30,149,.18) 0%, transparent 65%);
+      animation: heroPulse 6s ease-in-out infinite;
+    }
+    @keyframes heroPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
 
     .hero-headline {
       font-size: clamp(3rem, 6.5vw, 6rem);
@@ -261,11 +289,11 @@
 
     /* ── TICKER STRIP (hero bottom) ── */
     .ticker-wrap {
-      position: absolute; bottom: 0; left: 0; right: 0;
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
       height: 32px; overflow: hidden;
       border-top: 1px solid var(--border);
-      background: rgba(0,0,0,.5);
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(12px);
     }
     .ticker-track {
       display: flex; align-items: center; gap: 0;
@@ -319,9 +347,15 @@
      HERO
 ═══════════════════════════════════════ -->
 <section class="hero" style="position:relative;z-index:1;">
+
+  <!-- Background photo -->
+  <div class="hero-bg">
+    <img src="HERO.png" alt="" />
+  </div>
+
   <div class="hero-glow"></div>
 
-  <div style="max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1;">
+  <div style="max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:2;">
     <div style="display:grid;grid-template-columns:1fr 400px;gap:60px;align-items:center;">
 
       <!-- Copy -->
