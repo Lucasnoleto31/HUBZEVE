@@ -50,58 +50,58 @@
 
     /* ── TOP NAV ── */
     .topnav {
-      height: 52px; flex-shrink: 0;
-      background: rgba(0,0,0,.96);
+      height: 64px; flex-shrink: 0;
+      background: rgba(0,0,0,.97);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(12px);
       display: flex; align-items: center;
-      padding: 0 20px; gap: 0; position: relative; z-index: 100;
+      padding: 0 28px; gap: 0; position: relative; z-index: 100;
     }
     .tn-logo {
-      display: flex; align-items: center; gap: 10px;
-      padding-right: 20px; border-right: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+      padding-right: 24px; border-right: 1px solid var(--border);
       flex-shrink: 0;
     }
-    .tn-logo img { height: 22px; width: auto; }
+    .tn-logo img { height: 28px; width: auto; }
     .sb-badge {
-      font-size: 8px; font-weight: 700; letter-spacing: .08em;
+      font-size: 9px; font-weight: 700; letter-spacing: .08em;
       color: var(--accent); background: rgba(73,168,252,.08);
       border: 1px solid rgba(73,168,252,.15); border-radius: 4px;
-      padding: 2px 6px; text-transform: uppercase; white-space: nowrap;
+      padding: 3px 8px; text-transform: uppercase; white-space: nowrap;
     }
     .tn-nav {
       display: flex; align-items: center; gap: 2px;
-      padding: 0 12px; flex: 1; overflow-x: auto; scrollbar-width: none;
+      padding: 0 16px; flex: 1; overflow-x: auto; scrollbar-width: none;
     }
     .tn-nav::-webkit-scrollbar { display: none; }
     .nav-item {
       display: flex; align-items: center; gap: 6px;
-      padding: 6px 11px; border-radius: 6px; cursor: pointer;
-      font-size: 12px; font-weight: 400; white-space: nowrap;
+      padding: 8px 14px; border-radius: 7px; cursor: pointer;
+      font-size: 13px; font-weight: 400; white-space: nowrap;
       color: var(--muted); transition: all .12s; border: none; background: none;
       text-decoration: none; position: relative; flex-shrink: 0;
     }
     .nav-item:hover { background: var(--card-2); color: var(--text); }
-    .nav-item.active { color: var(--text); font-weight: 500; }
+    .nav-item.active { color: var(--text); font-weight: 600; }
     .nav-item.active::after {
-      content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
-      width: 20px; height: 2px; background: #22C55E; border-radius: 2px;
+      content: ''; position: absolute; bottom: -11px; left: 50%; transform: translateX(-50%);
+      width: 24px; height: 2px; background: #22C55E; border-radius: 2px;
     }
     .notif-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--red); margin-left: auto; flex-shrink: 0; display: none; }
     .tn-right {
-      display: flex; align-items: center; gap: 10px;
-      padding-left: 16px; border-left: 1px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; gap: 12px;
+      padding-left: 20px; border-left: 1px solid var(--border); flex-shrink: 0;
     }
     .sb-avatar {
-      width: 28px; height: 28px; border-radius: 50%;
+      width: 34px; height: 34px; border-radius: 50%;
       background: linear-gradient(135deg, rgba(13,30,149,.6), rgba(73,168,252,.25));
       border: 1px solid rgba(73,168,252,.3);
       color: var(--accent-l);
-      font-size: 10px; font-weight: 700; display: flex; align-items: center;
+      font-size: 12px; font-weight: 700; display: flex; align-items: center;
       justify-content: center; flex-shrink: 0;
     }
-    .sb-name { font-size: 12px; font-weight: 500; white-space: nowrap; color: var(--text); max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
-    .btn-logout { font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 4px; flex-shrink: 0; opacity: .6; }
+    .sb-name { font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--text); max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+    .btn-logout { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 6px; flex-shrink: 0; opacity: .6; }
     .btn-logout:hover { color: var(--red); opacity: 1; }
 
     /* ── MAIN ── */
@@ -141,8 +141,8 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 12px; margin-bottom: 36px;
     }
-    .ov-greeting { font-size: 13px; color: var(--muted); }
-    .ov-greeting strong { color: var(--text); font-weight: 700; font-size: 15px; }
+    .ov-greeting { font-size: 16px; color: var(--muted); }
+    .ov-greeting strong { color: var(--text); font-weight: 800; font-size: 22px; }
 
     /* Hero: big number + stats side by side */
     .ov-hero {
@@ -184,21 +184,21 @@
       background: radial-gradient(ellipse, rgba(239,68,68,.06) 0%, transparent 65%);
     }
     .ov-pnl-label {
-      font-size: 9px; font-weight: 600; letter-spacing: .16em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+      font-size: 10px; font-weight: 600; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
     }
     .ov-pnl-value {
-      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      font-size: clamp(2.8rem, 4.5vw, 4.2rem);
       font-weight: 900; line-height: 1; letter-spacing: -.04em;
       color: #22C55E;
       text-shadow: 0 0 60px rgba(34,197,94,.3);
-      margin-bottom: 6px; white-space: nowrap;
+      margin-bottom: 8px; white-space: nowrap;
       font-variant-numeric: tabular-nums;
     }
     .ov-pnl-value.negative {
       color: var(--red); text-shadow: 0 0 50px rgba(239,68,68,.2);
     }
-    .ov-pnl-sub { font-size: 11px; color: var(--muted); }
+    .ov-pnl-sub { font-size: 13px; color: var(--muted); }
 
     /* Right: stat grid */
     .ov-stats-grid {
@@ -207,7 +207,7 @@
       grid-template-rows: 1fr 1fr;
     }
     .ov-stat {
-      padding: 20px 24px;
+      padding: 24px 28px;
       border-bottom: 1px solid var(--border);
       border-right: 1px solid var(--border);
     }
@@ -216,8 +216,8 @@
     .ov-stat:nth-child(5),
     .ov-stat:nth-child(6)  { border-bottom: none; }
     .ov-stat:nth-child(6)  { border-right: none; }
-    .ov-stat-label { font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-    .ov-stat-value { font-size: 20px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+    .ov-stat-label { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .ov-stat-value { font-size: 26px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
 
     /* Equity chart card */
     .ov-equity-card {
@@ -237,11 +237,11 @@
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 16px;
     }
-    .ov-equity-label-left { font-size: 13px; font-weight: 600; color: var(--text); }
-    .ov-equity-label-right { display: flex; gap: 20px; }
+    .ov-equity-label-left { font-size: 15px; font-weight: 700; color: var(--text); }
+    .ov-equity-label-right { display: flex; gap: 24px; }
     .ov-equity-stat { text-align: right; }
-    .ov-equity-stat-label { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-    .ov-equity-stat-val { font-size: 14px; font-weight: 700; color: var(--text); }
+    .ov-equity-stat-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .ov-equity-stat-val { font-size: 16px; font-weight: 700; color: var(--text); }
     .ov-equity-glow {
       position: absolute; bottom: -50px; right: 20%; pointer-events: none;
       width: 300px; height: 200px; border-radius: 50%;
@@ -285,8 +285,8 @@
     .chart-card.borderless {
       background: transparent; border: none; padding: 0;
     }
-    .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
-    .chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+    .chart-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+    .chart-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
     .chart-wrap { position: relative; }
 
 
