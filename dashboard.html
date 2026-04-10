@@ -525,6 +525,102 @@
     #share-card .sc-trader { font-size: 12px; font-weight: 500; color: #404040; }
     #share-card .sc-brand { font-size: 10px; color: #2A2A2A; }
 
+    /* ── CALENDÁRIO PAGE ── */
+    .cal-controls {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 22px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .cal-month-nav { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .cal-nav-btn {
+      width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--card-2); color: var(--text); font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all .12s; flex-shrink: 0;
+    }
+    .cal-nav-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(73,168,252,.06); }
+    .cal-month-title { font-size: 20px; font-weight: 800; min-width: 200px; text-align: center; letter-spacing: -.02em; }
+    .cal-capital-group { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .cal-capital-label { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+    .cal-capital-input {
+      background: var(--card-2); border: 1px solid var(--bord-2); color: var(--text);
+      border-radius: 9px; padding: 7px 12px; font-size: 13px; outline: none;
+      width: 150px; font-family: Inter; transition: border-color .15s;
+    }
+    .cal-capital-input:focus { border-color: var(--accent); }
+
+    .cal-main-grid {
+      display: grid; grid-template-columns: 1fr 260px;
+      gap: 16px; margin-bottom: 20px; align-items: start;
+    }
+    .cal-calendar-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px; position: relative; overflow: hidden;
+    }
+    .cal-calendar-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(73,168,252,.4) 0%, transparent 60%);
+    }
+    .cal-summary {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px; position: relative; overflow: hidden;
+    }
+    .cal-summary::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(73,168,252,.4) 0%, transparent 60%);
+    }
+    .cal-sum-month { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .cal-sum-result { font-size: 32px; font-weight: 900; letter-spacing: -.04em; line-height: 1; margin-bottom: 6px; }
+    .cal-sum-divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .cal-sum-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    .cal-sum-row:last-child { margin-bottom: 0; }
+    .cal-sum-lbl { font-size: 11px; color: var(--muted); }
+    .cal-sum-val { font-size: 13px; font-weight: 700; }
+
+    /* Top 10 */
+    .cal-top10-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .top10-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 11px 20px; border-bottom: 1px solid var(--border);
+      cursor: pointer; transition: background .1s;
+    }
+    .top10-row:last-child { border-bottom: none; }
+    .top10-row:hover { background: var(--card-2); }
+    .top10-rank {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-weight: 800;
+    }
+    .rank-1 { background: rgba(255,215,0,.12); color: #FFD700; border: 1px solid rgba(255,215,0,.3); font-size: 13px; }
+    .rank-2 { background: rgba(192,192,192,.1); color: #C0C0C0; border: 1px solid rgba(192,192,192,.25); font-size: 12px; }
+    .rank-3 { background: rgba(205,127,50,.1); color: #CD7F32; border: 1px solid rgba(205,127,50,.25); font-size: 12px; }
+    .rank-other { background: var(--card-2); color: var(--muted); border: 1px solid var(--border); font-size: 11px; }
+    .top10-info { flex: 1; min-width: 0; }
+    .top10-date { font-size: 13px; font-weight: 600; color: var(--text); }
+    .top10-ops  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .top10-pnl  { font-size: 14px; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+    .top10-pnl-big { font-size: 18px; font-weight: 900; letter-spacing: -.03em; white-space: nowrap; }
+
+    /* Weekday cards */
+    .cal-weekday-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
+    .cal-wd-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px 16px; position: relative; overflow: hidden;
+      transition: border-color .2s, transform .15s;
+    }
+    .cal-wd-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(73,168,252,.3) 0%, transparent 70%);
+    }
+    .cal-wd-card:hover { border-color: rgba(73,168,252,.25); transform: translateY(-1px); }
+    .cal-wd-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 10px; }
+    .cal-wd-pnl { font-size: 22px; font-weight: 900; letter-spacing: -.03em; line-height: 1; margin-bottom: 12px; }
+    .cal-wd-stat { display: flex; justify-content: space-between; padding: 7px 0; border-top: 1px solid var(--border); }
+    .cal-wd-stat-label { font-size: 10px; color: var(--muted); }
+    .cal-wd-stat-value { font-size: 12px; font-weight: 700; }
+
+    /* Monthly table cells */
+    .cal-month-cell-pos { color: var(--green) !important; font-weight: 700 !important; }
+    .cal-month-cell-neg { color: var(--red) !important; font-weight: 700 !important; }
+
     /* ── GUIDE CARD (legacy, kept for compat) ── */
     .guide-step { background: var(--card-2); border-radius: 10px; padding: 16px; }
     .guide-num { font-size: 20px; margin-bottom: 8px; }
@@ -1099,81 +1195,110 @@
       <!-- ==================== CALENDÁRIO ==================== -->
       <div id="sec-calendario" class="section">
 
-        <div class="sec-header">
-          <div class="sec-header-title">Calendário</div>
-          <div class="sec-header-sub">Performance diária — clique em um dia para ver os detalhes</div>
+        <!-- Hero -->
+        <div class="upl-hero">
+          <div class="upl-hero-title">CALENDÁRIO</div>
+          <div class="upl-hero-sub">Performance diária — clique em um dia para ver os detalhes das operações</div>
         </div>
 
-        <!-- Capital + navegação de mês -->
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <button class="period-btn" onclick="changeCalMonth(-1)" style="padding:8px 14px;">←</button>
-            <div id="cal-month-label" style="font-size:18px;font-weight:800;min-width:180px;text-align:center;">—</div>
-            <button class="period-btn" onclick="changeCalMonth(1)" style="padding:8px 14px;">→</button>
+        <!-- Controls: month nav + capital -->
+        <div class="cal-controls">
+          <div class="cal-month-nav">
+            <button class="cal-nav-btn" onclick="changeCalMonth(-1)">‹</button>
+            <div class="cal-month-title" id="cal-month-label">—</div>
+            <button class="cal-nav-btn" onclick="changeCalMonth(1)">›</button>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <label style="font-size:13px;color:var(--muted);font-weight:600;">Capital (R$)</label>
-            <input type="number" id="capital-input" placeholder="Ex: 50000" min="0" step="1000"
-              style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;outline:none;width:160px;font-family:Inter;"
-              oninput="onCapitalChange()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
+          <div class="cal-capital-group">
+            <span class="cal-capital-label">Capital (R$)</span>
+            <input type="number" id="capital-input" class="cal-capital-input"
+              placeholder="Ex: 50.000" min="0" step="1000"
+              oninput="onCapitalChange()"
+              onfocus="this.style.borderColor='var(--accent)'"
+              onblur="this.style.borderColor='var(--bord-2)'" />
           </div>
         </div>
 
-        <!-- Calendário -->
-        <div class="chart-card" style="margin-bottom:14px;">
-          <div id="cal-container"></div>
+        <!-- Calendar + Month Summary -->
+        <div class="cal-main-grid">
+          <!-- Calendar -->
+          <div class="cal-calendar-card">
+            <div id="cal-container"></div>
+          </div>
+          <!-- Month summary panel -->
+          <div class="cal-summary">
+            <div class="cal-sum-month" id="cal-summary-month">—</div>
+            <div class="cal-sum-result" id="cal-summary-result" style="color:var(--muted)">—</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="cal-sum-sub">Resultado do mês</div>
+            <div class="cal-sum-divider"></div>
+            <div class="cal-sum-row">
+              <span class="cal-sum-lbl">Operações</span>
+              <span class="cal-sum-val" id="cal-sum-trades">—</span>
+            </div>
+            <div class="cal-sum-row">
+              <span class="cal-sum-lbl">Dias operados</span>
+              <span class="cal-sum-val" id="cal-sum-days">—</span>
+            </div>
+            <div class="cal-sum-row">
+              <span class="cal-sum-lbl">Win rate</span>
+              <span class="cal-sum-val" id="cal-sum-wr">—</span>
+            </div>
+            <div class="cal-sum-row">
+              <span class="cal-sum-lbl">Dias positivos</span>
+              <span class="cal-sum-val" id="cal-sum-pos-days">—</span>
+            </div>
+            <div class="cal-sum-divider"></div>
+            <div style="margin-bottom:8px;">
+              <div class="cal-sum-lbl" style="margin-bottom:4px;">Melhor dia</div>
+              <div class="cal-sum-val" id="cal-sum-best" style="color:var(--green);font-size:12px;">—</div>
+            </div>
+            <div>
+              <div class="cal-sum-lbl" style="margin-bottom:4px;">Pior dia</div>
+              <div class="cal-sum-val" id="cal-sum-worst" style="color:var(--red);font-size:12px;">—</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Detalhe do dia (aparece ao clicar) -->
-        <div id="day-detail-wrap" style="display:none;margin-bottom:14px;">
+        <!-- Day detail (shows on click) -->
+        <div id="day-detail-wrap" style="display:none;margin-bottom:20px;">
           <div class="chart-card">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
               <div>
                 <div class="chart-title" id="day-detail-title">—</div>
                 <div class="chart-sub" id="day-detail-sub">—</div>
               </div>
-              <button onclick="document.getElementById('day-detail-wrap').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:Inter;">Fechar</button>
+              <button onclick="document.getElementById('day-detail-wrap').style.display='none'"
+                style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:Inter;">
+                Fechar
+              </button>
             </div>
             <div id="day-detail-content"></div>
           </div>
         </div>
 
         <!-- Top 10 melhores / piores dias -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-          <div class="chart-card">
-            <div class="chart-title" style="color:var(--green);margin-bottom:4px;">Top 10 Melhores Dias</div>
-            <div class="chart-sub" style="margin-bottom:12px;">Maior P&L diário</div>
-            <table style="width:100%;border-collapse:collapse;font-size:13px;">
-              <thead><tr style="border-bottom:1px solid var(--border);">
-                <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">#</th>
-                <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Data</th>
-                <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Trades</th>
-                <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">P&L</th>
-              </tr></thead>
-              <tbody id="tbody-best-days"></tbody>
-            </table>
+        <div class="cal-top10-grid">
+          <div class="chart-card" style="padding:0;overflow:hidden;">
+            <div style="padding:18px 20px 12px;border-bottom:1px solid var(--border);">
+              <div class="chart-title" style="color:var(--green);">Top 10 Melhores Dias</div>
+              <div class="chart-sub" style="margin-bottom:0;">Clique em um dia para abrir os detalhes</div>
+            </div>
+            <div id="tbody-best-days"></div>
           </div>
-          <div class="chart-card">
-            <div class="chart-title" style="color:var(--red);margin-bottom:4px;">Top 10 Piores Dias</div>
-            <div class="chart-sub" style="margin-bottom:12px;">Maior perda diária</div>
-            <table style="width:100%;border-collapse:collapse;font-size:13px;">
-              <thead><tr style="border-bottom:1px solid var(--border);">
-                <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">#</th>
-                <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Data</th>
-                <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Trades</th>
-                <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">P&L</th>
-              </tr></thead>
-              <tbody id="tbody-worst-days"></tbody>
-            </table>
+          <div class="chart-card" style="padding:0;overflow:hidden;">
+            <div style="padding:18px 20px 12px;border-bottom:1px solid var(--border);">
+              <div class="chart-title" style="color:var(--red);">Top 10 Piores Dias</div>
+              <div class="chart-sub" style="margin-bottom:0;">Clique em um dia para abrir os detalhes</div>
+            </div>
+            <div id="tbody-worst-days"></div>
           </div>
         </div>
 
         <!-- Desempenho Mensal por Ano -->
-        <div class="chart-card" style="margin-bottom:14px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="chart-card" style="margin-bottom:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
             <div>
               <div class="chart-title">Desempenho Mensal por Ano</div>
-              <div class="chart-sub" id="monthly-capital-sub">Informe o capital para ver o retorno %</div>
+              <div class="chart-sub" id="monthly-capital-sub" style="margin-bottom:0;">Informe o capital para ver o retorno %</div>
             </div>
           </div>
           <div style="overflow-x:auto;" id="monthly-year-container"></div>
@@ -1182,19 +1307,8 @@
         <!-- Performance por Dia da Semana -->
         <div class="chart-card">
           <div class="chart-title" style="margin-bottom:4px;">Performance por Dia da Semana</div>
-          <div class="chart-sub" style="margin-bottom:12px;">Média de resultado e win rate por dia</div>
-          <table style="width:100%;border-collapse:collapse;font-size:13px;">
-            <thead><tr style="border-bottom:1px solid var(--border);">
-              <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Dia</th>
-              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Trades</th>
-              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Win Rate</th>
-              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">P&L Total</th>
-              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Média/Trade</th>
-              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Dias Op.</th>
-              <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Média/Dia</th>
-            </tr></thead>
-            <tbody id="tbody-weekday-cal"></tbody>
-          </table>
+          <div class="chart-sub" style="margin-bottom:20px;">Resultado acumulado, win rate e médias por dia útil</div>
+          <div class="cal-weekday-grid" id="cal-weekday-grid"></div>
         </div>
 
       </div>
@@ -2897,6 +3011,7 @@ function renderCalendario() {
   document.getElementById('cal-month-label').textContent =
     `${MONTHS_PT[calMonth]} ${calYear}`;
   renderCalGrid();
+  renderCalMonthSummary();
   renderTopDays();
   renderMonthlyByYear();
   renderWeekdayPerf();
@@ -2937,41 +3052,89 @@ function renderCalGrid() {
   if (week.some(x => x !== null)) weeks.push(week);
 
   // Render
-  let html = `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;">`;
-  // Header
+  let html = `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">`;
+  // Header days
   DAYS_PT.forEach(d => {
-    html += `<div style="text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:8px 0;text-transform:uppercase;letter-spacing:.06em;">${d}</div>`;
+    html += `<div style="text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:10px 0;text-transform:uppercase;letter-spacing:.08em;">${d}</div>`;
   });
   // Cells
   weeks.forEach(wk => {
     wk.forEach(cell => {
       if (!cell) {
-        html += `<div style="height:88px;border-radius:10px;background:var(--card-2);opacity:.3;"></div>`;
+        html += `<div style="height:100px;border-radius:12px;background:var(--card-2);opacity:.2;"></div>`;
       } else {
         const hasData = cell.n > 0;
         const pos     = hasData && cell.pnl > 0;
         const neg     = hasData && cell.pnl < 0;
-        const bg      = pos ? 'rgba(73,168,252,.10)' : neg ? 'rgba(239,68,68,.10)' : 'var(--card-2)';
-        const border  = pos ? 'rgba(73,168,252,.30)' : neg ? 'rgba(239,68,68,.30)' : 'var(--border)';
+        const bg      = pos ? 'rgba(34,197,94,.08)' : neg ? 'rgba(248,113,113,.08)' : 'var(--card-2)';
+        const border  = pos ? 'rgba(34,197,94,.3)'  : neg ? 'rgba(248,113,113,.3)'  : 'var(--border)';
         const pnlColor= pos ? 'var(--green)' : neg ? 'var(--red)' : 'var(--muted)';
         const wr      = cell.n ? Math.round(cell.wins/cell.n*100) : null;
         html += `
           <div onclick="openDayDetail('${cell.ds}')"
-               style="height:88px;border-radius:10px;background:${bg};border:1px solid ${border};padding:10px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;justify-content:space-between;"
-               onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(0,0,0,.3)'"
+               style="height:100px;border-radius:12px;background:${bg};border:1px solid ${border};padding:12px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;justify-content:space-between;"
+               onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,.35)'"
                onmouseout="this.style.transform='';this.style.boxShadow=''">
-            <div style="font-size:12px;font-weight:700;color:var(--muted);">${cell.d}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--muted);">${cell.d}</div>
             ${hasData ? `
               <div>
-                <div style="font-size:14px;font-weight:800;color:${pnlColor};">${fmtR$(cell.pnl)}</div>
-                <div style="font-size:10px;color:var(--muted);margin-top:2px;">${cell.n} ops · ${wr}% ✓</div>
-              </div>` : `<div style="font-size:11px;color:var(--mut-2);">—</div>`}
+                <div style="font-size:15px;font-weight:900;color:${pnlColor};letter-spacing:-.02em;">${fmtR$(cell.pnl)}</div>
+                <div style="font-size:10px;color:var(--muted);margin-top:3px;">${cell.n} ops · ${wr}% ✓</div>
+              </div>` : `<div style="font-size:12px;color:var(--mut-2);">—</div>`}
           </div>`;
       }
     });
   });
   html += `</div>`;
   document.getElementById('cal-container').innerHTML = html;
+}
+
+/* --- Resumo do mês (painel lateral) --- */
+function renderCalMonthSummary() {
+  const pad    = n => String(n).padStart(2,'0');
+  const prefix = `${calYear}-${pad(calMonth + 1)}`;
+  const mt     = allTrades.filter(t => {
+    const d = t.data_trade || (t.abertura || '').split('T')[0];
+    return d && d.startsWith(prefix);
+  });
+
+  const pnl    = mt.reduce((s, t) => s + fnum(t.resultado_reais), 0);
+  const wins   = mt.filter(t => t.is_winner).length;
+  const wr     = mt.length ? Math.round(wins / mt.length * 100) : 0;
+
+  const dayMap = {};
+  mt.forEach(t => {
+    const d = t.data_trade || (t.abertura || '').split('T')[0];
+    if (!dayMap[d]) dayMap[d] = 0;
+    dayMap[d] += fnum(t.resultado_reais);
+  });
+  const days      = Object.entries(dayMap);
+  const opDays    = days.length;
+  const posDays   = days.filter(([,v]) => v > 0).length;
+  const bestDay   = days.length ? days.reduce((b, c) => c[1] > b[1] ? c : b) : null;
+  const worstDay  = days.length ? days.reduce((b, c) => c[1] < b[1] ? c : b) : null;
+
+  const pnlColor = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+  const $  = id => document.getElementById(id);
+
+  $('cal-summary-month').textContent = `${MONTHS_PT[calMonth]} ${calYear}`;
+
+  const resEl = $('cal-summary-result');
+  resEl.textContent = mt.length ? fmtR$(pnl) : '—';
+  resEl.style.color = mt.length ? pnlColor : 'var(--muted)';
+
+  $('cal-sum-trades').textContent  = mt.length || '—';
+  $('cal-sum-days').textContent    = opDays    || '—';
+
+  const wrEl = $('cal-sum-wr');
+  wrEl.textContent = mt.length ? `${wr}%` : '—';
+  wrEl.style.color = wr >= 50 ? 'var(--green)' : wr > 0 ? 'var(--red)' : 'var(--muted)';
+
+  $('cal-sum-pos-days').textContent = opDays ? `${posDays} / ${opDays}` : '—';
+
+  const fmtDs = ds => { const [y,m,d] = ds.split('-'); return `${d}/${m}/${y}`; };
+  $('cal-sum-best').textContent  = bestDay  ? `${fmtDs(bestDay[0])}  ${fmtR$(bestDay[1])}`  : '—';
+  $('cal-sum-worst').textContent = worstDay ? `${fmtDs(worstDay[0])}  ${fmtR$(worstDay[1])}` : '—';
 }
 
 /* --- Detalhe do dia (por horário) --- */
@@ -3045,21 +3208,28 @@ function renderTopDays() {
     .map(([ds, s]) => ({ ds, ...s }))
     .sort((a,b) => b.pnl - a.pnl);
 
-  const rowHtml = (item, i, color) => {
+  const rankClass = i => i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other';
+
+  const rowHtml = (item, i, isGood) => {
     const [y,m,d] = item.ds.split('-');
-    return `<tr style="border-bottom:1px solid var(--border);cursor:pointer;" onclick="document.getElementById('nav-calendario').click();setTimeout(()=>{ calYear=${parseInt(y)};calMonth=${parseInt(m)-1};renderCalendario();openDayDetail('${item.ds}'); },50)">
-      <td style="padding:8px 10px;color:var(--muted);font-weight:700;">${i+1}</td>
-      <td style="padding:8px 10px;font-weight:600;">${d}/${m}/${y}</td>
-      <td style="padding:8px 10px;text-align:right;color:var(--muted);">${item.n}</td>
-      <td style="padding:8px 10px;text-align:right;color:${color};font-weight:700;">${fmtR$(item.pnl)}</td>
-    </tr>`;
+    const color   = isGood ? 'var(--green)' : 'var(--red)';
+    const pnlCls  = i < 3 ? 'top10-pnl-big' : 'top10-pnl';
+    return `
+      <div class="top10-row" onclick="calYear=${parseInt(y)};calMonth=${parseInt(m)-1};renderCalendario();openDayDetail('${item.ds}');">
+        <div class="top10-rank ${rankClass(i)}">${i+1}</div>
+        <div class="top10-info">
+          <div class="top10-date">${d}/${m}/${y}</div>
+          <div class="top10-ops">${item.n} operação${item.n !== 1 ? 'ões' : ''}</div>
+        </div>
+        <div class="${pnlCls}" style="color:${color}">${fmtR$(item.pnl)}</div>
+      </div>`;
   };
 
-  const empty = '<tr><td colspan="4" style="padding:12px;text-align:center;color:var(--muted);">Sem dados</td></tr>';
+  const empty = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:13px;">Sem dados</div>';
   document.getElementById('tbody-best-days').innerHTML  =
-    days.slice(0,10).map((d,i) => rowHtml(d,i,'var(--green)')).join('') || empty;
+    days.slice(0,10).map((d,i) => rowHtml(d,i,true)).join('')  || empty;
   document.getElementById('tbody-worst-days').innerHTML =
-    days.slice(-10).reverse().map((d,i) => rowHtml(d,i,'var(--red)')).join('') || empty;
+    days.slice(-10).reverse().map((d,i) => rowHtml(d,i,false)).join('') || empty;
 }
 
 /* --- Desempenho Mensal por Ano --- */
@@ -3095,11 +3265,12 @@ function renderMonthlyByYear() {
 
   const monthNames = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
+  const thStyle = 'text-align:right;padding:10px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;';
   const thead = `<thead><tr style="border-bottom:1px solid var(--border);">
-    <th style="text-align:left;padding:9px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Ano</th>
-    ${monthNames.map(mn=>`<th style="text-align:right;padding:9px 8px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">${mn}</th>`).join('')}
-    <th style="text-align:right;padding:9px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Total</th>
-    ${capital > 0 ? '<th style="text-align:right;padding:9px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Retorno %</th>' : ''}
+    <th style="text-align:left;padding:10px 16px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Ano</th>
+    ${monthNames.map(mn=>`<th style="${thStyle}">${mn}</th>`).join('')}
+    <th style="${thStyle}padding-right:16px;">Total</th>
+    ${capital > 0 ? `<th style="${thStyle}padding-right:16px;">Retorno</th>` : ''}
   </tr></thead>`;
 
   const tbody = years.map(yr => {
@@ -3107,24 +3278,25 @@ function renderMonthlyByYear() {
     const cells = Array.from({length:12}, (_,mi) => {
       const key = `${yr}-${String(mi+1).padStart(2,'0')}`;
       const s   = byYM[key];
-      if (!s) return `<td style="padding:9px 8px;text-align:right;color:var(--mut-2);font-size:12px;">—</td>`;
+      if (!s) return `<td style="padding:10px 10px;text-align:right;color:var(--mut-2);font-size:12px;">—</td>`;
       yearPnl += s.pnl;
-      const c = s.pnl >= 0 ? 'var(--green)' : 'var(--red)';
-      const ret = capital > 0 ? (s.pnl/capital*100).toFixed(1)+'%' : '';
-      return `<td style="padding:9px 8px;text-align:right;font-size:12px;color:${c};font-weight:600;">${fmtR$(s.pnl)}${capital>0?`<br><span style="font-size:10px;color:${c};opacity:.8;">${ret}</span>`:''}</td>`;
+      const c   = s.pnl >= 0 ? 'var(--green)' : 'var(--red)';
+      const bg  = s.pnl >= 0 ? 'rgba(34,197,94,.06)' : 'rgba(248,113,113,.06)';
+      const ret = capital > 0 ? `<br><span style="font-size:10px;opacity:.75;">${(s.pnl/capital*100).toFixed(1)}%</span>` : '';
+      return `<td style="padding:10px 10px;text-align:right;font-size:13px;color:${c};font-weight:700;background:${bg};">${fmtR$(s.pnl)}${ret}</td>`;
     });
     const tc = yearPnl >= 0 ? 'var(--green)' : 'var(--red)';
     const retAnual = capital > 0 ? (yearPnl/capital*100).toFixed(1) : null;
     return `<tr style="border-bottom:1px solid var(--border);">
-      <td style="padding:9px 12px;font-weight:700;">${yr}</td>
+      <td style="padding:10px 16px;font-size:14px;font-weight:800;color:var(--text);">${yr}</td>
       ${cells.join('')}
-      <td style="padding:9px 12px;text-align:right;font-weight:800;color:${tc};">${fmtR$(yearPnl)}</td>
-      ${capital > 0 ? `<td style="padding:9px 12px;text-align:right;font-weight:800;color:${tc};">${retAnual}%</td>` : ''}
+      <td style="padding:10px 16px;text-align:right;font-size:15px;font-weight:900;color:${tc};">${fmtR$(yearPnl)}</td>
+      ${capital > 0 ? `<td style="padding:10px 16px;text-align:right;font-size:14px;font-weight:800;color:${tc};">${retAnual}%</td>` : ''}
     </tr>`;
   }).join('');
 
   document.getElementById('monthly-year-container').innerHTML =
-    `<table style="width:100%;border-collapse:collapse;font-size:12px;">${thead}<tbody>${tbody}</tbody></table>`;
+    `<table style="width:100%;border-collapse:collapse;font-size:13px;">${thead}<tbody>${tbody}</tbody></table>`;
 }
 
 /* --- Performance por Dia da Semana --- */
@@ -3135,7 +3307,7 @@ function renderWeekdayPerf() {
   allTrades.forEach(t => {
     const d  = t.data_trade || (t.abertura||'').split('T')[0];
     if (!d) return;
-    const wd = (new Date(d + 'T12:00:00').getDay() + 6) % 7; // Mon=0
+    const wd = (new Date(d + 'T12:00:00').getDay() + 6) % 7;
     if (wd >= 5) return;
     stats[wd].n++;
     stats[wd].pnl += fnum(t.resultado_reais);
@@ -3143,28 +3315,47 @@ function renderWeekdayPerf() {
     stats[wd].dias.add(d);
   });
 
-  const rows = stats.map((s, i) => {
-    if (s.n === 0) return `<tr style="border-bottom:1px solid var(--border);">
-      <td style="padding:10px 12px;font-weight:600;">${DAYS[i]}</td>
-      <td colspan="6" style="padding:10px 12px;color:var(--mut-2);font-size:12px;">Sem operações</td></tr>`;
-    const wr   = (s.wins/s.n*100);
+  const cards = stats.map((s, i) => {
+    if (s.n === 0) return `
+      <div class="cal-wd-card" style="opacity:.45;">
+        <div class="cal-wd-name">${DAYS[i]}</div>
+        <div class="cal-wd-pnl" style="color:var(--muted);">—</div>
+        <div style="font-size:11px;color:var(--mut-2);margin-top:6px;">Sem dados</div>
+      </div>`;
+    const wr   = s.wins / s.n * 100;
     const dias = s.dias.size;
-    const avgT = s.n ? s.pnl/s.n : 0;
-    const avgD = dias ? s.pnl/dias : 0;
+    const avgT = s.pnl / s.n;
+    const avgD = s.pnl / dias;
     const pc   = s.pnl >= 0 ? 'var(--green)' : 'var(--red)';
-    return `<tr style="border-bottom:1px solid var(--border);">
-      <td style="padding:10px 12px;font-weight:700;">${DAYS[i]}</td>
-      <td style="padding:10px 12px;text-align:right;color:var(--muted);">${s.n}</td>
-      <td style="padding:10px 12px;text-align:right;color:${wr>=50?'var(--green)':'var(--red)'};font-weight:700;">${wr.toFixed(1)}%</td>
-      <td style="padding:10px 12px;text-align:right;color:${pc};font-weight:700;">${fmtR$(s.pnl)}</td>
-      <td style="padding:10px 12px;text-align:right;color:${avgT>=0?'var(--green)':'var(--red)'};">${fmtR$(avgT)}</td>
-      <td style="padding:10px 12px;text-align:right;color:var(--muted);">${dias}</td>
-      <td style="padding:10px 12px;text-align:right;color:${avgD>=0?'var(--green)':'var(--red)'};">${fmtR$(avgD)}</td>
-    </tr>`;
+    const wrc  = wr >= 50 ? 'var(--green)' : 'var(--red)';
+    return `
+      <div class="cal-wd-card">
+        <div class="cal-wd-name">${DAYS[i]}</div>
+        <div class="cal-wd-pnl" style="color:${pc}">${fmtR$(s.pnl)}</div>
+        <div class="cal-wd-stat">
+          <span class="cal-wd-stat-label">Win Rate</span>
+          <span class="cal-wd-stat-value" style="color:${wrc}">${wr.toFixed(0)}%</span>
+        </div>
+        <div class="cal-wd-stat">
+          <span class="cal-wd-stat-label">Operações</span>
+          <span class="cal-wd-stat-value">${s.n}</span>
+        </div>
+        <div class="cal-wd-stat">
+          <span class="cal-wd-stat-label">Dias op.</span>
+          <span class="cal-wd-stat-value">${dias}</span>
+        </div>
+        <div class="cal-wd-stat">
+          <span class="cal-wd-stat-label">Média/trade</span>
+          <span class="cal-wd-stat-value" style="color:${avgT>=0?'var(--green)':'var(--red)'}">${fmtR$(avgT)}</span>
+        </div>
+        <div class="cal-wd-stat">
+          <span class="cal-wd-stat-label">Média/dia</span>
+          <span class="cal-wd-stat-value" style="color:${avgD>=0?'var(--green)':'var(--red)'}">${fmtR$(avgD)}</span>
+        </div>
+      </div>`;
   }).join('');
 
-  document.getElementById('tbody-weekday-cal').innerHTML =
-    rows || '<tr><td colspan="7" style="padding:12px;text-align:center;color:var(--muted);">Sem dados</td></tr>';
+  document.getElementById('cal-weekday-grid').innerHTML = cards;
 }
 
 /* ============================================================
