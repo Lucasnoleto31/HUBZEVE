@@ -11,196 +11,185 @@
   <style>
     * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
     :root {
-      --accent:   #49A8FC;
-      --accent-d: #0D1E95;
-      --accent-3: #101C4E;
-      --accent-l: #7DC4FF;
-      --bg:       #000000;
-      --card:     #080808;
-      --card-2:   #0E0E0E;
-      --card-3:   #141414;
-      --border:   rgba(255,255,255,0.05);
-      --bord-2:   rgba(255,255,255,0.08);
-      --text:     #E8E8E8;
-      --muted:    #555;
-      --mut-2:    #222;
-      --green:    #22C55E;
-      --red:      #F87171;
-      --yellow:   #FBBF24;
+      --accent:   #49A8FC; --accent-d: #0D1E95; --accent-3: #101C4E; --accent-l: #7DC4FF;
+      --bg:       #000000; --card: #080808; --card-2: #0E0E0E; --card-3: #141414;
+      --border:   rgba(255,255,255,0.05); --bord-2: rgba(255,255,255,0.08);
+      --text:     #E8E8E8; --muted: #555; --mut-2: #222;
+      --green:    #22C55E; --red: #F87171; --yellow: #FBBF24;
     }
-    /* dot grid - dark room */
     body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background-image: radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
       background-size: 40px 40px;
     }
-    /* vignette */
     body::after {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.6) 100%);
     }
     html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); }
     .layout { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-    /* ── TOP NAV ── */
+    /* TOP NAV */
     .topnav {
-      height: 64px; flex-shrink: 0;
-      background: rgba(0,0,0,.97);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      display: flex; align-items: center;
-      padding: 0 28px; gap: 0; position: relative; z-index: 100;
+      height: 64px; flex-shrink: 0; background: rgba(0,0,0,.97);
+      border-bottom: 1px solid var(--border); backdrop-filter: blur(12px);
+      display: flex; align-items: center; padding: 0 28px; gap: 0; position: relative; z-index: 100;
     }
-    .tn-logo {
-      display: flex; align-items: center; gap: 12px;
-      padding-right: 24px; border-right: 1px solid var(--border);
-      flex-shrink: 0;
-    }
+    .tn-logo { display: flex; align-items: center; gap: 12px; padding-right: 24px; border-right: 1px solid var(--border); flex-shrink: 0; }
     .tn-logo img { height: 28px; width: auto; }
-    .sb-badge {
-      font-size: 9px; font-weight: 700; letter-spacing: .08em;
-      color: var(--accent); background: rgba(73,168,252,.08);
-      border: 1px solid rgba(73,168,252,.15); border-radius: 4px;
-      padding: 3px 8px; text-transform: uppercase; white-space: nowrap;
-    }
-    .tn-nav {
-      display: flex; align-items: center; gap: 2px;
-      padding: 0 16px; flex: 1; overflow-x: auto; scrollbar-width: none;
-    }
+    .sb-badge { font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--accent); background: rgba(73,168,252,.08); border: 1px solid rgba(73,168,252,.15); border-radius: 4px; padding: 3px 8px; text-transform: uppercase; white-space: nowrap; }
+    .tn-nav { display: flex; align-items: center; gap: 2px; padding: 0 16px; flex: 1; overflow-x: auto; scrollbar-width: none; }
     .tn-nav::-webkit-scrollbar { display: none; }
-    .nav-item {
-      display: flex; align-items: center; gap: 6px;
-      padding: 8px 14px; border-radius: 7px; cursor: pointer;
-      font-size: 13px; font-weight: 400; white-space: nowrap;
-      color: var(--muted); transition: all .12s; border: none; background: none;
-      text-decoration: none; position: relative; flex-shrink: 0;
-    }
+    .nav-item { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 400; white-space: nowrap; color: var(--muted); transition: all .12s; border: none; background: none; text-decoration: none; position: relative; flex-shrink: 0; }
     .nav-item:hover { background: var(--card-2); color: var(--text); }
     .nav-item.active { color: var(--text); font-weight: 600; }
-    .nav-item.active::after {
-      content: ''; position: absolute; bottom: -11px; left: 50%; transform: translateX(-50%);
-      width: 24px; height: 2px; background: #22C55E; border-radius: 2px;
-    }
-    .tn-right {
-      display: flex; align-items: center; gap: 12px;
-      padding-left: 20px; border-left: 1px solid var(--border); flex-shrink: 0;
-    }
-    .sb-avatar {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: linear-gradient(135deg, rgba(13,30,149,.6), rgba(73,168,252,.25));
-      border: 1px solid rgba(73,168,252,.3);
-      color: var(--accent-l);
-      font-size: 12px; font-weight: 700; display: flex; align-items: center;
-      justify-content: center; flex-shrink: 0;
-    }
+    .nav-item.active::after { content: ''; position: absolute; bottom: -11px; left: 50%; transform: translateX(-50%); width: 24px; height: 2px; background: #22C55E; border-radius: 2px; }
+    .tn-right { display: flex; align-items: center; gap: 12px; padding-left: 20px; border-left: 1px solid var(--border); flex-shrink: 0; }
+    .sb-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, rgba(13,30,149,.6), rgba(73,168,252,.25)); border: 1px solid rgba(73,168,252,.3); color: var(--accent-l); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .sb-name { font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--text); max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
     .btn-logout { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 6px; flex-shrink: 0; opacity: .6; }
     .btn-logout:hover { color: var(--red); opacity: 1; }
 
-    /* ── MAIN ── */
-    .main { flex: 1; overflow-y: auto; padding: 32px 40px; }
+    /* MAIN */
+    .main { flex: 1; overflow-y: auto; padding: 40px 48px; }
+    .page-wrap { max-width: 800px; }
 
-    /* ── SECTION HEADER ── */
-    .sec-header { margin-bottom: 28px; }
-    .sec-header-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; letter-spacing: -.02em; }
-    .sec-header-sub { font-size: 14px; color: var(--muted); line-height: 1.5; }
+    /* HERO */
+    .upl-hero { margin-bottom: 36px; }
+    .upl-hero-title {
+      font-size: clamp(3.2rem, 6vw, 5.2rem); font-weight: 900; letter-spacing: -.05em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,.45) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .upl-hero-sub { font-size: 15px; color: var(--muted); max-width: 480px; line-height: 1.65; margin-top: 10px; }
 
-    /* ── CARDS ── */
-    .form-card {
+    /* PROFILE HERO CARD */
+    .pf-hero-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; overflow: hidden; margin-bottom: 20px;
-      position: relative;
+      border-radius: 24px; padding: 32px 36px; margin-bottom: 24px;
+      position: relative; overflow: hidden;
     }
-    .form-card::before {
+    .pf-hero-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, rgba(73,168,252,.35) 0%, transparent 60%);
+      background: linear-gradient(90deg, rgba(73,168,252,.5) 0%, transparent 70%);
     }
-    .form-card-header {
-      padding: 20px 24px; border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; gap: 12px;
+    .pf-hero-card::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(73,168,252,.05) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .form-card-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .form-card-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
-    .form-card-body { padding: 24px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .pf-hero-inner { display: flex; align-items: center; gap: 28px; position: relative; z-index: 1; }
+    .pf-avatar-wrap { position: relative; flex-shrink: 0; }
+    .pf-avatar {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-d), var(--accent));
+      border: 3px solid rgba(73,168,252,.4);
+      color: #fff; font-size: 28px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 6px rgba(73,168,252,.08), 0 0 32px rgba(73,168,252,.15);
+    }
+    .pf-avatar-online {
+      position: absolute; bottom: 4px; right: 4px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--green); border: 2px solid var(--bg);
+    }
+    .pf-info { flex: 1; min-width: 0; }
+    .pf-name { font-size: 26px; font-weight: 900; letter-spacing: -.03em; color: var(--text); margin-bottom: 4px; }
+    .pf-email { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    .pf-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .role-badge { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .role-cliente  { background: rgba(34,197,94,.1);  color: var(--green);  border: 1px solid rgba(34,197,94,.2); }
+    .role-assessor { background: rgba(251,191,36,.1); color: var(--yellow); border: 1px solid rgba(251,191,36,.2); }
+    .role-admin    { background: rgba(73,168,252,.1); color: var(--accent);  border: 1px solid rgba(73,168,252,.2); }
+    .pf-plano-badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; background: var(--card-2); color: var(--muted); border: 1px solid var(--border); }
+    .pf-stats { display: grid; grid-template-columns: repeat(3, auto); gap: 0; border-left: 1px solid var(--border); padding-left: 28px; flex-shrink: 0; }
+    .pf-stat { padding: 6px 20px; text-align: center; border-right: 1px solid var(--border); }
+    .pf-stat:last-child { border-right: none; }
+    .pf-stat-val { font-size: 20px; font-weight: 900; letter-spacing: -.03em; color: var(--text); }
+    .pf-stat-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 2px; }
+
+    /* SECTION CARDS */
+    .pf-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden; margin-bottom: 20px;
+    }
+    .pf-card-header {
+      padding: 20px 28px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .pf-card-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .pf-icon-blue   { background: rgba(73,168,252,.1);  border: 1px solid rgba(73,168,252,.2); }
+    .pf-icon-purple { background: rgba(139,92,246,.1);  border: 1px solid rgba(139,92,246,.2); }
+    .pf-icon-muted  { background: var(--card-2); border: 1px solid var(--border); }
+    .pf-card-title  { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -.01em; }
+    .pf-card-sub    { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .pf-card-body   { padding: 28px; }
+    .pf-card-footer { padding: 0 28px 24px; display: flex; align-items: center; gap: 12px; }
+
+    /* FORM */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group   { display: flex; flex-direction: column; gap: 7px; }
     .form-group.full { grid-column: 1 / -1; }
-    label { font-size: 13px; font-weight: 600; color: #AAA; }
-    .input {
+    .form-label { font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .05em; }
+    .form-input {
       background: var(--card-2); border: 1px solid var(--bord-2);
-      border-radius: 10px; color: var(--text); font-size: 14px;
-      padding: 11px 14px; outline: none;
-      transition: border-color .2s, box-shadow .2s; width: 100%; font-family: Inter;
+      border-radius: 12px; color: var(--text); font-size: 15px; font-weight: 500;
+      padding: 13px 16px; outline: none; transition: border-color .2s, box-shadow .2s;
+      width: 100%; font-family: Inter;
     }
-    .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(73,168,252,.08); }
-    .input:disabled { opacity: .4; cursor: not-allowed; }
-    .input::placeholder { color: var(--mut-2); }
-    .input.error { border-color: var(--red); }
-    .form-actions { padding: 0 24px 24px; display: flex; align-items: center; gap: 12px; }
+    .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(73,168,252,.08); }
+    .form-input:disabled { opacity: .35; cursor: not-allowed; }
+    .form-input::placeholder { color: var(--mut-2); }
+    .form-input.error { border-color: var(--red); }
+    .input-wrap { position: relative; }
+    .eye-btn { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; }
+    .eye-btn:hover { color: var(--text); }
+
+    /* BUTTONS */
     .btn-primary {
-      background: var(--accent-d); color: #fff; font-weight: 600; font-size: 14px;
-      border: none; border-radius: 10px; padding: 11px 24px; cursor: pointer;
+      background: var(--accent-d); color: #fff; font-weight: 700; font-size: 14px;
+      border: none; border-radius: 12px; padding: 13px 28px; cursor: pointer;
       transition: all .15s; font-family: Inter; display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-primary:hover { background: #1428be; }
-    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary:hover { background: #1428be; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
     .btn-ghost {
-      background: none; color: var(--muted); font-weight: 600; font-size: 14px;
-      border: 1px solid var(--bord-2); border-radius: 10px; padding: 11px 24px;
+      background: none; color: var(--muted); font-weight: 600; font-size: 13px;
+      border: 1px solid var(--bord-2); border-radius: 12px; padding: 13px 22px;
       cursor: pointer; transition: all .15s; font-family: Inter;
     }
     .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
 
-    /* ── AVATAR ── */
-    .avatar-big {
-      width: 72px; height: 72px; border-radius: 50%;
-      background: linear-gradient(135deg, rgba(13,30,149,.6), rgba(73,168,252,.25));
-      border: 2px solid rgba(73,168,252,.3);
-      color: var(--accent-l); font-size: 24px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-
-    /* ── BADGE ROLE ── */
-    .role-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
-    .role-cliente  { background: rgba(34,197,94,.1);  color: var(--green);  border: 1px solid rgba(34,197,94,.2); }
-    .role-assessor { background: rgba(251,191,36,.1); color: var(--yellow); border: 1px solid rgba(251,191,36,.2); }
-    .role-admin    { background: rgba(73,168,252,.1);  color: var(--accent); border: 1px solid rgba(73,168,252,.2); }
-
-    /* ── INFO TILES ── */
-    .info-tile {
-      background: var(--card-2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 16px;
-    }
-    .info-tile-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
-    .info-tile-value { font-size: 15px; font-weight: 700; color: var(--text); }
-
-    /* ── PASSWORD STRENGTH ── */
-    .strength-bar { height: 4px; border-radius: 2px; background: var(--bord-2); margin-top: 6px; overflow: hidden; }
+    /* PASSWORD STRENGTH */
+    .strength-bar  { height: 4px; border-radius: 2px; background: var(--bord-2); margin-top: 8px; overflow: hidden; }
     .strength-fill { height: 100%; border-radius: 2px; transition: width .3s, background .3s; width: 0; }
+    .strength-lbl  { font-size: 11px; margin-top: 5px; font-weight: 600; }
 
-    /* ── EYE BTN ── */
-    .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; }
-    .eye-btn:hover { color: var(--text); }
-
-    /* ── TOAST ── */
-    .toast-wrap { position: fixed; top: 18px; right: 18px; z-index: 9999; display: flex; flex-direction: column; gap: 7px; }
-    .toast {
-      background: var(--card-2); border: 1px solid var(--border); border-radius: 9px;
-      padding: 12px 16px; font-size: 13px; font-weight: 500;
-      display: flex; align-items: center; gap: 9px; min-width: 260px; max-width: 340px;
-      animation: slideIn .2s ease; box-shadow: 0 8px 28px rgba(0,0,0,.5);
+    /* INFO TILES */
+    .info-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .info-tile {
+      background: var(--card-2); border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px 16px; transition: border-color .2s;
     }
+    .info-tile:hover { border-color: var(--bord-2); }
+    .info-tile-label { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; margin-bottom: 8px; }
+    .info-tile-value { font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: -.02em; }
+
+    /* SPINNER */
+    .spinner { width: 15px; height: 15px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* TOAST */
+    .toast-wrap { position: fixed; top: 18px; right: 18px; z-index: 9999; display: flex; flex-direction: column; gap: 7px; }
+    .toast { background: var(--card-2); border: 1px solid var(--border); border-radius: 10px; padding: 13px 18px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; min-width: 260px; max-width: 340px; animation: slideIn .2s ease; box-shadow: 0 8px 28px rgba(0,0,0,.5); }
     .toast.success { border-color: rgba(73,168,252,.3); }
     .toast.error   { border-color: rgba(248,113,113,.3); }
     @keyframes slideIn { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* ── SPINNER ── */
-    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── SCROLLBAR ── */
+    /* SCROLLBAR */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--card-3); border-radius: 3px; }
@@ -217,7 +206,6 @@
       <span style="font-size:15px;font-weight:800;color:var(--accent);display:none">ZeveHub</span>
       <div class="sb-badge" id="sb-role-badge">CLIENTE</div>
     </div>
-
     <div class="tn-nav">
       <a class="nav-item" href="dashboard.html">Visão Geral</a>
       <a class="nav-item" href="dashboard.html">Uploads</a>
@@ -227,12 +215,10 @@
       <a class="nav-item" href="dashboard.html">Comparativo</a>
       <a class="nav-item" href="dashboard.html">Horários</a>
       <a class="nav-item" href="dashboard.html">Metas</a>
-      <a class="nav-item" href="dashboard.html">Consistência</a>
       <a class="nav-item" href="dashboard.html">Exportar</a>
       <a class="nav-item" href="dashboard.html">Ranking</a>
       <a class="nav-item active" href="perfil.html">Meu Perfil</a>
     </div>
-
     <div class="tn-right">
       <div class="sb-avatar" id="sb-avatar">--</div>
       <div class="sb-name" id="sb-name">Carregando...</div>
@@ -244,93 +230,115 @@
 
   <!-- MAIN -->
   <div class="main">
-    <div style="max-width:740px;">
+    <div class="page-wrap">
 
-      <!-- Section Header -->
-      <div class="sec-header">
-        <div class="sec-header-title">Meu Perfil</div>
-        <div class="sec-header-sub">Gerencie suas informações pessoais e de acesso</div>
+      <!-- Hero -->
+      <div class="upl-hero">
+        <div class="upl-hero-title">MEU PERFIL</div>
+        <div class="upl-hero-sub">Gerencie suas informações pessoais, segurança e dados da conta</div>
       </div>
 
-      <!-- Perfil Header Card -->
-      <div class="form-card" style="margin-bottom:20px;">
-        <div style="padding:28px; display:flex; align-items:center; gap:22px;">
-          <div class="avatar-big" id="avatar-big">--</div>
-          <div>
-            <div style="font-size:20px; font-weight:800; letter-spacing:-.02em;" id="header-name">Carregando...</div>
-            <div style="font-size:13px; color:var(--muted); margin-top:3px;" id="header-email">—</div>
-            <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+      <!-- Profile hero card -->
+      <div class="pf-hero-card" style="margin-bottom:24px;">
+        <div class="pf-hero-inner">
+          <div class="pf-avatar-wrap">
+            <div class="pf-avatar" id="avatar-big">--</div>
+            <div class="pf-avatar-online"></div>
+          </div>
+          <div class="pf-info">
+            <div class="pf-name" id="header-name">Carregando...</div>
+            <div class="pf-email" id="header-email">—</div>
+            <div class="pf-badges">
               <span class="role-badge role-cliente" id="header-role">cliente</span>
-              <span style="font-size:12px; color:var(--muted);" id="header-plano"></span>
+              <span class="pf-plano-badge" id="header-plano"></span>
+            </div>
+          </div>
+          <div class="pf-stats">
+            <div class="pf-stat">
+              <div class="pf-stat-val" id="stat-role">—</div>
+              <div class="pf-stat-lbl">Acesso</div>
+            </div>
+            <div class="pf-stat">
+              <div class="pf-stat-val" id="stat-plano">—</div>
+              <div class="pf-stat-lbl">Plano</div>
+            </div>
+            <div class="pf-stat">
+              <div class="pf-stat-val" id="stat-since">—</div>
+              <div class="pf-stat-lbl">Membro desde</div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Informações Pessoais -->
-      <div class="form-card">
-        <div class="form-card-header">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <div class="pf-card">
+        <div class="pf-card-header">
+          <div class="pf-card-icon pf-icon-blue">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
           <div>
-            <div class="form-card-title">Informações Pessoais</div>
-            <div class="form-card-sub">Nome, telefone e dados da conta Profit</div>
+            <div class="pf-card-title">Informações Pessoais</div>
+            <div class="pf-card-sub">Nome, telefone e conta da plataforma Profit</div>
           </div>
         </div>
-        <div class="form-card-body">
-          <div class="form-grid">
+        <div class="pf-card-body">
+          <div class="form-grid-2">
             <div class="form-group">
-              <label>Nome completo</label>
-              <input class="input" type="text" id="fullName" placeholder="Seu nome completo" />
+              <label class="form-label">Nome completo</label>
+              <input class="form-input" type="text" id="fullName" placeholder="Seu nome completo" />
             </div>
             <div class="form-group">
-              <label>E-mail</label>
-              <input class="input" type="email" id="email" disabled placeholder="email@exemplo.com" />
+              <label class="form-label">E-mail</label>
+              <input class="form-input" type="email" id="email" disabled placeholder="email@exemplo.com" />
             </div>
             <div class="form-group">
-              <label>Telefone / WhatsApp</label>
-              <input class="input" type="tel" id="phone" placeholder="(62) 99999-9999" />
+              <label class="form-label">Telefone / WhatsApp</label>
+              <input class="form-input" type="tel" id="phone" placeholder="(62) 99999-9999" />
             </div>
             <div class="form-group">
-              <label>Conta Profit (número)</label>
-              <input class="input" type="text" id="contaProfit" placeholder="Ex: 2345745" />
+              <label class="form-label">Conta Profit</label>
+              <input class="form-input" type="text" id="contaProfit" placeholder="Ex: 2345745" />
             </div>
           </div>
         </div>
-        <div class="form-actions">
+        <div class="pf-card-footer">
           <button class="btn-primary" id="btnSalvar" onclick="salvarPerfil()">
             <div class="spinner" id="spinnerPerfil"></div>
             <span id="btnSalvarText">Salvar alterações</span>
           </button>
+          <button class="btn-ghost" onclick="document.getElementById('fullName').value=profile?.full_name||'';document.getElementById('phone').value=profile?.phone||'';document.getElementById('contaProfit').value=profile?.conta_profit||'';">Cancelar</button>
         </div>
       </div>
 
       <!-- Alterar Senha -->
-      <div class="form-card">
-        <div class="form-card-header">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <div class="pf-card">
+        <div class="pf-card-header">
+          <div class="pf-card-icon pf-icon-purple">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
           <div>
-            <div class="form-card-title">Alterar Senha</div>
-            <div class="form-card-sub">Recomendamos uma senha forte com letras, números e símbolos</div>
+            <div class="pf-card-title">Segurança</div>
+            <div class="pf-card-sub">Altere sua senha — recomendamos letras, números e símbolos</div>
           </div>
         </div>
-        <div class="form-card-body">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div class="pf-card-body">
+          <div class="form-grid-2">
             <div class="form-group">
-              <label>Nova senha</label>
-              <div style="position:relative;">
-                <input class="input" type="password" id="newPass" placeholder="Mínimo 8 caracteres" oninput="checkStrength(this.value)" style="padding-right:44px;" />
+              <label class="form-label">Nova senha</label>
+              <div class="input-wrap">
+                <input class="form-input" type="password" id="newPass" placeholder="Mínimo 8 caracteres" oninput="checkStrength(this.value)" style="padding-right:46px;" />
                 <button type="button" class="eye-btn" onclick="toggleVis('newPass','ep1on','ep1off')">
                   <svg id="ep1off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><path d="M14.12 14.12A3 3 0 119.88 9.88"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
                   <svg id="ep1on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
               <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
-              <div style="font-size:11px; margin-top:4px;" id="strengthLabel"></div>
+              <div class="strength-lbl" id="strengthLabel"></div>
             </div>
             <div class="form-group">
-              <label>Confirmar nova senha</label>
-              <div style="position:relative;">
-                <input class="input" type="password" id="confirmPass" placeholder="Repita a nova senha" style="padding-right:44px;" />
+              <label class="form-label">Confirmar nova senha</label>
+              <div class="input-wrap">
+                <input class="form-input" type="password" id="confirmPass" placeholder="Repita a nova senha" style="padding-right:46px;" />
                 <button type="button" class="eye-btn" onclick="toggleVis('confirmPass','ep2on','ep2off')">
                   <svg id="ep2off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><path d="M14.12 14.12A3 3 0 119.88 9.88"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
                   <svg id="ep2on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -339,26 +347,28 @@
             </div>
           </div>
         </div>
-        <div class="form-actions">
+        <div class="pf-card-footer">
           <button class="btn-primary" id="btnSenha" onclick="alterarSenha()">
             <div class="spinner" id="spinnerSenha"></div>
             <span id="btnSenhaText">Alterar senha</span>
           </button>
-          <span style="font-size:12px; color:var(--muted);">Deixe em branco para manter a senha atual</span>
+          <span style="font-size:12px;color:var(--muted);">Deixe em branco para manter a senha atual</span>
         </div>
       </div>
 
       <!-- Informações da Conta -->
-      <div class="form-card">
-        <div class="form-card-header">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div class="pf-card">
+        <div class="pf-card-header">
+          <div class="pf-card-icon pf-icon-muted">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
           <div>
-            <div class="form-card-title">Informações da Conta</div>
-            <div class="form-card-sub">Dados do seu plano e acesso</div>
+            <div class="pf-card-title">Informações da Conta</div>
+            <div class="pf-card-sub">Dados do seu plano e nível de acesso</div>
           </div>
         </div>
-        <div class="form-card-body">
-          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
+        <div class="pf-card-body">
+          <div class="info-tiles">
             <div class="info-tile">
               <div class="info-tile-label">Plano</div>
               <div class="info-tile-value" id="info-plano">—</div>
@@ -403,6 +413,8 @@ let profile = null;
   profile = p;
 
   const initials = (p.full_name || p.email || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  const since    = new Date(p.created_at).toLocaleDateString('pt-BR', { month:'short', year:'numeric' });
+
   document.getElementById('sb-avatar').textContent     = initials;
   document.getElementById('sb-name').textContent       = p.full_name || p.email;
   document.getElementById('sb-role-badge').textContent = p.role.toUpperCase();
@@ -410,9 +422,14 @@ let profile = null;
   document.getElementById('avatar-big').textContent   = initials;
   document.getElementById('header-name').textContent  = p.full_name || '—';
   document.getElementById('header-email').textContent = p.email;
+  document.getElementById('header-plano').textContent = p.plano?.nome || 'Conveniado';
   const roleBadge = document.getElementById('header-role');
   roleBadge.textContent = p.role;
-  roleBadge.className = 'role-badge role-' + p.role;
+  roleBadge.className   = 'role-badge role-' + p.role;
+
+  document.getElementById('stat-role').textContent  = p.role;
+  document.getElementById('stat-plano').textContent = p.plano?.nome || 'Conveniado';
+  document.getElementById('stat-since').textContent = since;
 
   document.getElementById('fullName').value    = p.full_name    || '';
   document.getElementById('email').value       = p.email        || '';
@@ -421,73 +438,59 @@ let profile = null;
 
   document.getElementById('info-plano').textContent = p.plano?.nome || 'Conveniado';
   document.getElementById('info-role').textContent  = p.role;
-  document.getElementById('info-since').textContent = new Date(p.created_at).toLocaleDateString('pt-BR');
+  document.getElementById('info-since').textContent = since;
 })();
 
 async function salvarPerfil() {
   const name  = document.getElementById('fullName').value.trim();
   const phone = document.getElementById('phone').value.trim();
   const conta = document.getElementById('contaProfit').value.trim();
-
   if (!name) { toast('Informe seu nome completo.', 'error'); return; }
-
   setLoading('btnSalvar', 'spinnerPerfil', 'btnSalvarText', true, 'Salvando...');
-
-  const { error } = await sb.from('profiles').update({
-    full_name: name, phone: phone || null, conta_profit: conta || null
-  }).eq('id', profile.id);
-
+  const { error } = await sb.from('profiles').update({ full_name: name, phone: phone || null, conta_profit: conta || null }).eq('id', profile.id);
   setLoading('btnSalvar', 'spinnerPerfil', 'btnSalvarText', false, 'Salvar alterações');
-
   if (error) { toast('Erro: ' + error.message, 'error'); return; }
-
-  document.getElementById('header-name').textContent = name;
   const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-  document.getElementById('sb-avatar').textContent  = initials;
-  document.getElementById('sb-name').textContent    = name;
-  document.getElementById('avatar-big').textContent = initials;
-
+  document.getElementById('header-name').textContent  = name;
+  document.getElementById('sb-avatar').textContent    = initials;
+  document.getElementById('sb-name').textContent      = name;
+  document.getElementById('avatar-big').textContent   = initials;
+  profile.full_name = name; profile.phone = phone; profile.conta_profit = conta;
   toast('Perfil atualizado com sucesso!', 'success');
 }
 
 async function alterarSenha() {
   const newPass     = document.getElementById('newPass').value;
   const confirmPass = document.getElementById('confirmPass').value;
-
-  if (!newPass) { toast('Digite a nova senha.', 'error'); return; }
-  if (newPass.length < 8) { toast('A senha deve ter no mínimo 8 caracteres.', 'error'); return; }
-  if (newPass !== confirmPass) { toast('As senhas não coincidem.', 'error'); return; }
-
+  if (!newPass)                   { toast('Digite a nova senha.', 'error'); return; }
+  if (newPass.length < 8)         { toast('A senha deve ter no mínimo 8 caracteres.', 'error'); return; }
+  if (newPass !== confirmPass)    { toast('As senhas não coincidem.', 'error'); return; }
   setLoading('btnSenha', 'spinnerSenha', 'btnSenhaText', true, 'Alterando...');
-
   const { error } = await sb.auth.updateUser({ password: newPass });
-
   setLoading('btnSenha', 'spinnerSenha', 'btnSenhaText', false, 'Alterar senha');
-
   if (error) { toast('Erro: ' + error.message, 'error'); return; }
-
-  document.getElementById('newPass').value     = '';
+  document.getElementById('newPass').value = '';
   document.getElementById('confirmPass').value = '';
   document.getElementById('strengthFill').style.width = '0';
   document.getElementById('strengthLabel').textContent = '';
-
   toast('Senha alterada com sucesso!', 'success');
 }
 
 function checkStrength(val) {
-  const fill  = document.getElementById('strengthFill');
-  const label = document.getElementById('strengthLabel');
+  const fill = document.getElementById('strengthFill');
+  const lbl  = document.getElementById('strengthLabel');
   let score = 0;
-  if (val.length >= 8)          score++;
-  if (val.length >= 12)         score++;
-  if (/[A-Z]/.test(val))        score++;
-  if (/[0-9]/.test(val))        score++;
-  if (/[^A-Za-z0-9]/.test(val)) score++;
+  if (val.length >= 8)           score++;
+  if (val.length >= 12)          score++;
+  if (/[A-Z]/.test(val))         score++;
+  if (/[0-9]/.test(val))         score++;
+  if (/[^A-Za-z0-9]/.test(val))  score++;
   const map = [['0%','',''],['25%','#F87171','Muito fraca'],['45%','#FBBF24','Fraca'],['65%','#EAB308','Média'],['85%','#22C55E','Forte'],['100%','#16A34A','Muito forte']];
   const s = Math.min(score, 5);
-  const [w, c, l] = s === 0 ? ['0%', '', ''] : map[s];
+  if (s === 0) { fill.style.width = '0'; lbl.textContent = ''; return; }
+  const [w, c, l] = map[s];
   fill.style.width = w; fill.style.background = c;
-  label.textContent = l; label.style.color = c;
+  lbl.textContent = l; lbl.style.color = c;
 }
 
 function toggleVis(inputId, onId, offId) {
@@ -513,7 +516,7 @@ function toast(msg, type = 'success') {
   const wrap = document.getElementById('toast-wrap');
   const el   = document.createElement('div');
   el.className = `toast ${type}`;
-  el.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span><span>${msg}</span>`;
+  el.innerHTML = `<span style="font-size:16px;">${type === 'success' ? '✓' : '✕'}</span><span>${msg}</span>`;
   wrap.appendChild(el);
   setTimeout(() => el.remove(), 4000);
 }

@@ -100,7 +100,16 @@
       font-size: 12px; font-weight: 700; display: flex; align-items: center;
       justify-content: center; flex-shrink: 0;
     }
-    .sb-name { font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--text); max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+    .sb-name-wrap { display: flex; flex-direction: column; gap: 1px; max-width: 140px; }
+    .sb-name { font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--text); overflow: hidden; text-overflow: ellipsis; }
+    .sb-patente-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 700; letter-spacing: .04em;
+      padding: 1px 7px 1px 4px; border-radius: 20px;
+      border: 1px solid; white-space: nowrap; width: fit-content;
+      opacity: 0; transition: opacity .3s;
+    }
+    .sb-patente-badge.loaded { opacity: 1; }
     .btn-logout { font-size: 13px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 6px; flex-shrink: 0; opacity: .6; }
     .btn-logout:hover { color: var(--red); opacity: 1; }
 
@@ -606,6 +615,483 @@
       font-size: 11px; font-weight: 700;
     }
 
+    /* ── COMPARATIVO PAGE ── */
+    .cmp-filters {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center;
+    }
+    .cmp-period-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px 24px; position: relative; overflow: hidden;
+      transition: border-color .2s;
+    }
+    .cmp-period-a { border-top: 3px solid var(--accent); }
+    .cmp-period-a:hover { border-color: var(--accent); }
+    .cmp-period-b { border-top: 3px solid var(--yellow); }
+    .cmp-period-b:hover { border-color: var(--yellow); }
+    .cmp-period-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 14px;
+    }
+    .cmp-period-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 6px;
+      font-size: 11px; font-weight: 900; letter-spacing: 0; flex-shrink: 0;
+    }
+    .cmp-badge-a { background: rgba(73,168,252,.15); color: var(--accent); border: 1px solid rgba(73,168,252,.3); }
+    .cmp-badge-b { background: rgba(251,191,36,.12); color: var(--yellow); border: 1px solid rgba(251,191,36,.25); }
+    .cmp-period-dates { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .cmp-date-group { display: flex; flex-direction: column; gap: 3px; }
+    .cmp-date-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .cmp-date-input {
+      background: var(--card-2); border: 1px solid var(--bord-2);
+      border-radius: 8px; padding: 7px 10px; color: var(--text);
+      font-size: 13px; font-weight: 500; outline: none; cursor: pointer;
+      transition: border-color .15s;
+    }
+    .cmp-date-input:focus { border-color: rgba(255,255,255,.15); }
+    .cmp-date-a:focus { border-color: rgba(73,168,252,.5); }
+    .cmp-date-b:focus { border-color: rgba(251,191,36,.4); }
+    .cmp-date-sep { color: var(--muted); font-size: 16px; font-weight: 300; padding-top: 14px; }
+    .cmp-period-info { font-size: 11px; color: var(--muted); font-weight: 500; }
+    .cmp-vs-divider {
+      display: flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--card-3); border: 1px solid var(--border);
+      font-size: 11px; font-weight: 900; letter-spacing: .05em; color: var(--muted);
+      flex-shrink: 0; margin: 0 auto;
+    }
+    .cmp-kpi-card {
+      background: var(--card) !important; border: 1px solid var(--border) !important;
+      border-radius: 14px !important; padding: 16px !important;
+      transition: border-color .2s, transform .15s;
+    }
+    .cmp-kpi-card:hover { border-color: var(--bord-2) !important; transform: translateY(-1px); }
+    .cmp-equity-card { border: 1px solid var(--border); }
+    @media (max-width: 700px) {
+      .cmp-filters { grid-template-columns: 1fr; }
+      .cmp-vs-divider { width: 100%; border-radius: 10px; height: 36px; }
+    }
+
+    /* ── RANKING PAGE ── */
+    .rk-me-banner {
+      display: flex; align-items: center; gap: 20px;
+      background: linear-gradient(135deg, rgba(73,168,252,.1) 0%, rgba(73,168,252,.03) 100%);
+      border: 1px solid rgba(73,168,252,.25); border-radius: 20px; padding: 20px 28px;
+      position: relative; overflow: hidden;
+    }
+    .rk-me-banner::before {
+      content: ''; position: absolute; inset: 0; border-radius: 20px;
+      background: linear-gradient(90deg, rgba(73,168,252,.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .rk-me-avatar {
+      width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-d));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 900; color: #fff;
+      box-shadow: 0 0 0 3px rgba(73,168,252,.3), 0 0 20px rgba(73,168,252,.2);
+    }
+    .rk-me-info { flex: 1; }
+    .rk-me-pos  { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin-bottom: 2px; }
+    .rk-me-name { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+    .rk-me-sub  { font-size: 12px; color: var(--muted); }
+    .rk-me-rank-num { font-size: 52px; font-weight: 900; letter-spacing: -.04em; color: rgba(73,168,252,.2); line-height: 1; flex-shrink: 0; }
+
+    /* Podium */
+    .rk-podium-stage {
+      display: flex; align-items: flex-end; justify-content: center; gap: 0;
+    }
+    .rk-podium-slot {
+      flex: 1; max-width: 260px; display: flex; flex-direction: column; align-items: center;
+      opacity: 0; transform: translateY(40px);
+      transition: opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1);
+    }
+    .rk-podium-slot.rk-podium-visible { opacity: 1; transform: translateY(0); }
+    .rk-podium-first  { }
+    .rk-podium-second { }
+    .rk-podium-third  { }
+    .rk-podium-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 20px 16px 16px; text-align: center; width: 100%;
+      position: relative; transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 0 0 1px var(--border);
+    }
+    .rk-podium-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.4); }
+    .rk-podium-first .rk-podium-card {
+      border-color: rgba(255,215,0,.3);
+      box-shadow: 0 0 0 1px rgba(255,215,0,.2), 0 0 40px rgba(255,215,0,.08);
+    }
+    .rk-podium-me { border-color: rgba(73,168,252,.4) !important; }
+    .rk-you-tag {
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: #000; font-size: 9px; font-weight: 900;
+      padding: 2px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .08em;
+    }
+    .rk-podium-crown { font-size: 28px; margin-bottom: 8px; line-height: 1; }
+    .rk-podium-first .rk-podium-crown { font-size: 36px; }
+    .rk-podium-avatar {
+      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 10px;
+      background: var(--card-3); border: 3px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900; color: var(--text);
+      transition: box-shadow .2s;
+    }
+    .rk-podium-first .rk-podium-avatar { width: 76px; height: 76px; font-size: 24px; }
+    .rk-podium-name { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rk-podium-first .rk-podium-name { font-size: 16px; }
+    .rk-podium-pnl  { font-size: 18px; font-weight: 900; letter-spacing: -.03em; margin-bottom: 4px; }
+    .rk-podium-first .rk-podium-pnl  { font-size: 22px; }
+    .rk-podium-wr   { font-size: 11px; color: var(--muted); }
+    .rk-podium-base {
+      width: 100%; border-radius: 0 0 12px 12px; padding: 12px 8px 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rk-podium-second .rk-podium-base { padding-top: 20px; }
+    .rk-podium-third  .rk-podium-base { padding-top: 32px; }
+    .rk-podium-pos { font-size: 22px; font-weight: 900; }
+
+    /* Table */
+    .rk-table-header {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+      gap: 12px; margin-bottom: 16px;
+    }
+    .rk-count-badge {
+      background: var(--card-2); border: 1px solid var(--border); border-radius: 20px;
+      padding: 3px 12px; font-size: 11px; font-weight: 600; color: var(--muted);
+    }
+    .rk-list-header {
+      display: flex; align-items: center; gap: 0;
+      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700;
+    }
+    /* Patentes tier section */
+    .rk-patentes-section {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 28px 28px 20px; overflow: hidden; position: relative;
+    }
+    .rk-patentes-section::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(239,68,68,.06), transparent);
+    }
+    .rk-patentes-title {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 4px;
+      font-size: 18px; font-weight: 800; letter-spacing: -.02em;
+    }
+    .rk-patentes-year {
+      background: rgba(255,215,0,.12); color: #FFD700; border: 1px solid rgba(255,215,0,.3);
+      border-radius: 20px; padding: 2px 12px; font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    }
+    .rk-patentes-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+    .rk-patentes-tiers {
+      display: grid; grid-template-columns: repeat(8,1fr); gap: 8px;
+    }
+    .rk-pat-tier {
+      background: var(--card-2); border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px 8px; text-align: center; transition: transform .2s, border-color .2s, box-shadow .2s;
+      cursor: default;
+    }
+    .rk-pat-tier:hover {
+      transform: translateY(-3px);
+      border-color: var(--pcol);
+      box-shadow: 0 0 16px var(--pglow);
+    }
+    .rk-pat-shark {
+      background: linear-gradient(135deg, rgba(255,215,0,.1), rgba(255,215,0,.03));
+      border-color: rgba(255,215,0,.4) !important;
+      box-shadow: 0 0 20px rgba(255,215,0,.12);
+      animation: sharkPulse 3s ease-in-out infinite;
+    }
+    @keyframes sharkPulse {
+      0%,100% { box-shadow: 0 0 20px rgba(255,215,0,.12); }
+      50%      { box-shadow: 0 0 32px rgba(255,215,0,.3); }
+    }
+    .rk-pat-icon  { font-size: 26px; line-height: 1; margin-bottom: 6px; }
+    .rk-pat-shark .rk-pat-icon { font-size: 30px; }
+    .rk-pat-name  { font-size: 11px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 3px; }
+    .rk-pat-req   { font-size: 9px; color: var(--muted); margin-bottom: 6px; line-height: 1.3; min-height: 24px; }
+    .rk-pat-count { font-size: 16px; font-weight: 900; letter-spacing: -.02em; }
+    /* Patente inline badge (podium) */
+    .rk-pat-badge-inline {
+      display: inline-block; border-radius: 20px; padding: 3px 10px;
+      font-size: 10px; font-weight: 700; margin-bottom: 8px; letter-spacing: .02em;
+    }
+    /* Patente in table rows */
+    .rk-me-next {
+      font-size: 11px; color: var(--muted); margin-top: 5px;
+    }
+    .rk-col-pat  { width: 110px; text-align: center; }
+    .rk-row-pat  { width: 110px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .rk-pat-icon-sm { font-size: 18px; line-height: 1; }
+    .rk-pat-name-sm { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+    @media (max-width: 900px) {
+      .rk-patentes-tiers { grid-template-columns: repeat(4,1fr); }
+    }
+    @media (max-width: 600px) {
+      .rk-patentes-tiers { grid-template-columns: repeat(2,1fr); }
+      .rk-col-pat, .rk-row-pat { display: none; }
+    }
+    /* Table columns */
+    .rk-col-info { flex: 1; }
+    .rk-col-pnl  { width: 160px; text-align: right; }
+    .rk-col-wr   { width: 90px;  text-align: right; }
+    .rk-col-avg  { width: 110px; text-align: right; }
+    .rk-row {
+      display: flex; align-items: center; gap: 0;
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+      transition: background .15s; cursor: default;
+      opacity: 0; animation: rkRowIn .35s ease forwards;
+    }
+    @keyframes rkRowIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .rk-row:hover { background: rgba(255,255,255,.02); }
+    .rk-row-me {
+      background: rgba(73,168,252,.04) !important;
+      border-left: 3px solid var(--accent);
+    }
+    .rk-row-me:hover { background: rgba(73,168,252,.07) !important; }
+    .rk-row-pos { width: 52px; flex-shrink: 0; }
+    .rk-medal {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 8px;
+      font-size: 12px; font-weight: 900;
+    }
+    .rk-gold   { background: rgba(255,215,0,.15); color: #FFD700; border: 1px solid rgba(255,215,0,.3); }
+    .rk-silver { background: rgba(192,192,192,.1); color: #C0C0C0; border: 1px solid rgba(192,192,192,.25); }
+    .rk-bronze { background: rgba(205,127,50,.1);  color: #CD7F32; border: 1px solid rgba(205,127,50,.2); }
+    .rk-num    { background: var(--card-2); color: var(--muted); border: 1px solid var(--border); font-size: 11px; }
+    .rk-row-info {
+      flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0;
+    }
+    .rk-row-avatar {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: var(--card-3); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: var(--muted);
+    }
+    .rk-row-me .rk-row-avatar {
+      background: linear-gradient(135deg, var(--accent), var(--accent-d));
+      color: #fff; border-color: rgba(73,168,252,.3);
+    }
+    .rk-row-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .rk-row-sub  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .rk-you-inline {
+      background: rgba(73,168,252,.15); color: var(--accent);
+      font-size: 9px; font-weight: 800; padding: 1px 7px; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: .06em; margin-left: 4px;
+    }
+    .rk-row-pnl  { width: 160px; text-align: right; font-size: 15px; font-weight: 800; letter-spacing: -.02em; }
+    .rk-row-wr   { width: 90px;  text-align: right; font-size: 13px; font-weight: 700; }
+    .rk-row-avg  { width: 110px; text-align: right; font-size: 13px; font-weight: 600; }
+    .rk-bar-wrap { height: 3px; background: var(--card-3); border-radius: 99px; margin-top: 4px; overflow: hidden; }
+    .rk-bar      { height: 100%; border-radius: 99px; }
+    .rk-pagination { margin-top: 20px; }
+    .rk-pag-wrap { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+    .rk-page-btn {
+      background: var(--card); border: 1px solid var(--border); color: var(--text);
+      padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .rk-page-btn:hover { background: var(--card-2); border-color: var(--bord-2); }
+    .rk-page-active { background: var(--accent) !important; border-color: var(--accent) !important; color: #000 !important; }
+    .rk-page-dots { color: var(--muted); padding: 0 4px; }
+    .rk-pag-info  { font-size: 12px; color: var(--muted); margin-left: 8px; }
+    .rk-loading   { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 20px; color: var(--muted); font-size: 14px; }
+    .rk-spinner   { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 700px) {
+      .rk-col-avg, .rk-row-avg { display: none; }
+      .rk-col-wr, .rk-row-wr   { width: 72px; }
+      .rk-col-pnl, .rk-row-pnl { width: 120px; }
+      .rk-col-pat, .rk-row-pat  { display: none; }
+    }
+
+    /* ── METAS PAGE ── */
+    .meta-config-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
+    }
+    .meta-config-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 22px 22px 18px; position: relative; overflow: hidden;
+      transition: border-color .2s, transform .15s;
+    }
+    .meta-config-card:hover { border-color: var(--bord-2); transform: translateY(-2px); }
+    .meta-config-diaria { border-top: 3px solid var(--accent); }
+    .meta-config-mensal { border-top: 3px solid var(--yellow); }
+    .meta-config-mes    { border-top: 3px solid rgba(255,255,255,.15); }
+    .meta-config-icon   { font-size: 28px; margin-bottom: 10px; }
+    .meta-config-label  { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 10px; }
+    .meta-config-input-wrap { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+    .meta-config-prefix { font-size: 18px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+    .meta-config-input {
+      width: 100%; background: transparent; border: none;
+      border-bottom: 2px solid var(--border); color: var(--text);
+      font-size: 26px; font-weight: 900; outline: none; font-family: Inter;
+      padding: 4px 0; letter-spacing: -.03em; transition: border-color .2s;
+    }
+    .meta-config-input:focus { border-bottom-color: var(--accent); }
+    .meta-config-month { font-size: 20px; color-scheme: dark; }
+    .meta-config-hint  { font-size: 11px; color: var(--muted); }
+    .meta-kpi-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 20px 18px; position: relative; transition: border-color .2s, transform .15s;
+    }
+    .meta-kpi-card:hover { transform: translateY(-2px); border-color: var(--bord-2); }
+    .meta-kpi-icon  { font-size: 22px; margin-bottom: 10px; }
+    .meta-kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+    .meta-kpi-value { font-size: 26px; font-weight: 900; letter-spacing: -.03em; color: var(--text); margin-bottom: 4px; line-height: 1; }
+    .meta-kpi-sub   { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .meta-progress-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 24px 28px;
+    }
+    .meta-progress-header {
+      display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px;
+    }
+    .meta-progress-pct {
+      font-size: 42px; font-weight: 900; letter-spacing: -.04em; line-height: 1; transition: color .3s;
+    }
+    .meta-progress-track {
+      position: relative; height: 14px; background: var(--card-3);
+      border-radius: 99px; overflow: visible; margin-bottom: 10px;
+      border: 1px solid var(--border);
+    }
+    .meta-progress-fill {
+      height: 100%; border-radius: 99px; width: 0%;
+      transition: width 0.9s cubic-bezier(0.22,1,0.36,1);
+      position: relative; z-index: 1;
+    }
+    .meta-progress-glow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 12px; height: 12px; border-radius: 50%; z-index: 2;
+      left: 0%; transition: left 0.9s cubic-bezier(0.22,1,0.36,1);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.08), 0 0 12px currentColor;
+    }
+    .meta-progress-labels {
+      display: flex; justify-content: space-between;
+    }
+    .meta-cal-grid {
+      display: grid; grid-template-columns: repeat(5,1fr); gap: 8px;
+    }
+    .meta-cal-header {
+      text-align: center; font-size: 11px; font-weight: 700;
+      color: var(--muted); padding: 4px 0 8px; letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .meta-cal-day {
+      border-radius: 12px; padding: 10px 8px 8px; text-align: center;
+      min-height: 72px; position: relative; transition: transform .15s;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    }
+    .meta-cal-day:hover { transform: scale(1.04); z-index: 2; }
+    .meta-cal-empty { background: var(--card-2); border: 1px solid var(--border); }
+    .meta-cal-hit   { background: rgba(34,197,94,.12);  border: 1px solid rgba(34,197,94,.3); }
+    .meta-cal-pos   { background: rgba(251,191,36,.10); border: 1px solid rgba(251,191,36,.25); }
+    .meta-cal-neg   { background: rgba(248,113,113,.09);border: 1px solid rgba(248,113,113,.2); }
+    .meta-cal-today { box-shadow: 0 0 0 2px var(--accent); }
+    .meta-cal-num   { font-size: 16px; font-weight: 800; line-height: 1; }
+    .meta-cal-hit .meta-cal-num   { color: var(--green); }
+    .meta-cal-pos .meta-cal-num   { color: var(--yellow); }
+    .meta-cal-neg .meta-cal-num   { color: var(--red); }
+    .meta-cal-empty .meta-cal-num { color: var(--mut-2); }
+    .meta-cal-pnl  { font-size: 10px; font-weight: 700; line-height: 1.2; }
+    .meta-cal-hit .meta-cal-pnl   { color: var(--green); }
+    .meta-cal-pos .meta-cal-pnl   { color: var(--yellow); }
+    .meta-cal-neg .meta-cal-pnl   { color: var(--red); }
+    .meta-cal-badge {
+      position: absolute; top: 5px; right: 6px;
+      width: 16px; height: 16px; border-radius: 50%;
+      font-size: 8px; font-weight: 900; display: flex; align-items: center; justify-content: center;
+    }
+    .meta-badge-hit { background: rgba(34,197,94,.25);  color: var(--green); }
+    .meta-badge-pos { background: rgba(251,191,36,.2);  color: var(--yellow); }
+    .meta-badge-neg { background: rgba(248,113,113,.2); color: var(--red); }
+    .meta-cal-mini-bar {
+      width: 80%; height: 3px; background: var(--card-3); border-radius: 99px; overflow: hidden; margin-top: 3px;
+    }
+    .meta-cal-mini-fill { height: 100%; border-radius: 99px; }
+    @media (max-width: 700px) {
+      .meta-config-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── HORÁRIOS PAGE ── */
+    .hor-insights {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .hor-insight-card {
+      display: flex; align-items: flex-start; gap: 18px;
+      border-radius: 18px; padding: 24px 28px;
+      border: 1px solid transparent; position: relative; overflow: hidden;
+    }
+    .hor-insight-best {
+      background: linear-gradient(135deg, rgba(34,197,94,.08) 0%, rgba(34,197,94,.03) 100%);
+      border-color: rgba(34,197,94,.2);
+    }
+    .hor-insight-worst {
+      background: linear-gradient(135deg, rgba(248,113,113,.08) 0%, rgba(248,113,113,.03) 100%);
+      border-color: rgba(248,113,113,.2);
+    }
+    .hor-insight-icon { font-size: 36px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .hor-insight-tag {
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+      margin-bottom: 8px; display: inline-block; border-radius: 20px; padding: 3px 10px;
+    }
+    .hor-tag-best  { background: rgba(34,197,94,.15);  color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+    .hor-tag-worst { background: rgba(248,113,113,.12); color: var(--red);   border: 1px solid rgba(248,113,113,.25); }
+    .hor-insight-main { font-size: 26px; font-weight: 900; letter-spacing: -.03em; color: var(--text); line-height: 1.1; margin-bottom: 8px; }
+    .hor-insight-detail { font-size: 13px; color: var(--muted); line-height: 1.5; font-weight: 400; }
+    .hor-quick-stats {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 12px;
+    }
+    .hor-qs-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px 16px; text-align: center; transition: border-color .2s, transform .15s;
+    }
+    .hor-qs-card:hover { border-color: var(--bord-2); transform: translateY(-2px); }
+    .hor-legend {
+      display: flex; align-items: center; gap: 14px; flex-shrink: 0; flex-wrap: wrap;
+    }
+    .hor-legend-grad {
+      width: 52px; height: 10px; border-radius: 4px;
+    }
+    .hor-legend-loss { background: linear-gradient(90deg, rgba(239,68,68,.9), rgba(239,68,68,.15)); }
+    .hor-legend-gain { background: linear-gradient(90deg, rgba(73,168,252,.15), rgba(73,168,252,.9)); }
+    .hor-heatmap-table {
+      width: 100%; border-collapse: separate; border-spacing: 4px; min-width: 560px;
+    }
+    .hor-hm-corner { width: 44px; }
+    .hor-hm-hour {
+      text-align: center; font-size: 11px; color: var(--muted); font-weight: 600;
+      padding-bottom: 10px; white-space: nowrap; letter-spacing: .03em;
+    }
+    .hor-hm-day {
+      font-size: 12px; font-weight: 700; color: var(--muted); padding-right: 8px;
+      white-space: nowrap; vertical-align: middle; letter-spacing: .03em;
+    }
+    .hor-hm-cell {
+      border-radius: 10px; height: 66px; min-width: 66px; text-align: center;
+      vertical-align: middle; position: relative; cursor: default;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .hor-hm-cell:hover { transform: scale(1.08); z-index: 2; box-shadow: 0 4px 20px rgba(0,0,0,.5); }
+    .hor-hm-empty { background: var(--card-2); border: 1px solid var(--border); }
+    .hor-hm-best  { box-shadow: 0 0 0 2px rgba(34,197,94,.8), 0 0 16px rgba(34,197,94,.25); }
+    .hor-hm-worst { box-shadow: 0 0 0 2px rgba(248,113,113,.8), 0 0 16px rgba(248,113,113,.25); }
+    .hor-hm-marker {
+      position: absolute; top: 3px; right: 5px;
+      font-size: 9px; font-weight: 900; line-height: 1;
+    }
+    .hor-hm-marker-best  { color: #22C55E; }
+    .hor-hm-marker-worst { color: #F87171; }
+    .hor-hm-n   { font-size: 14px; font-weight: 800; color: rgba(255,255,255,.95); line-height: 1; }
+    .hor-hm-pnl { font-size: 10px; color: rgba(255,255,255,.8); margin-top: 2px; font-weight: 600; }
+    .hor-hm-wr  { font-size: 9px;  color: rgba(255,255,255,.5); margin-top: 1px; }
+    @media (max-width: 700px) {
+      .hor-insights    { grid-template-columns: 1fr; }
+      .hor-quick-stats { grid-template-columns: 1fr 1fr; }
+    }
+
     /* ── CALENDÁRIO PAGE ── */
     .cal-controls {
       background: var(--card); border: 1px solid var(--border);
@@ -886,7 +1372,6 @@
       <button class="nav-item" id="nav-comparativo" onclick="showSection('comparativo',this)">Comparativo</button>
       <button class="nav-item" id="nav-horarios" onclick="showSection('horarios',this)">Horários</button>
       <button class="nav-item" id="nav-metas" onclick="showSection('metas',this)">Metas</button>
-      <button class="nav-item" id="nav-consistencia" onclick="showSection('consistencia',this)">Consistência</button>
       <button class="nav-item" id="nav-exportar" onclick="showSection('exportar',this)">Exportar</button>
       <button class="nav-item" id="nav-ranking" onclick="showSection('ranking',this)">Ranking</button>
       <a class="nav-item" href="perfil.html">Meu Perfil</a>
@@ -898,7 +1383,10 @@
         Compartilhar
       </button>
       <div class="sb-avatar" id="sb-avatar">--</div>
-      <div class="sb-name" id="sb-name">Carregando...</div>
+      <div class="sb-name-wrap">
+        <div class="sb-name" id="sb-name">Carregando...</div>
+        <div class="sb-patente-badge" id="sb-patente-badge"></div>
+      </div>
       <button class="btn-logout" onclick="logout()" title="Sair">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
@@ -1469,155 +1957,238 @@
 
       <!-- ==================== COMPARATIVO ==================== -->
       <div id="sec-comparativo" class="section">
-        <div class="sec-header">
-          <div class="sec-header-title">Comparativo</div>
-          <div class="sec-header-sub">Compare dois períodos e veja como sua performance evoluiu</div>
+
+        <!-- Hero -->
+        <div class="upl-hero" style="margin-bottom:32px;">
+          <div class="upl-hero-title">COMPARATIVO</div>
+          <div class="upl-hero-sub">Compare dois períodos e descubra como sua performance evoluiu ao longo do tempo</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
-          <div class="chart-card">
-            <div style="font-size:10px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Período A</div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <input type="date" id="cmp-a-from" class="period-input" onchange="renderComparativo()"/>
-              <span style="color:var(--muted)">—</span>
-              <input type="date" id="cmp-a-to" class="period-input" onchange="renderComparativo()"/>
+
+        <!-- Period filters -->
+        <div class="cmp-filters" style="margin-bottom:28px;">
+          <div class="cmp-period-card cmp-period-a">
+            <div class="cmp-period-label" style="color:var(--accent);">
+              <span class="cmp-period-badge cmp-badge-a">A</span>
+              Período A
+            </div>
+            <div class="cmp-period-dates">
+              <div class="cmp-date-group">
+                <span class="cmp-date-lbl">De</span>
+                <input type="date" id="cmp-a-from" class="cmp-date-input cmp-date-a" onchange="renderComparativo()"/>
+              </div>
+              <div class="cmp-date-sep">→</div>
+              <div class="cmp-date-group">
+                <span class="cmp-date-lbl">Até</span>
+                <input type="date" id="cmp-a-to" class="cmp-date-input cmp-date-a" onchange="renderComparativo()"/>
+              </div>
+            </div>
+            <div class="cmp-period-info" id="cmp-a-info">—</div>
+          </div>
+          <div class="cmp-vs-divider">VS</div>
+          <div class="cmp-period-card cmp-period-b">
+            <div class="cmp-period-label" style="color:var(--yellow);">
+              <span class="cmp-period-badge cmp-badge-b">B</span>
+              Período B
+            </div>
+            <div class="cmp-period-dates">
+              <div class="cmp-date-group">
+                <span class="cmp-date-lbl">De</span>
+                <input type="date" id="cmp-b-from" class="cmp-date-input cmp-date-b" onchange="renderComparativo()"/>
+              </div>
+              <div class="cmp-date-sep">→</div>
+              <div class="cmp-date-group">
+                <span class="cmp-date-lbl">Até</span>
+                <input type="date" id="cmp-b-to" class="cmp-date-input cmp-date-b" onchange="renderComparativo()"/>
+              </div>
+            </div>
+            <div class="cmp-period-info" id="cmp-b-info">—</div>
+          </div>
+        </div>
+
+        <!-- KPI comparison -->
+        <div id="cmp-kpis" style="margin-bottom:24px;"></div>
+
+        <!-- Equity curve — impactful -->
+        <div class="chart-card cmp-equity-card" style="margin-bottom:20px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+            <div>
+              <div class="chart-title" style="font-size:16px;margin-bottom:4px;">Curva de Performance</div>
+              <div class="chart-sub">Resultado acumulado por operação — A <span style="color:var(--accent);font-weight:700;">●</span> vs B <span style="color:var(--yellow);font-weight:700;">●</span></div>
+            </div>
+            <div style="display:flex;gap:16px;">
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;">
+                <span style="width:28px;height:3px;background:var(--accent);border-radius:2px;display:inline-block;"></span>
+                <span style="color:var(--muted);">Período A</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;">
+                <span style="width:28px;height:3px;background:var(--yellow);border-radius:2px;display:inline-block;"></span>
+                <span style="color:var(--muted);">Período B</span>
+              </div>
             </div>
           </div>
+          <div class="chart-wrap" style="height:420px;"><canvas id="chart-cmp-equity"></canvas></div>
+        </div>
+
+        <!-- Daily bars -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
           <div class="chart-card">
-            <div style="font-size:11px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Período B</div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <input type="date" id="cmp-b-from" class="period-input" onchange="renderComparativo()"/>
-              <span style="color:var(--muted)">—</span>
-              <input type="date" id="cmp-b-to" class="period-input" onchange="renderComparativo()"/>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+              <span class="cmp-period-badge cmp-badge-a" style="font-size:10px;width:18px;height:18px;">A</span>
+              <div class="chart-title" style="color:var(--accent);margin:0;">P&L por Dia</div>
             </div>
-          </div>
-        </div>
-        <div id="cmp-kpis" style="margin-bottom:14px;"></div>
-        <div class="chart-card" style="margin-bottom:14px;">
-          <div class="chart-title">Curva de Performance</div>
-          <div class="chart-sub">Resultado acumulado por número de operação (normalizado)</div>
-          <div class="chart-wrap" style="height:260px;"><canvas id="chart-cmp-equity"></canvas></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-          <div class="chart-card">
-            <div class="chart-title" style="color:var(--accent);margin-bottom:4px;">Período A — P&L por Dia</div>
-            <div class="chart-sub" style="margin-bottom:12px;" id="cmp-a-sub">—</div>
-            <div class="chart-wrap" style="height:180px;"><canvas id="chart-cmp-a-daily"></canvas></div>
+            <div class="chart-sub" style="margin-bottom:14px;" id="cmp-a-sub">—</div>
+            <div class="chart-wrap" style="height:200px;"><canvas id="chart-cmp-a-daily"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-title" style="color:var(--yellow);margin-bottom:4px;">Período B — P&L por Dia</div>
-            <div class="chart-sub" style="margin-bottom:12px;" id="cmp-b-sub">—</div>
-            <div class="chart-wrap" style="height:180px;"><canvas id="chart-cmp-b-daily"></canvas></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+              <span class="cmp-period-badge cmp-badge-b" style="font-size:10px;width:18px;height:18px;">B</span>
+              <div class="chart-title" style="color:var(--yellow);margin:0;">P&L por Dia</div>
+            </div>
+            <div class="chart-sub" style="margin-bottom:14px;" id="cmp-b-sub">—</div>
+            <div class="chart-wrap" style="height:200px;"><canvas id="chart-cmp-b-daily"></canvas></div>
           </div>
         </div>
+
       </div>
 
       <!-- ==================== HORÁRIOS ==================== -->
       <div id="sec-horarios" class="section">
-        <div class="sec-header">
-          <div class="sec-header-title">Horários</div>
-          <div class="sec-header-sub">Descubra em quais horários e dias você opera melhor</div>
+
+        <!-- Hero -->
+        <div class="upl-hero" style="margin-bottom:32px;">
+          <div class="upl-hero-title">HORÁRIOS</div>
+          <div class="upl-hero-sub">Descubra em quais momentos você é mais lucrativo — e quais você deve evitar</div>
         </div>
-        <div class="chart-card" style="margin-bottom:14px;">
-          <div class="chart-title" style="margin-bottom:4px;">Heatmap — Dia da Semana × Horário</div>
-          <div class="chart-sub" style="margin-bottom:16px;">Performance por combinação de dia e hora do pregão · cor = P&L · número = operações</div>
+
+        <!-- Insight cards: melhor e pior momento -->
+        <div class="hor-insights" style="margin-bottom:28px;">
+          <div class="hor-insight-card hor-insight-best" id="hor-best-card">
+            <div class="hor-insight-icon">🚀</div>
+            <div class="hor-insight-content">
+              <div class="hor-insight-tag hor-tag-best">EXPLORE — Melhor Momento</div>
+              <div class="hor-insight-main" id="hor-best-main">—</div>
+              <div class="hor-insight-detail" id="hor-best-detail">—</div>
+            </div>
+          </div>
+          <div class="hor-insight-card hor-insight-worst" id="hor-worst-card">
+            <div class="hor-insight-icon">🚫</div>
+            <div class="hor-insight-content">
+              <div class="hor-insight-tag hor-tag-worst">EVITE — Pior Momento</div>
+              <div class="hor-insight-main" id="hor-worst-main">—</div>
+              <div class="hor-insight-detail" id="hor-worst-detail">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats rápidas de dia e hora -->
+        <div class="hor-quick-stats" style="margin-bottom:24px;" id="hor-quick-stats"></div>
+
+        <!-- Heatmap -->
+        <div class="chart-card" style="margin-bottom:20px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+            <div>
+              <div class="chart-title" style="font-size:16px;margin-bottom:4px;">Heatmap — Dia da Semana × Horário</div>
+              <div class="chart-sub">P&L acumulado por combinação de dia e hora · ★ = melhor · ✕ = pior</div>
+            </div>
+            <div class="hor-legend">
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;">
+                <div class="hor-legend-grad hor-legend-loss"></div>
+                <span style="color:var(--muted);">Prejuízo</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;">
+                <div style="width:8px;height:8px;border-radius:2px;background:var(--card-3);border:1px solid var(--border);"></div>
+                <span style="color:var(--muted);">Sem ops</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;">
+                <div class="hor-legend-grad hor-legend-gain"></div>
+                <span style="color:var(--muted);">Lucro</span>
+              </div>
+            </div>
+          </div>
           <div style="overflow-x:auto;" id="heatmap-dh"></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+        <!-- Bar charts -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
           <div class="chart-card">
-            <div class="chart-title">P&L por Horário</div>
-            <div class="chart-sub">Resultado acumulado por hora do pregão</div>
-            <div class="chart-wrap" style="height:220px;"><canvas id="chart-hourly-pnl"></canvas></div>
+            <div class="chart-title" style="margin-bottom:4px;">P&L por Horário</div>
+            <div class="chart-sub" style="margin-bottom:14px;">Resultado acumulado por hora do pregão</div>
+            <div class="chart-wrap" style="height:240px;"><canvas id="chart-hourly-pnl"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-title">P&L por Dia da Semana</div>
-            <div class="chart-sub">Resultado acumulado e win rate por dia</div>
-            <div class="chart-wrap" style="height:220px;"><canvas id="chart-weekday-bar"></canvas></div>
+            <div class="chart-title" style="margin-bottom:4px;">P&L por Dia da Semana</div>
+            <div class="chart-sub" style="margin-bottom:14px;">Resultado acumulado e win rate por dia</div>
+            <div class="chart-wrap" style="height:240px;"><canvas id="chart-weekday-bar"></canvas></div>
           </div>
         </div>
+
       </div>
 
       <!-- ==================== METAS ==================== -->
       <div id="sec-metas" class="section">
-        <div class="sec-header">
-          <div class="sec-header-title">Metas</div>
-          <div class="sec-header-sub">Defina objetivos e acompanhe seu progresso dia a dia</div>
+
+        <!-- Hero -->
+        <div class="upl-hero" style="margin-bottom:32px;">
+          <div class="upl-hero-title">METAS</div>
+          <div class="upl-hero-sub">Defina seus objetivos, acompanhe o progresso em tempo real e veja o quanto falta para bater sua meta</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;">
-          <div class="kpi">
-            <div class="kpi-label">Meta Diária (R$)</div>
-            <input type="number" id="meta-diaria" placeholder="Ex: 500" min="0"
-              style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:22px;font-weight:800;outline:none;font-family:Inter;padding:4px 0;margin-top:4px;"
-              oninput="onMetaChange()" />
-            <div class="kpi-sub">objetivo por dia operado</div>
+
+        <!-- Configuração de metas -->
+        <div class="meta-config-grid" style="margin-bottom:28px;">
+          <div class="meta-config-card meta-config-diaria">
+            <div class="meta-config-icon">🎯</div>
+            <div class="meta-config-label">Meta Diária</div>
+            <div class="meta-config-input-wrap">
+              <span class="meta-config-prefix">R$</span>
+              <input type="number" id="meta-diaria" placeholder="0,00" min="0"
+                class="meta-config-input" oninput="onMetaChange()" />
+            </div>
+            <div class="meta-config-hint">objetivo por dia operado</div>
           </div>
-          <div class="kpi">
-            <div class="kpi-label">Meta Mensal (R$)</div>
-            <input type="number" id="meta-mensal" placeholder="Ex: 8000" min="0"
-              style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:22px;font-weight:800;outline:none;font-family:Inter;padding:4px 0;margin-top:4px;"
-              oninput="onMetaChange()" />
-            <div class="kpi-sub">objetivo no mês</div>
+          <div class="meta-config-card meta-config-mensal">
+            <div class="meta-config-icon">📅</div>
+            <div class="meta-config-label">Meta Mensal</div>
+            <div class="meta-config-input-wrap">
+              <span class="meta-config-prefix">R$</span>
+              <input type="number" id="meta-mensal" placeholder="0,00" min="0"
+                class="meta-config-input" oninput="onMetaChange()" />
+            </div>
+            <div class="meta-config-hint">objetivo no mês</div>
           </div>
-          <div class="kpi">
-            <div class="kpi-label">Mês de referência</div>
-            <input type="month" id="meta-mes"
-              style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:18px;font-weight:800;outline:none;font-family:Inter;padding:4px 0;margin-top:4px;color-scheme:dark;"
-              oninput="onMetaChange()" />
-            <div class="kpi-sub">período analisado</div>
+          <div class="meta-config-card meta-config-mes">
+            <div class="meta-config-icon">🗓️</div>
+            <div class="meta-config-label">Mês de Referência</div>
+            <div class="meta-config-input-wrap">
+              <input type="month" id="meta-mes"
+                class="meta-config-input meta-config-month" oninput="onMetaChange()" />
+            </div>
+            <div class="meta-config-hint">período analisado</div>
           </div>
         </div>
-        <div id="metas-kpis" style="margin-bottom:20px;"></div>
+
+        <!-- KPIs + progresso animado -->
+        <div id="metas-kpis" style="margin-bottom:24px;"></div>
+
+        <!-- Calendário -->
         <div class="chart-card">
-          <div class="chart-title" style="margin-bottom:4px;">Calendário de Metas</div>
-          <div class="chart-sub" style="margin-bottom:16px;"><span style="color:var(--green);font-weight:700;">Verde</span> = bateu meta · <span style="color:var(--red);font-weight:700;">Vermelho</span> = não bateu · <span style="color:var(--yellow);font-weight:700;">Amarelo</span> = positivo mas abaixo da meta · Cinza = não operou</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+            <div>
+              <div class="chart-title" style="font-size:16px;margin-bottom:4px;">Calendário de Metas</div>
+              <div class="chart-sub">Acompanhe dia a dia o cumprimento da sua meta diária</div>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(34,197,94,.4);display:inline-block;"></span><span style="color:var(--muted);">Bateu meta</span></div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(251,191,36,.35);display:inline-block;"></span><span style="color:var(--muted);">Positivo</span></div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(248,113,113,.3);display:inline-block;"></span><span style="color:var(--muted);">Negativo</span></div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--card-2);border:1px solid var(--border);display:inline-block;"></span><span style="color:var(--muted);">Não operou</span></div>
+            </div>
+          </div>
           <div id="metas-calendar"></div>
         </div>
+
       </div>
 
       <!-- ==================== CONSISTÊNCIA ==================== -->
-      <div id="sec-consistencia" class="section">
-        <div class="sec-header">
-          <div class="sec-header-title">Consistência</div>
-          <div class="sec-header-sub">Analise a regularidade e disciplina da sua operação</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:14px;">
-          <div class="kpi">
-            <div class="kpi-label">Dias Positivos</div>
-            <div class="kpi-value" id="con-dias-pos">—</div>
-            <div class="kpi-sub" id="con-dias-pos-sub">% dos dias operados</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Seq. Máx. Ganhos</div>
-            <div class="kpi-value" id="con-streak-win" style="color:var(--green);">—</div>
-            <div class="kpi-sub">dias consecutivos positivos</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Seq. Máx. Perdas</div>
-            <div class="kpi-value" id="con-streak-loss" style="color:var(--red);">—</div>
-            <div class="kpi-sub">dias consecutivos negativos</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Semanas Positivas</div>
-            <div class="kpi-value" id="con-semanas">—</div>
-            <div class="kpi-sub">% das semanas operadas</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Meses Positivos</div>
-            <div class="kpi-value" id="con-meses">—</div>
-            <div class="kpi-sub">% dos meses operados</div>
-          </div>
-        </div>
-        <div class="chart-card" style="margin-bottom:14px;">
-          <div class="chart-title">P&L Diário com Média Móvel</div>
-          <div class="chart-sub">Barras = resultado do dia · Linha = média móvel 10 dias</div>
-          <div class="chart-wrap" style="height:240px;"><canvas id="chart-con-daily"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title" style="margin-bottom:4px;">Distribuição de Resultados Diários</div>
-          <div class="chart-sub" style="margin-bottom:14px;">Frequência de cada faixa de resultado por dia operado</div>
-          <div class="chart-wrap" style="height:200px;"><canvas id="chart-con-hist"></canvas></div>
-        </div>
-      </div>
-
       <!-- ==================== EXPORTAR ==================== -->
       <div id="sec-exportar" class="section">
         <div class="sec-header">
@@ -1651,48 +2222,46 @@
       <!-- ==================== RANKING ==================== -->
       <div id="sec-ranking" class="section">
 
-        <div class="sec-header">
-          <div class="sec-header-title">Ranking</div>
-          <div class="sec-header-sub">Compare sua performance com a de outros traders da plataforma</div>
+        <!-- Hero -->
+        <div class="upl-hero" style="margin-bottom:8px;">
+          <div class="upl-hero-title">RANKING</div>
+          <div class="upl-hero-sub">Os melhores traders da plataforma. Sua vez de subir ao topo.</div>
         </div>
 
-        <!-- KPI sua posição -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="ranking-kpis"></div>
+        <!-- Minha posição destaque -->
+        <div id="ranking-me-banner" style="margin-bottom:32px;"></div>
 
-        <!-- Tabela ranking -->
-        <div class="table-wrap">
-          <div class="table-header" style="flex-wrap:wrap;gap:10px;">
-            <h3>Ranking de Clientes</h3>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-              <select class="filter-select" id="ranking-sort" onchange="applyRankingSort()">
-                <option value="pnl">Ordenar por P&L</option>
-                <option value="wr">Ordenar por Win Rate</option>
-                <option value="trades">Ordenar por Total Trades</option>
-                <option value="avg">Ordenar por Média/Trade</option>
-              </select>
-              <span id="ranking-count" style="font-size:13px;color:var(--muted);"></span>
-            </div>
+        <!-- Patentes tier showcase -->
+        <div class="rk-patentes-section" style="margin-bottom:40px;">
+          <div class="rk-patentes-title">
+            <span>Sistema de Patentes</span>
+            <span class="rk-patentes-year" id="rk-year-badge"></span>
           </div>
-          <div style="overflow-x:auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:40px;">#</th>
-                  <th>Cliente</th>
-                  <th style="text-align:right;">P&L Total</th>
-                  <th style="text-align:right;">Win Rate</th>
-                  <th style="text-align:right;">Trades</th>
-                  <th style="text-align:right;">Dias Op.</th>
-                  <th style="text-align:right;">Média/Trade</th>
-                  <th>Último Upload</th>
-                </tr>
-              </thead>
-              <tbody id="tbody-ranking">
-                <tr><td colspan="8" class="td-empty">Carregando...</td></tr>
-              </tbody>
-            </table>
+          <div class="rk-patentes-sub">Top 10 de cada mês avança uma patente · Reseta todo ano · 7 meses no top 10 = Tubarão</div>
+          <div class="rk-patentes-tiers" id="rk-patentes-tiers"></div>
+        </div>
+
+        <!-- Pódio top 3 -->
+        <div id="ranking-podium" style="margin-bottom:40px;"></div>
+
+        <!-- Sort + tabela -->
+        <div class="rk-table-header">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="font-size:18px;font-weight:800;letter-spacing:-.02em;">Tabela Completa</div>
+            <span id="ranking-count" class="rk-count-badge"></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <select class="filter-select" id="ranking-sort" onchange="applyRankingSort()">
+              <option value="pnl">Ordenar por P&L</option>
+              <option value="wr">Ordenar por Win Rate</option>
+              <option value="trades">Ordenar por Total Trades</option>
+              <option value="avg">Ordenar por Média/Trade</option>
+            </select>
           </div>
         </div>
+
+        <div class="rk-list" id="rk-list"></div>
+        <div class="rk-pagination" id="rk-pagination"></div>
 
       </div>
 
@@ -1830,7 +2399,47 @@ let lastMetrics = null;
   if (greetEl && firstName) greetEl.innerHTML = `Olá, <strong>${firstName}</strong>`;
 
   await Promise.all([loadTrades(), loadUploads()]);
+  loadNavPatente();
 })();
+
+/* ============================================================
+   NAV PATENTE BADGE
+============================================================ */
+async function loadNavPatente() {
+  if (!profile?.id) return;
+  const year = new Date().getFullYear();
+  const { data, error } = await sb.rpc('get_monthly_ranking', { p_year: year });
+  let level = 0;
+  if (!error && data?.length) {
+    const byMonth = {};
+    data.forEach(r => {
+      const m = r.year_month?.substring(0, 7) || '';
+      if (!m) return;
+      if (!byMonth[m]) byMonth[m] = [];
+      byMonth[m].push({ id: r.cliente_id, pnl: parseFloat(r.pnl_total) || 0 });
+    });
+    let count = 0;
+    Object.values(byMonth).forEach(monthData => {
+      const sorted = [...monthData].sort((a, b) => b.pnl - a.pnl);
+      if (sorted.slice(0, 10).some(d => d.id === profile.id)) count++;
+    });
+    level = Math.min(7, count);
+  }
+  updateNavPatente(level);
+}
+
+function updateNavPatente(level) {
+  const PATS = typeof PATENTES !== 'undefined' ? PATENTES : null;
+  const pat = PATS?.[level];
+  if (!pat) return;
+  const el = document.getElementById('sb-patente-badge');
+  if (!el) return;
+  el.textContent = `${pat.icon} ${pat.name}`;
+  el.style.color = pat.color;
+  el.style.background = pat.glow;
+  el.style.borderColor = pat.color + '55';
+  el.classList.add('loaded');
+}
 
 /* ============================================================
    NAVIGATION
@@ -1844,7 +2453,6 @@ const TITLES = {
   comparativo:['Comparativo',   'Compare dois períodos lado a lado'],
   horarios:   ['Horários',      'Heatmap de performance por dia da semana e horário'],
   metas:      ['Metas',         'Acompanhe seus objetivos diários e mensais'],
-  consistencia:['Consistência', 'Análise de regularidade e distribuição de resultados'],
   exportar:   ['Exportar',      'Baixe seus dados em CSV ou gere um relatório'],
   ranking:    ['Ranking',       'Compare sua performance com os demais clientes da plataforma'],
 };
@@ -1855,14 +2463,15 @@ function showSection(name, btn) {
   document.getElementById('sec-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   const [t, s] = TITLES[name] || ['', ''];
-  document.getElementById('topbar-title').textContent = t;
-  document.getElementById('topbar-sub').textContent   = s;
+  const ttEl = document.getElementById('topbar-title');
+  const tsEl = document.getElementById('topbar-sub');
+  if (ttEl) ttEl.textContent = t;
+  if (tsEl) tsEl.textContent = s;
   if (name === 'calendario')  renderCalendario();
   if (name === 'risco')       renderRisco();
   if (name === 'comparativo') renderComparativo();
   if (name === 'horarios')    renderHorarios();
   if (name === 'metas')       renderMetas();
-  if (name === 'consistencia')renderConsistencia();
   if (name === 'exportar')    renderExportar();
   if (name === 'ranking')     renderRanking();
 }
@@ -3689,11 +4298,10 @@ function renderComparativo() {
   // Init default dates on first open
   const aFrom = document.getElementById('cmp-a-from');
   if (!aFrom.value) {
-    const now  = new Date();
-    const y    = now.getFullYear(), m = now.getMonth();
-    const prev = new Date(y, m - 1, 1);
+    const now = new Date();
+    const y = now.getFullYear(), m = now.getMonth();
     aFrom.value = fmtISO(new Date(y, m - 1, 1));
-    document.getElementById('cmp-a-to').value = fmtISO(new Date(y, m, 0));
+    document.getElementById('cmp-a-to').value   = fmtISO(new Date(y, m, 0));
     document.getElementById('cmp-b-from').value = fmtISO(new Date(y, m, 1));
     document.getElementById('cmp-b-to').value   = fmtISO(now);
   }
@@ -3708,82 +4316,153 @@ function renderComparativo() {
   const mA = calcMetrics(tA);
   const mB = calcMetrics(tB);
 
+  // Period info badges
+  const fmtRange = (f, t, n) => `${n} ops · ${f.split('-').reverse().join('/')} → ${t.split('-').reverse().join('/')}`;
+  const infoA = document.getElementById('cmp-a-info');
+  const infoB = document.getElementById('cmp-b-info');
+  if (infoA) infoA.textContent = fmtRange(af, at, tA.length);
+  if (infoB) infoB.textContent = fmtRange(bf, bt, tB.length);
+
   // KPI comparison
   const kpis = [
-    { label: 'P&L Total',       a: fmtR$(mA.pnl),            b: fmtR$(mB.pnl),            delta: mB.pnl - mA.pnl, fmt: v => fmtR$(v) },
-    { label: 'Total de Ops',    a: mA.totalTrades,            b: mB.totalTrades,            delta: mB.totalTrades - mA.totalTrades, fmt: v => (v > 0 ? '+' : '') + v },
-    { label: 'Taxa de Acerto',  a: fmtPct(mA.wr),             b: fmtPct(mB.wr),             delta: mB.wr - mA.wr, fmt: v => (v > 0 ? '+' : '') + v.toFixed(1) + 'pp' },
-    { label: 'Fator de Lucro',  a: mA.pf.toFixed(2),          b: mB.pf.toFixed(2),          delta: mB.pf - mA.pf, fmt: v => (v > 0 ? '+' : '') + v.toFixed(2) },
-    { label: 'Max Drawdown',    a: fmtR$(mA.maxDD),           b: fmtR$(mB.maxDD),           delta: mA.maxDD - mB.maxDD, fmt: v => (v > 0 ? '-' : '+') + fmtR$(Math.abs(v)), invert: true },
-    { label: 'Payoff',          a: mA.payoff.toFixed(2) + 'x',b: mB.payoff.toFixed(2) + 'x',delta: mB.payoff - mA.payoff, fmt: v => (v > 0 ? '+' : '') + v.toFixed(2) + 'x' },
-    { label: 'Média/Trade',     a: fmtR$(mA.avgTrd),          b: fmtR$(mB.avgTrd),          delta: mB.avgTrd - mA.avgTrd, fmt: v => fmtR$(v) },
-    { label: 'Dias Operados',   a: mA.dias,                   b: mB.dias,                   delta: mB.dias - mA.dias, fmt: v => (v > 0 ? '+' : '') + v },
+    { label: 'P&L Total',      icon: '💰', a: fmtR$(mA.pnl),             b: fmtR$(mB.pnl),             delta: mB.pnl - mA.pnl,                fmt: v => fmtR$(v),                              isPnl: true },
+    { label: 'Total de Ops',   icon: '📊', a: mA.totalTrades,             b: mB.totalTrades,             delta: mB.totalTrades - mA.totalTrades, fmt: v => (v > 0 ? '+' : '') + v },
+    { label: 'Taxa de Acerto', icon: '🎯', a: fmtPct(mA.wr),              b: fmtPct(mB.wr),              delta: mB.wr - mA.wr,                   fmt: v => (v > 0 ? '+' : '') + v.toFixed(1) + 'pp' },
+    { label: 'Fator de Lucro', icon: '⚡', a: mA.pf.toFixed(2),           b: mB.pf.toFixed(2),           delta: mB.pf - mA.pf,                   fmt: v => (v > 0 ? '+' : '') + v.toFixed(2) },
+    { label: 'Max Drawdown',   icon: '📉', a: fmtR$(mA.maxDD),            b: fmtR$(mB.maxDD),            delta: mA.maxDD - mB.maxDD,             fmt: v => (v > 0 ? '-' : '+') + fmtR$(Math.abs(v)), invert: true },
+    { label: 'Payoff',         icon: '⚖️', a: mA.payoff.toFixed(2) + 'x', b: mB.payoff.toFixed(2) + 'x', delta: mB.payoff - mA.payoff,           fmt: v => (v > 0 ? '+' : '') + v.toFixed(2) + 'x' },
+    { label: 'Média/Trade',    icon: '📈', a: fmtR$(mA.avgTrd),           b: fmtR$(mB.avgTrd),           delta: mB.avgTrd - mA.avgTrd,           fmt: v => fmtR$(v) },
+    { label: 'Dias Operados',  icon: '📅', a: mA.dias,                    b: mB.dias,                    delta: mB.dias - mA.dias,               fmt: v => (v > 0 ? '+' : '') + v },
   ];
 
   document.getElementById('cmp-kpis').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
       ${kpis.map(k => {
-        const dPos = k.invert ? k.delta > 0 : k.delta >= 0;
+        const dPos   = k.invert ? k.delta > 0 : k.delta >= 0;
         const dColor = k.delta === 0 ? 'var(--muted)' : dPos ? 'var(--green)' : 'var(--red)';
-        const dText  = k.delta === 0 ? '—' : k.fmt(k.delta);
-        return `<div class="kpi" style="position:relative;">
-          <div class="kpi-label">${k.label}</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0;">
-            <div>
-              <div style="font-size:9px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">A</div>
-              <div style="font-size:15px;font-weight:800;">${k.a}</div>
+        const dText  = k.delta === 0 ? 'sem variação' : k.fmt(k.delta);
+        const dArrow = k.delta === 0 ? '' : (dPos ? '▲' : '▼');
+        return `<div class="kpi cmp-kpi-card">
+          <div style="font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.03em;margin-bottom:10px;text-transform:uppercase;">${k.label}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:10px;">
+            <div style="border-right:1px solid var(--border);padding-right:10px;">
+              <div style="font-size:9px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">● A</div>
+              <div style="font-size:16px;font-weight:800;letter-spacing:-.02em;">${k.a}</div>
             </div>
-            <div>
-              <div style="font-size:9px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">B</div>
-              <div style="font-size:15px;font-weight:800;">${k.b}</div>
+            <div style="padding-left:10px;">
+              <div style="font-size:9px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">● B</div>
+              <div style="font-size:16px;font-weight:800;letter-spacing:-.02em;">${k.b}</div>
             </div>
           </div>
-          <div class="kpi-sub" style="color:${dColor};font-weight:700;">Δ ${dText}</div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:${dColor};border-top:1px solid var(--border);padding-top:8px;">
+            <span>${dArrow}</span><span>${dText}</span>
+          </div>
         </div>`;
       }).join('')}
     </div>`;
 
-  // Chart overlay
+  // Equity curve with gradients — requestAnimationFrame for proper canvas sizing
   destroyChart('cmp-equity');
   const eqA = mA.equity.map((p, i) => ({ x: i, y: p.y }));
   const eqB = mB.equity.map((p, i) => ({ x: i, y: p.y }));
-  charts['cmp-equity'] = new Chart(document.getElementById('chart-cmp-equity'), {
-    type: 'line',
-    data: {
-      datasets: [
-        { label: 'Período A', data: eqA, borderColor: '#49A8FC', backgroundColor: 'rgba(73,168,252,.07)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 },
-        { label: 'Período B', data: eqB, borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,.07)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 },
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'top', labels: { padding: 16 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmtR$(ctx.raw.y)}` } } },
-      scales: {
-        x: { type: 'linear', title: { display: true, text: 'Operação #', color: 'var(--muted)' }, grid: { color: '#181818' } },
-        y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#181818' } }
+  requestAnimationFrame(() => {
+    const canvas = document.getElementById('chart-cmp-equity');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const h = canvas.offsetHeight || 420;
+
+    const gradA = ctx.createLinearGradient(0, 0, 0, h);
+    gradA.addColorStop(0,   'rgba(73,168,252,0.35)');
+    gradA.addColorStop(0.6, 'rgba(73,168,252,0.08)');
+    gradA.addColorStop(1,   'rgba(73,168,252,0.00)');
+
+    const gradB = ctx.createLinearGradient(0, 0, 0, h);
+    gradB.addColorStop(0,   'rgba(251,191,36,0.30)');
+    gradB.addColorStop(0.6, 'rgba(251,191,36,0.07)');
+    gradB.addColorStop(1,   'rgba(251,191,36,0.00)');
+
+    charts['cmp-equity'] = new Chart(canvas, {
+      type: 'line',
+      data: {
+        datasets: [
+          {
+            label: 'Período A', data: eqA,
+            borderColor: '#49A8FC', backgroundColor: gradA,
+            fill: true, tension: 0.3,
+            pointRadius: eqA.length > 200 ? 0 : 2,
+            pointHoverRadius: 5, borderWidth: 2.5
+          },
+          {
+            label: 'Período B', data: eqB,
+            borderColor: '#FBBF24', backgroundColor: gradB,
+            fill: true, tension: 0.3,
+            pointRadius: eqB.length > 200 ? 0 : 2,
+            pointHoverRadius: 5, borderWidth: 2.5
+          },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111', borderColor: '#222', borderWidth: 1,
+            titleColor: '#888', bodyColor: '#fff', padding: 12,
+            callbacks: {
+              label: ctx => ` ${ctx.dataset.label}: ${fmtR$(ctx.raw.y)}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            title: { display: true, text: 'Operação nº', color: '#444', font: { size: 11 } },
+            grid: { color: 'rgba(255,255,255,0.03)' },
+            ticks: { color: '#444', maxTicksLimit: 12 }
+          },
+          y: {
+            ticks: { callback: v => fmtR$(v), color: '#555' },
+            grid: { color: 'rgba(255,255,255,0.04)' }
+          }
+        }
       }
-    }
+    });
   });
 
-  // Daily charts
-  const renderDailyMini = (key, canvasId, metrics, color, subId) => {
+  // Daily bar charts
+  const renderDailyMini = (key, canvasId, metrics, rgbPos, subId) => {
     destroyChart(key);
     const dKeys   = Object.keys(metrics.byDay).sort();
     const dVals   = dKeys.map(k => metrics.byDay[k].pnl);
-    const dColors = dVals.map(v => v >= 0 ? `rgba(${color},.75)` : 'rgba(239,68,68,.7)');
-    document.getElementById(subId).textContent = `${metrics.totalTrades} ops · ${fmtR$(metrics.pnl)} · ${fmtPct(metrics.wr)} acerto`;
+    const dColors = dVals.map(v => v >= 0 ? `rgba(${rgbPos},.75)` : 'rgba(239,68,68,.7)');
+    document.getElementById(subId).textContent =
+      `${metrics.totalTrades} ops · ${fmtR$(metrics.pnl)} · ${fmtPct(metrics.wr)} acerto`;
     charts[key] = new Chart(document.getElementById(canvasId), {
       type: 'bar',
-      data: { labels: dKeys.map(d => d.split('-').slice(1).reverse().join('/')), datasets: [{ data: dVals, backgroundColor: dColors, borderRadius: 3, borderSkipped: false }] },
+      data: {
+        labels: dKeys.map(d => d.split('-').slice(1).reverse().join('/')),
+        datasets: [{ data: dVals, backgroundColor: dColors, borderRadius: 4, borderSkipped: false }]
+      },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmtR$(ctx.raw) } } },
-        scales: { x: { ticks: { maxTicksLimit: 10, maxRotation: 0 }, grid: { color: '#181818' } }, y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#181818' } } }
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111', borderColor: '#222', borderWidth: 1,
+            bodyColor: '#fff', padding: 10,
+            callbacks: { label: ctx => ' ' + fmtR$(ctx.raw) }
+          }
+        },
+        scales: {
+          x: { ticks: { maxTicksLimit: 10, maxRotation: 0, color: '#444', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
+          y: { ticks: { callback: v => fmtR$(v), color: '#555' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        }
       }
     });
   };
-  renderDailyMini('cmp-a-daily', 'chart-cmp-a-daily', mA, '0,89,255',   'cmp-a-sub');
-  renderDailyMini('cmp-b-daily', 'chart-cmp-b-daily', mB, '245,158,11', 'cmp-b-sub');
+  renderDailyMini('cmp-a-daily', 'chart-cmp-a-daily', mA, '73,168,252',  'cmp-a-sub');
+  renderDailyMini('cmp-b-daily', 'chart-cmp-b-daily', mB, '251,191,36',  'cmp-b-sub');
 }
 
 function filterByRange(trades, from, to) {
@@ -3799,6 +4478,20 @@ function fmtISO(d) {
 /* ============================================================
    HORÁRIOS
 ============================================================ */
+// Extract trade hour: prefer explicit hora_abertura, fall back to abertura ISO string
+function tradeHour(t) {
+  if (t.hora_abertura) {
+    const h = parseInt(String(t.hora_abertura).split(':')[0]);
+    if (!isNaN(h)) return h;
+  }
+  if (t.abertura) {
+    // Try to get local hour from ISO string (handles both Z and offset formats)
+    const d = new Date(t.abertura);
+    if (!isNaN(d.getTime())) return d.getHours();
+  }
+  return -1;
+}
+
 function renderHorarios() {
   if (!allTrades.length) return;
   buildHeatmapDH();
@@ -3807,15 +4500,16 @@ function renderHorarios() {
 }
 
 function buildHeatmapDH() {
-  const HOURS = [9,10,11,12,13,14,15,16,17,18];
+  const HOURS  = [9,10,11,12,13,14,15,16,17,18];
   const DNAMES = ['Seg','Ter','Qua','Qui','Sex'];
+  const DFULL  = ['Segunda','Terça','Quarta','Quinta','Sexta'];
   const matrix = Array.from({length:5}, () => Array.from({length:10}, () => ({n:0, wins:0, pnl:0})));
 
   allTrades.forEach(t => {
     const d  = new Date(t.abertura);
     const wd = (d.getDay() + 6) % 7;
     if (wd >= 5) return;
-    const h  = parseInt(String(t.hora_abertura || '').split(':')[0]);
+    const h  = tradeHour(t);
     const hi = HOURS.indexOf(h);
     if (hi === -1) return;
     const r = fnum(t.resultado_reais);
@@ -3824,58 +4518,134 @@ function buildHeatmapDH() {
     if (t.is_winner) matrix[wd][hi].wins++;
   });
 
-  let maxAbs = 1;
-  matrix.forEach(row => row.forEach(cell => { if (Math.abs(cell.pnl) > maxAbs) maxAbs = Math.abs(cell.pnl); }));
+  // Find best and worst cells
+  let maxAbs = 1, bestPnl = -Infinity, worstPnl = Infinity;
+  let bestDi = 0, bestHi = 0, worstDi = 0, worstHi = 0;
+  matrix.forEach((row, di) => row.forEach((cell, hi) => {
+    if (Math.abs(cell.pnl) > maxAbs) maxAbs = Math.abs(cell.pnl);
+    if (cell.n > 0 && cell.pnl > bestPnl)  { bestPnl  = cell.pnl;  bestDi  = di; bestHi  = hi; }
+    if (cell.n > 0 && cell.pnl < worstPnl) { worstPnl = cell.pnl; worstDi = di; worstHi = hi; }
+  }));
 
-  let html = `<table style="width:100%;border-collapse:separate;border-spacing:3px;">
-    <tr>
-      <td style="width:40px;"></td>
-      ${HOURS.map(h => `<td style="text-align:center;font-size:11px;color:var(--muted);font-weight:600;padding-bottom:8px;white-space:nowrap;">${String(h).padStart(2,'0')}h</td>`).join('')}
-    </tr>`;
+  // Populate insight cards
+  const bestCell  = matrix[bestDi][bestHi];
+  const worstCell = matrix[worstDi][worstHi];
+  const bestWr  = bestCell.n  ? (bestCell.wins  / bestCell.n  * 100).toFixed(0) : 0;
+  const worstWr = worstCell.n ? (worstCell.wins / worstCell.n * 100).toFixed(0) : 0;
+
+  const bestMain = document.getElementById('hor-best-main');
+  const bestDet  = document.getElementById('hor-best-detail');
+  const worstMain = document.getElementById('hor-worst-main');
+  const worstDet  = document.getElementById('hor-worst-detail');
+
+  if (bestMain) {
+    bestMain.textContent  = `${DFULL[bestDi]} às ${String(HOURS[bestHi]).padStart(2,'0')}h`;
+    bestDet.textContent   = `${fmtR$(bestCell.pnl)} em ${bestCell.n} ops · ${bestWr}% acerto — concentre suas operações aqui`;
+  }
+  if (worstMain) {
+    worstMain.textContent = `${DFULL[worstDi]} às ${String(HOURS[worstHi]).padStart(2,'0')}h`;
+    worstDet.textContent  = `${fmtR$(worstCell.pnl)} em ${worstCell.n} ops · ${worstWr}% acerto — evite operar nesse momento`;
+  }
+
+  // Quick stats por hora e por dia
+  const hourTotals = HOURS.map((h, hi) => ({ h, pnl: matrix.reduce((s, row) => s + row[hi].pnl, 0), n: matrix.reduce((s, row) => s + row[hi].n, 0), wins: matrix.reduce((s, row) => s + row[hi].wins, 0) }));
+  const dayTotals  = DNAMES.map((d, di) => ({ d, pnl: matrix[di].reduce((s, c) => s + c.pnl, 0), n: matrix[di].reduce((s, c) => s + c.n, 0), wins: matrix[di].reduce((s, c) => s + c.wins, 0) }));
+  const bestHourObj  = [...hourTotals].filter(x => x.n > 0).sort((a,b) => b.pnl - a.pnl)[0];
+  const worstHourObj = [...hourTotals].filter(x => x.n > 0).sort((a,b) => a.pnl - b.pnl)[0];
+  const bestDayObj   = [...dayTotals].filter(x => x.n > 0).sort((a,b) => b.pnl - a.pnl)[0];
+  const worstDayObj  = [...dayTotals].filter(x => x.n > 0).sort((a,b) => a.pnl - b.pnl)[0];
+
+  const qs = document.getElementById('hor-quick-stats');
+  if (qs) {
+    qs.innerHTML = [
+      { icon: '⏰', label: 'Melhor Hora',  val: bestHourObj  ? `${String(bestHourObj.h).padStart(2,'0')}h`       : '—', sub: bestHourObj  ? fmtR$(bestHourObj.pnl)  : '', cls: 'green' },
+      { icon: '⏰', label: 'Pior Hora',    val: worstHourObj ? `${String(worstHourObj.h).padStart(2,'0')}h`     : '—', sub: worstHourObj ? fmtR$(worstHourObj.pnl) : '', cls: 'red'   },
+      { icon: '📆', label: 'Melhor Dia',   val: bestDayObj   ? DFULL[DNAMES.indexOf(bestDayObj.d)]              : '—', sub: bestDayObj   ? fmtR$(bestDayObj.pnl)   : '', cls: 'green' },
+      { icon: '📆', label: 'Pior Dia',     val: worstDayObj  ? DFULL[DNAMES.indexOf(worstDayObj.d)]            : '—', sub: worstDayObj  ? fmtR$(worstDayObj.pnl)  : '', cls: 'red'   },
+    ].map(s => `
+      <div class="hor-qs-card">
+        <div style="font-size:20px;margin-bottom:8px;">${s.icon}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:4px;">${s.label}</div>
+        <div style="font-size:18px;font-weight:900;letter-spacing:-.02em;color:var(--text);margin-bottom:3px;">${s.val}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--${s.cls});">${s.sub}</div>
+      </div>`).join('');
+  }
+
+  // Build heatmap table
+  let html = `<table class="hor-heatmap-table">
+    <thead><tr>
+      <th class="hor-hm-corner"></th>
+      ${HOURS.map(h => `<th class="hor-hm-hour">${String(h).padStart(2,'0')}h</th>`).join('')}
+    </tr></thead><tbody>`;
 
   DNAMES.forEach((day, di) => {
-    html += `<tr><td style="font-size:12px;font-weight:700;color:var(--muted);padding-right:8px;white-space:nowrap;vertical-align:middle;">${day}</td>`;
+    html += `<tr><td class="hor-hm-day">${day}</td>`;
     matrix[di].forEach((cell, hi) => {
+      const isBest  = di === bestDi  && hi === bestHi  && cell.n > 0;
+      const isWorst = di === worstDi && hi === worstHi && cell.n > 0;
       if (cell.n === 0) {
-        html += `<td style="background:var(--card-2);border-radius:6px;height:54px;min-width:60px;"></td>`;
+        html += `<td class="hor-hm-cell hor-hm-empty"></td>`;
       } else {
-        const alpha  = 0.2 + (Math.abs(cell.pnl) / maxAbs) * 0.7;
-        const bg     = cell.pnl >= 0 ? `rgba(73,168,252,${alpha.toFixed(2)})` : `rgba(239,68,68,${alpha.toFixed(2)})`;
+        const alpha  = 0.18 + (Math.abs(cell.pnl) / maxAbs) * 0.72;
+        const bg     = cell.pnl >= 0
+          ? `rgba(73,168,252,${alpha.toFixed(2)})`
+          : `rgba(239,68,68,${alpha.toFixed(2)})`;
         const wr     = (cell.wins / cell.n * 100).toFixed(0);
         const pFmt   = (cell.pnl >= 0 ? '+' : '') + fmtR$(cell.pnl);
-        html += `<td style="background:${bg};border-radius:6px;height:54px;min-width:60px;text-align:center;cursor:default;vertical-align:middle;"
+        const extra  = isBest ? ' hor-hm-best' : isWorst ? ' hor-hm-worst' : '';
+        const marker = isBest ? '<div class="hor-hm-marker hor-hm-marker-best">★</div>' : isWorst ? '<div class="hor-hm-marker hor-hm-marker-worst">✕</div>' : '';
+        html += `<td class="hor-hm-cell${extra}" style="background:${bg};"
           title="${day} ${String(HOURS[hi]).padStart(2,'0')}h — ${cell.n} ops · ${wr}% acerto · ${pFmt}">
-          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.95);">${cell.n}</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.75);">${pFmt}</div>
+          ${marker}
+          <div class="hor-hm-n">${cell.n}</div>
+          <div class="hor-hm-pnl">${pFmt}</div>
+          <div class="hor-hm-wr">${wr}%</div>
         </td>`;
       }
     });
     html += '</tr>';
   });
-  html += '</table>';
+  html += '</tbody></table>';
   document.getElementById('heatmap-dh').innerHTML = html;
 }
 
 function renderHourlyBar() {
   destroyChart('hourly-pnl');
   const HOURS = [9,10,11,12,13,14,15,16,17,18];
-  const data  = HOURS.map(h => ({ pnl: 0, n: 0 }));
+  const data  = HOURS.map(() => ({ pnl: 0, n: 0, wins: 0 }));
   allTrades.forEach(t => {
-    const h  = parseInt(String(t.hora_abertura || '').split(':')[0]);
+    const h  = tradeHour(t);
     const hi = HOURS.indexOf(h);
     if (hi === -1) return;
     data[hi].pnl += fnum(t.resultado_reais);
     data[hi].n++;
+    if (t.is_winner) data[hi].wins++;
   });
   const vals   = data.map(d => d.pnl);
-  const colors = vals.map(v => v >= 0 ? 'rgba(73,168,252,.8)' : 'rgba(239,68,68,.8)');
+  const maxVal = Math.max(...vals.map(Math.abs), 1);
+  const colors = vals.map((v, i) => {
+    const alpha = 0.4 + (Math.abs(v) / maxVal) * 0.5;
+    return v >= 0 ? `rgba(73,168,252,${alpha.toFixed(2)})` : `rgba(239,68,68,${alpha.toFixed(2)})`;
+  });
   charts['hourly-pnl'] = new Chart(document.getElementById('chart-hourly-pnl'), {
     type: 'bar',
-    data: { labels: HOURS.map(h => String(h).padStart(2,'0') + 'h'), datasets: [{ data: vals, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
+    data: {
+      labels: HOURS.map(h => String(h).padStart(2,'0') + 'h'),
+      datasets: [{ data: vals, backgroundColor: colors, borderRadius: 5, borderSkipped: false }]
+    },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtR$(ctx.raw)} · ${data[ctx.dataIndex].n} ops` } } },
-      scales: { x: { grid: { color: '#181818' } }, y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#181818' } } }
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#111', borderColor: '#222', borderWidth: 1, bodyColor: '#fff', padding: 10,
+          callbacks: { label: ctx => { const d = data[ctx.dataIndex]; return ` ${fmtR$(d.pnl)} · ${d.n} ops · ${d.n ? (d.wins/d.n*100).toFixed(0) : 0}% acerto`; } }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#555' }, grid: { color: 'rgba(255,255,255,0.03)' } },
+        y: { ticks: { callback: v => fmtR$(v), color: '#555' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
     }
   });
 }
@@ -3892,14 +4662,27 @@ function renderWeekdayBar() {
     if (t.is_winner) data[wd].wins++;
   });
   const vals   = data.map(d => d.pnl);
-  const colors = vals.map(v => v >= 0 ? 'rgba(73,168,252,.8)' : 'rgba(239,68,68,.8)');
+  const maxVal = Math.max(...vals.map(Math.abs), 1);
+  const colors = vals.map(v => {
+    const alpha = 0.4 + (Math.abs(v) / maxVal) * 0.5;
+    return v >= 0 ? `rgba(73,168,252,${alpha.toFixed(2)})` : `rgba(239,68,68,${alpha.toFixed(2)})`;
+  });
   charts['weekday-bar'] = new Chart(document.getElementById('chart-weekday-bar'), {
     type: 'bar',
-    data: { labels: DNAMES, datasets: [{ data: vals, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
+    data: { labels: DNAMES, datasets: [{ data: vals, backgroundColor: colors, borderRadius: 5, borderSkipped: false }] },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => { const d = data[ctx.dataIndex]; return ` ${fmtR$(d.pnl)} · ${d.n} ops · ${d.n ? (d.wins/d.n*100).toFixed(0) : 0}% acerto`; } } } },
-      scales: { x: { grid: { color: '#181818' } }, y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#181818' } } }
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#111', borderColor: '#222', borderWidth: 1, bodyColor: '#fff', padding: 10,
+          callbacks: { label: ctx => { const d = data[ctx.dataIndex]; return ` ${fmtR$(d.pnl)} · ${d.n} ops · ${d.n ? (d.wins/d.n*100).toFixed(0) : 0}% acerto`; } }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#555' }, grid: { color: 'rgba(255,255,255,0.03)' } },
+        y: { ticks: { callback: v => fmtR$(v), color: '#555' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
     }
   });
 }
@@ -3942,82 +4725,139 @@ function renderMetasContent() {
   // Build day map
   const byDay = {};
   trades.forEach(t => {
-    const d = t.data_trade;
+    const d = t.data_trade || (t.abertura || '').split('T')[0];
     if (!byDay[d]) byDay[d] = 0;
     byDay[d] += fnum(t.resultado_reais);
   });
-  const days = Object.entries(byDay).sort((a,b) => a[0].localeCompare(b[0]));
-  const pnlMes = days.reduce((s, [,v]) => s + v, 0);
-  const diasOp = days.length;
-  const diasPos = days.filter(([,v]) => v >= metaDia && metaDia > 0 ? v >= metaDia : v > 0).length;
+  const days     = Object.entries(byDay).sort((a,b) => a[0].localeCompare(b[0]));
+  const pnlMes   = days.reduce((s, [,v]) => s + v, 0);
+  const diasOp   = days.length;
   const diasMeta = metaDia > 0 ? days.filter(([,v]) => v >= metaDia).length : 0;
+  const diasPos  = days.filter(([,v]) => v > 0).length;
+  const bestDay  = days.length ? Math.max(...days.map(([,v]) => v)) : 0;
 
-  // Progress bar for monthly goal
-  const progPct = metaMes > 0 ? Math.min(100, (pnlMes / metaMes) * 100) : 0;
-  const progColor = progPct >= 100 ? 'var(--green)' : progPct >= 50 ? 'var(--yellow)' : 'var(--red)';
+  const progPct  = metaMes > 0 ? Math.min(100, (pnlMes / metaMes) * 100) : 0;
+  const progColor = progPct >= 100 ? '#22C55E' : progPct >= 60 ? '#FBBF24' : '#F87171';
+  const faltam   = metaMes > 0 ? Math.max(0, metaMes - pnlMes) : 0;
+  const atingida = metaMes > 0 && pnlMes >= metaMes;
 
+  // KPI cards
   document.getElementById('metas-kpis').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
-      <div class="kpi" style="border-color:${pnlMes >= 0 ? 'rgba(73,168,252,.25)' : 'rgba(239,68,68,.25)'};">
-        <div class="kpi-label">P&L do Mês</div>
-        <div class="kpi-value" style="color:${pnlMes >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(pnlMes)}</div>
-        <div class="kpi-sub">${diasOp} dia${diasOp !== 1 ? 's' : ''} operado${diasOp !== 1 ? 's' : ''}</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
+      <div class="meta-kpi-card" style="border-top:3px solid ${pnlMes >= 0 ? 'var(--green)' : 'var(--red)'};">
+        <div class="meta-kpi-icon">${pnlMes >= 0 ? '📈' : '📉'}</div>
+        <div class="meta-kpi-label">P&L do Mês</div>
+        <div class="meta-kpi-value" style="color:${pnlMes >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(pnlMes)}</div>
+        <div class="meta-kpi-sub">${diasOp} dia${diasOp !== 1 ? 's' : ''} operado${diasOp !== 1 ? 's' : ''}</div>
       </div>
-      <div class="kpi">
-        <div class="kpi-label">Dias que Bateram Meta</div>
-        <div class="kpi-value" style="color:var(--green);">${diasMeta > 0 ? diasMeta : diasOp > 0 ? diasPos : '—'}</div>
-        <div class="kpi-sub">${metaDia > 0 ? 'de ' + diasOp + ' dias operados' : 'dias positivos'}</div>
+      <div class="meta-kpi-card" style="border-top:3px solid var(--accent);">
+        <div class="meta-kpi-icon">✅</div>
+        <div class="meta-kpi-label">Dias que Bateram Meta</div>
+        <div class="meta-kpi-value" style="color:var(--green);">${metaDia > 0 ? diasMeta : diasPos}<span style="font-size:14px;font-weight:500;color:var(--muted);"> / ${diasOp}</span></div>
+        <div class="meta-kpi-sub">${metaDia > 0 ? `${diasOp > 0 ? Math.round(diasMeta/diasOp*100) : 0}% de aproveitamento` : 'dias positivos'}</div>
       </div>
-      <div class="kpi">
-        <div class="kpi-label">Meta Mensal</div>
-        <div class="kpi-value" style="color:${progColor};">${metaMes > 0 ? progPct.toFixed(0) + '%' : '—'}</div>
-        <div class="kpi-sub">${metaMes > 0 ? fmtR$(pnlMes) + ' de ' + fmtR$(metaMes) : 'Informe a meta mensal'}</div>
+      <div class="meta-kpi-card" style="border-top:3px solid var(--yellow);">
+        <div class="meta-kpi-icon">⭐</div>
+        <div class="meta-kpi-label">Melhor Dia do Mês</div>
+        <div class="meta-kpi-value" style="color:var(--yellow);">${bestDay > 0 ? fmtR$(bestDay) : '—'}</div>
+        <div class="meta-kpi-sub">${bestDay >= metaDia && metaDia > 0 ? '✓ acima da meta diária' : 'resultado máximo diário'}</div>
       </div>
-      <div class="kpi">
-        <div class="kpi-label">Faltam para Meta</div>
-        <div class="kpi-value" style="color:${metaMes > 0 && pnlMes >= metaMes ? 'var(--green)' : 'var(--yellow)'};">${metaMes > 0 ? (pnlMes >= metaMes ? '✓ Atingida' : fmtR$(metaMes - pnlMes)) : '—'}</div>
-        <div class="kpi-sub">${metaMes > 0 && pnlMes < metaMes ? 'para bater a meta' : ''}</div>
+      <div class="meta-kpi-card" style="border-top:3px solid ${atingida ? 'var(--green)' : 'rgba(248,113,113,.6)'};">
+        <div class="meta-kpi-icon">${atingida ? '🏆' : '🎯'}</div>
+        <div class="meta-kpi-label">Faltam para Meta</div>
+        <div class="meta-kpi-value" style="color:${atingida ? 'var(--green)' : 'var(--yellow)'};">${metaMes > 0 ? (atingida ? 'META!' : fmtR$(faltam)) : '—'}</div>
+        <div class="meta-kpi-sub">${atingida ? '🎉 meta mensal atingida!' : metaMes > 0 ? `${progPct.toFixed(0)}% concluído` : 'defina uma meta mensal'}</div>
       </div>
     </div>
+
     ${metaMes > 0 ? `
-    <div class="chart-card" style="margin-bottom:16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <div style="font-size:13px;font-weight:600;">Progresso da Meta Mensal</div>
-        <div style="font-size:13px;font-weight:700;color:${progColor};">${progPct.toFixed(1)}%</div>
+    <div class="meta-progress-card" style="margin-bottom:20px;">
+      <div class="meta-progress-header">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Progresso da Meta Mensal</div>
+          <div style="font-size:12px;color:var(--muted);">${fmtR$(pnlMes)} de ${fmtR$(metaMes)}</div>
+        </div>
+        <div class="meta-progress-pct" style="color:${progColor};" id="meta-prog-pct">0%</div>
       </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar" style="width:${progPct}%;background:${progColor};"></div>
+      <div class="meta-progress-track">
+        <div class="meta-progress-fill" id="meta-prog-fill" style="background:linear-gradient(90deg,${progColor}88,${progColor});"></div>
+        <div class="meta-progress-glow" id="meta-prog-glow" style="background:${progColor};"></div>
       </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:6px;">${fmtR$(pnlMes)} de ${fmtR$(metaMes)}</div>
+      <div class="meta-progress-labels">
+        <span style="color:var(--muted);font-size:11px;">R$ 0</span>
+        <span style="color:var(--muted);font-size:11px;">${fmtR$(metaMes / 2)}</span>
+        <span style="color:${progColor};font-size:11px;font-weight:700;">${fmtR$(metaMes)}</span>
+      </div>
     </div>` : ''}`;
+
+  // Animate progress bar
+  if (metaMes > 0) {
+    requestAnimationFrame(() => {
+      const fill = document.getElementById('meta-prog-fill');
+      const glow = document.getElementById('meta-prog-glow');
+      const pctEl = document.getElementById('meta-prog-pct');
+      if (!fill) return;
+      // Start at 0, then animate to target
+      fill.style.width = '0%';
+      glow.style.left  = '0%';
+      setTimeout(() => {
+        fill.style.width = progPct + '%';
+        glow.style.left  = `calc(${progPct}% - 6px)`;
+        // Animate counter
+        let start = 0, duration = 900, startTime = null;
+        function animCount(ts) {
+          if (!startTime) startTime = ts;
+          const p = Math.min((ts - startTime) / duration, 1);
+          const ease = 1 - Math.pow(1 - p, 3); // ease-out cubic
+          start = progPct * ease;
+          if (pctEl) pctEl.textContent = start.toFixed(1) + '%';
+          if (p < 1) requestAnimationFrame(animCount);
+        }
+        requestAnimationFrame(animCount);
+      }, 60);
+    });
+  }
 
   // Calendar
   const daysInMonth = new Date(y, m, 0).getDate();
-  const firstDay    = (new Date(y, m - 1, 1).getDay() + 6) % 7; // 0=Mon
-  let calHtml = `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
-    ${['Seg','Ter','Qua','Qui','Sex'].map(d => `<div style="text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:4px 0;">${d}</div>`).join('')}`;
+  const firstDay    = (new Date(y, m - 1, 1).getDay() + 6) % 7;
+  let calHtml = `<div class="meta-cal-grid">
+    ${['Seg','Ter','Qua','Qui','Sex'].map(d => `<div class="meta-cal-header">${d}</div>`).join('')}`;
 
-  // Empty cells before first weekday
   const startWd = firstDay < 5 ? firstDay : 0;
   for (let i = 0; i < startWd; i++) calHtml += '<div></div>';
 
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(y, m - 1, day);
     const wd   = (date.getDay() + 6) % 7;
-    if (wd >= 5) continue; // skip weekends
+    if (wd >= 5) continue;
     const iso  = fmtISO(date);
     const pnl  = byDay[iso] ?? null;
-    let bg = 'var(--card-2)', textColor = 'var(--muted)', pnlText = '';
+    const isToday = iso === fmtISO(new Date());
+
+    let cls = 'meta-cal-day meta-cal-empty';
+    let statusIcon = '';
+    let pnlHtml = '';
+
     if (pnl !== null) {
-      if (metaDia > 0 && pnl >= metaDia)      { bg = 'rgba(73,168,252,.18)'; textColor = 'var(--green)'; }
-      else if (pnl > 0 && metaDia > 0)         { bg = 'rgba(245,158,11,.15)'; textColor = 'var(--yellow)'; }
-      else if (pnl > 0)                         { bg = 'rgba(73,168,252,.18)'; textColor = 'var(--green)'; }
-      else                                      { bg = 'rgba(239,68,68,.15)'; textColor = 'var(--red)'; }
-      pnlText = `<div style="font-size:10px;font-weight:600;color:${textColor};margin-top:2px;">${pnl >= 0 ? '+' : ''}${fmtR$(pnl)}</div>`;
+      if (metaDia > 0 && pnl >= metaDia) {
+        cls = 'meta-cal-day meta-cal-hit';
+        statusIcon = '<div class="meta-cal-badge meta-badge-hit">✓</div>';
+      } else if (pnl > 0) {
+        cls = 'meta-cal-day meta-cal-pos';
+        statusIcon = '<div class="meta-cal-badge meta-badge-pos">+</div>';
+      } else {
+        cls = 'meta-cal-day meta-cal-neg';
+        statusIcon = '<div class="meta-cal-badge meta-badge-neg">✕</div>';
+      }
+      pnlHtml = `<div class="meta-cal-pnl">${pnl >= 0 ? '+' : ''}${fmtR$(pnl)}</div>`;
     }
-    calHtml += `<div style="background:${bg};border-radius:8px;padding:8px 6px;text-align:center;min-height:52px;">
-      <div style="font-size:13px;font-weight:700;color:${pnl !== null ? textColor : 'var(--mut-2)'};">${day}</div>
-      ${pnlText}
+
+    calHtml += `<div class="${cls}${isToday ? ' meta-cal-today' : ''}">
+      ${statusIcon}
+      <div class="meta-cal-num">${day}</div>
+      ${pnlHtml}
+      ${pnl !== null && metaDia > 0 ? `<div class="meta-cal-mini-bar"><div class="meta-cal-mini-fill" style="width:${Math.min(100, Math.max(0, pnl/metaDia*100)).toFixed(0)}%;background:${pnl >= metaDia ? '#22C55E' : pnl > 0 ? '#FBBF24' : '#F87171'};"></div></div>` : ''}
     </div>`;
   }
   calHtml += '</div>';
@@ -4027,115 +4867,6 @@ function renderMetasContent() {
 /* ============================================================
    CONSISTÊNCIA
 ============================================================ */
-function renderConsistencia() {
-  if (!allTrades.length) return;
-
-  // Build daily P&L map
-  const byDay = {};
-  allTrades.forEach(t => {
-    const d = t.data_trade;
-    if (!byDay[d]) byDay[d] = 0;
-    byDay[d] += fnum(t.resultado_reais);
-  });
-  const days     = Object.entries(byDay).sort((a, b) => a[0].localeCompare(b[0]));
-  const pnlArr   = days.map(([,v]) => v);
-  const diasOp   = days.length;
-  const diasPos  = pnlArr.filter(v => v > 0).length;
-  const pctDias  = diasOp ? (diasPos / diasOp * 100) : 0;
-
-  // Streaks (day-level)
-  let maxWinStreak = 0, maxLossStreak = 0, curW = 0, curL = 0;
-  pnlArr.forEach(v => {
-    if (v > 0) { curW++; curL = 0; if (curW > maxWinStreak)  maxWinStreak  = curW; }
-    else       { curL++; curW = 0; if (curL > maxLossStreak) maxLossStreak = curL; }
-  });
-
-  // Weekly P&L (ISO week: Mon–Sun)
-  const byWeek = {};
-  days.forEach(([d, v]) => {
-    const date = new Date(d);
-    const y = date.getFullYear();
-    const startOfYear = new Date(y, 0, 1);
-    const weekNum = Math.ceil(((date - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
-    const key = `${y}-W${weekNum}`;
-    byWeek[key] = (byWeek[key] || 0) + v;
-  });
-  const weeks      = Object.values(byWeek);
-  const weeksPos   = weeks.filter(v => v > 0).length;
-  const pctWeeks   = weeks.length ? (weeksPos / weeks.length * 100) : 0;
-
-  // Monthly P&L
-  const byMonth = {};
-  days.forEach(([d, v]) => {
-    const key = d.substring(0, 7);
-    byMonth[key] = (byMonth[key] || 0) + v;
-  });
-  const months    = Object.values(byMonth);
-  const monthsPos = months.filter(v => v > 0).length;
-  const pctMonths = months.length ? (monthsPos / months.length * 100) : 0;
-
-  // KPI display
-  set('con-dias-pos',      fmtPct(pctDias), pctDias >= 50 ? 'var(--green)' : 'var(--red)');
-  document.getElementById('con-dias-pos-sub').textContent = `${diasPos} de ${diasOp} dias operados`;
-  set('con-streak-win',  maxWinStreak,  'var(--green)');
-  set('con-streak-loss', maxLossStreak, 'var(--red)');
-  set('con-semanas',     fmtPct(pctWeeks),  pctWeeks >= 50 ? 'var(--green)' : 'var(--red)');
-  set('con-meses',       fmtPct(pctMonths), pctMonths >= 50 ? 'var(--green)' : 'var(--red)');
-
-  // Daily P&L bar + 10-day moving average
-  destroyChart('con-daily');
-  const labels   = days.map(([d]) => d.split('-').slice(1).reverse().join('/'));
-  const barVals  = pnlArr;
-  const maVals   = pnlArr.map((_, i) => {
-    const slice = pnlArr.slice(Math.max(0, i - 9), i + 1);
-    return slice.reduce((s, v) => s + v, 0) / slice.length;
-  });
-  charts['con-daily'] = new Chart(document.getElementById('chart-con-daily'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { type: 'bar',  data: barVals, backgroundColor: barVals.map(v => v >= 0 ? 'rgba(73,168,252,.6)' : 'rgba(239,68,68,.6)'), borderRadius: 2, borderSkipped: false, order: 2 },
-        { type: 'line', data: maVals, label: 'Média 10d', borderColor: '#F59E0B', backgroundColor: 'transparent', tension: 0.4, pointRadius: 0, borderWidth: 2, order: 1 },
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'top', labels: { filter: i => i.text === 'Média 10d', padding: 14 } }, tooltip: { callbacks: { label: ctx => ` ${fmtR$(ctx.raw)}` } } },
-      scales: { x: { ticks: { maxTicksLimit: 14, maxRotation: 0 }, grid: { color: '#181818' } }, y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#181818' } } }
-    }
-  });
-
-  // Histogram of daily results
-  destroyChart('con-hist');
-  const buckets = [-3000, -2000, -1000, -500, -200, 0, 200, 500, 1000, 2000, 3000];
-  const labels2 = ['< -3k', '-3k/-2k', '-2k/-1k', '-1k/-500', '-500/-200', '-200/0', '0/200', '200/500', '500/1k', '1k/2k', '2k/3k', '> 3k'];
-  const hist = Array(labels2.length).fill(0);
-  pnlArr.forEach(v => {
-    if      (v < buckets[0])  hist[0]++;
-    else if (v < buckets[1])  hist[1]++;
-    else if (v < buckets[2])  hist[2]++;
-    else if (v < buckets[3])  hist[3]++;
-    else if (v < buckets[4])  hist[4]++;
-    else if (v < buckets[5])  hist[5]++;
-    else if (v < buckets[6])  hist[6]++;
-    else if (v < buckets[7])  hist[7]++;
-    else if (v < buckets[8])  hist[8]++;
-    else if (v < buckets[9])  hist[9]++;
-    else if (v < buckets[10]) hist[10]++;
-    else                      hist[11]++;
-  });
-  const histColors = hist.map((_, i) => i < 6 ? 'rgba(239,68,68,.75)' : 'rgba(73,168,252,.75)');
-  charts['con-hist'] = new Chart(document.getElementById('chart-con-hist'), {
-    type: 'bar',
-    data: { labels: labels2, datasets: [{ data: hist, backgroundColor: histColors, borderRadius: 4, borderSkipped: false }] },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} dia${ctx.raw !== 1 ? 's' : ''}` } } },
-      scales: { x: { ticks: { font: { size: 10 }, maxRotation: 30 }, grid: { color: '#181818' } }, y: { ticks: { stepSize: 1 }, grid: { color: '#181818' } } }
-    }
-  });
-}
 
 /* ============================================================
    EXPORTAR
@@ -4177,103 +4908,303 @@ function renderExportar() {
 let rankingData   = [];
 let rankingLoaded = false;
 
+let rankingPage = 0;
+const RANKING_PAGE_SIZE = 50;
+let rankingSorted = [];
+let patentesMap   = {}; // cliente_id → level (0-7)
+
+const PATENTES = [
+  { level:0, name:'Sardinha',    icon:'🐟', color:'#6B7280', glow:'rgba(107,114,128,.15)', req:'Rank inicial — todo trader começa aqui' },
+  { level:1, name:'Especulador', icon:'📊', color:'#22C55E', glow:'rgba(34,197,94,.2)',    req:'1 mês no Top 10'                        },
+  { level:2, name:'Scalper',     icon:'⚡', color:'#06B6D4', glow:'rgba(6,182,212,.2)',    req:'2 meses no Top 10'                      },
+  { level:3, name:'Trader',      icon:'🎯', color:'#3B82F6', glow:'rgba(59,130,246,.2)',   req:'3 meses no Top 10'                      },
+  { level:4, name:'Baleia',      icon:'🐋', color:'#F59E0B', glow:'rgba(245,158,11,.2)',   req:'4 meses no Top 10'                      },
+  { level:5, name:'Big Player',  icon:'💰', color:'#8B5CF6', glow:'rgba(139,92,246,.2)',   req:'5 meses no Top 10'                      },
+  { level:6, name:'Tubarão',     icon:'🦈', color:'#EF4444', glow:'rgba(239,68,68,.3)',    req:'6 meses no Top 10'                      },
+  { level:7, name:'HFT',         icon:'🤖', color:'#FFD700', glow:'rgba(255,215,0,.3)',    req:'7+ meses no Top 10 — Elite Máxima'      },
+];
+
 async function renderRanking() {
   if (!rankingLoaded) {
     rankingLoaded = true;
+    document.getElementById('rk-list').innerHTML = '<div class="rk-loading"><div class="rk-spinner"></div><div>Carregando ranking...</div></div>';
     await loadRankingData();
+    await loadPatentesData();
   }
+  rankingPage = 0;
+  renderPatentesTiers();
   applyRankingSort();
 }
 
 async function loadRankingData() {
-  // Usa RPC com SECURITY DEFINER para contornar RLS e retornar dados agregados de todos os clientes
   const { data, error } = await sb.rpc('get_ranking');
-
   if (error || !data?.length) {
-    document.getElementById('tbody-ranking').innerHTML =
-      `<tr><td colspan="8" class="td-empty">${error ? 'Erro: ' + error.message : 'Nenhum dado disponível ainda.'}</td></tr>`;
+    document.getElementById('rk-list').innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted);">${error ? 'Erro: ' + error.message : 'Nenhum dado disponível ainda.'}</div>`;
     return;
   }
-
   rankingData = data.map(r => ({
     id:         r.cliente_id,
     name:       r.full_name || '—',
-    pnl:        parseFloat(r.pnl_total)   || 0,
-    trades:     parseInt(r.total_trades)  || 0,
-    wins:       parseInt(r.wins)          || 0,
+    pnl:        parseFloat(r.pnl_total)  || 0,
+    trades:     parseInt(r.total_trades) || 0,
+    wins:       parseInt(r.wins)         || 0,
     wr:         r.total_trades > 0 ? (r.wins / r.total_trades) * 100 : 0,
-    dias:       parseInt(r.dias_operados) || 0,
+    dias:       parseInt(r.dias_operados)|| 0,
     avg:        r.total_trades > 0 ? (parseFloat(r.pnl_total) / r.total_trades) : 0,
     lastUpload: r.last_upload || null,
     isMe:       r.cliente_id === profile.id,
   }));
 }
 
+async function loadPatentesData() {
+  // Requires a Supabase RPC: get_monthly_ranking(year int)
+  // Returns: [{cliente_id, year_month (YYYY-MM), pnl_total}]
+  const year = new Date().getFullYear();
+  const badge = document.getElementById('rk-year-badge');
+  if (badge) badge.textContent = `Temporada ${year}`;
+
+  const { data, error } = await sb.rpc('get_monthly_ranking', { p_year: year });
+
+  if (error || !data?.length) {
+    // Fallback: everyone is Sardinha
+    patentesMap = {};
+    return;
+  }
+
+  // For each month, find top 10 and count how many months each user was in top 10
+  const byMonth = {};
+  data.forEach(r => {
+    const m = r.year_month?.substring(0, 7) || '';
+    if (!m) return;
+    if (!byMonth[m]) byMonth[m] = [];
+    byMonth[m].push({ id: r.cliente_id, pnl: parseFloat(r.pnl_total) || 0 });
+  });
+
+  const promotions = {}; // id → count of months in top 10
+  Object.values(byMonth).forEach(monthData => {
+    const sorted = [...monthData].sort((a, b) => b.pnl - a.pnl);
+    sorted.slice(0, 10).forEach(d => {
+      promotions[d.id] = (promotions[d.id] || 0) + 1;
+    });
+  });
+
+  patentesMap = {};
+  Object.entries(promotions).forEach(([id, count]) => {
+    patentesMap[id] = Math.min(7, count); // cap at HFT (7)
+  });
+  // Keep nav badge in sync
+  if (profile?.id) updateNavPatente(patentesMap[profile.id] ?? 0);
+}
+
+function getPatente(userId) {
+  const level = patentesMap[userId] ?? 0;
+  return PATENTES[level];
+}
+
+function renderPatentesTiers() {
+  const el = document.getElementById('rk-patentes-tiers');
+  if (!el) return;
+
+  // Count traders per rank
+  const counts = Array(8).fill(0);
+  rankingData.forEach(d => {
+    counts[patentesMap[d.id] ?? 0]++;
+  });
+
+  el.innerHTML = PATENTES.map((p, i) => {
+    const count   = counts[i];
+    const isShark = i === 7;
+    return `
+      <div class="rk-pat-tier${isShark ? ' rk-pat-shark' : ''}" style="--pcol:${p.color};--pglow:${p.glow};">
+        <div class="rk-pat-icon">${p.icon}</div>
+        <div class="rk-pat-name" style="color:${p.color};">${p.name}</div>
+        <div class="rk-pat-req">${p.req}</div>
+        <div class="rk-pat-count" style="color:${p.color};">${count > 0 ? count : '—'}</div>
+      </div>`;
+  }).join('');
+}
+
 function applyRankingSort() {
   const sort = document.getElementById('ranking-sort')?.value || 'pnl';
-  const sorted = [...rankingData].sort((a, b) => {
+  rankingSorted = [...rankingData].sort((a, b) => {
     if (sort === 'wr')     return b.wr     - a.wr;
     if (sort === 'trades') return b.trades - a.trades;
     if (sort === 'avg')    return b.avg    - a.avg;
     return b.pnl - a.pnl;
   });
+  rankingPage = 0;
+  renderRankingView();
+}
 
-  document.getElementById('ranking-count').textContent = `${sorted.length} clientes`;
+function renderRankingView() {
+  const sorted = rankingSorted;
+  const me     = sorted.find(d => d.isMe);
+  const myPos  = sorted.findIndex(d => d.isMe) + 1;
+  const maxPnl = Math.max(...sorted.map(d => Math.abs(d.pnl)), 1);
 
-  // My position in current sort
-  const myPos = sorted.findIndex(d => d.isMe) + 1;
-  const me    = sorted.find(d => d.isMe);
+  // Count badge
+  document.getElementById('ranking-count').textContent = `${sorted.length} traders`;
 
-  // KPIs
-  document.getElementById('ranking-kpis').innerHTML = me ? `
-    <div class="kpi" style="border-color:rgba(73,168,252,.25);background:rgba(73,168,252,.04);">
-      <div class="kpi-label">Sua Posição</div>
-      <div class="kpi-value" style="color:var(--accent);">#${myPos}</div>
-      <div class="kpi-sub">de ${sorted.length} clientes</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Seu P&L Total</div>
-      <div class="kpi-value" style="color:${me.pnl >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(me.pnl)}</div>
-      <div class="kpi-sub">${me.trades} operações</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Sua Win Rate</div>
-      <div class="kpi-value" style="color:${me.wr >= 50 ? 'var(--green)' : 'var(--yellow)'};">${fmtPct(me.wr)}</div>
-      <div class="kpi-sub">${me.wins} ganhos · ${me.trades - me.wins} perdas</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Melhor do Ranking</div>
-      <div class="kpi-value" style="color:var(--yellow);">${fmtR$(sorted[0]?.pnl ?? 0)}</div>
-      <div class="kpi-sub">${escHtml(sorted[0]?.name ?? '—')}</div>
-    </div>` : '';
+  // --- MY BANNER ---
+  const banner = document.getElementById('ranking-me-banner');
+  if (me) {
+    const pat      = getPatente(me.id);
+    const nextPat  = PATENTES[Math.min(7, (patentesMap[me.id] ?? 0) + 1)];
+    const posLabel = myPos === 1 ? '🏆 Você está no TOPO!' : myPos <= 3 ? '🥇 Você está no pódio!' : myPos <= 10 ? '🔥 Você está no Top 10!' : `Você está em #${myPos}`;
+    const distTop  = myPos > 1 ? ` · faltam ${fmtR$(sorted[0].pnl - me.pnl)} para o 1º lugar` : ' · Você lidera o ranking!';
+    const nextHint = pat.level < 7
+      ? `<div class="rk-me-next">Próxima patente: <span style="color:${nextPat.color};">${nextPat.icon} ${nextPat.name}</span> — entre no Top 10 este mês</div>`
+      : `<div class="rk-me-next" style="color:#EF4444;">🦈 Você atingiu o nível máximo — Tubarão!</div>`;
+    banner.innerHTML = `
+      <div class="rk-me-banner">
+        <div class="rk-me-avatar" style="box-shadow:0 0 0 3px ${pat.color}40,0 0 20px ${pat.glow};">${rkInitials(me.name)}</div>
+        <div class="rk-me-info">
+          <div class="rk-me-pos">${posLabel}</div>
+          <div class="rk-me-name">${escHtml(me.name)}</div>
+          <div class="rk-me-sub">${fmtR$(me.pnl)} · ${fmtPct(me.wr)} acerto · ${me.trades} ops${distTop}</div>
+          ${nextHint}
+        </div>
+        <div style="text-align:center;flex-shrink:0;">
+          <div style="font-size:48px;line-height:1;margin-bottom:4px;">${pat.icon}</div>
+          <div style="font-size:11px;font-weight:800;color:${pat.color};text-transform:uppercase;letter-spacing:.06em;">${pat.name}</div>
+        </div>
+        <div class="rk-me-rank-num">#${myPos}</div>
+      </div>`;
+  } else {
+    banner.innerHTML = '';
+  }
 
-  // Medal for top 3
-  const medal = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+  // --- PODIUM ---
+  renderRankingPodium(sorted);
 
-  const rows = sorted.map((d, i) => {
-    const isMe  = d.isMe;
-    const hl    = isMe ? 'background:rgba(73,168,252,.05);' : '';
-    const name  = isMe
-      ? `<span style="color:var(--accent);font-weight:600;">${escHtml(d.name)} <span style="font-size:10px;background:rgba(73,168,252,.1);color:var(--accent);border-radius:4px;padding:1px 6px;margin-left:4px;">Você</span></span>`
-      : escHtml(d.name);
+  // --- TABLE (paginated) ---
+  renderRankingPage(sorted, maxPnl);
+}
+
+function rkInitials(name) {
+  return (name || '?').split(' ').slice(0,2).map(w => w[0]?.toUpperCase() || '').join('') || '?';
+}
+
+function renderRankingPodium(sorted) {
+  const podiumEl = document.getElementById('ranking-podium');
+  if (sorted.length < 1) { podiumEl.innerHTML = ''; return; }
+
+  const p1 = sorted[0], p2 = sorted[1] || null, p3 = sorted[2] || null;
+
+  const podCard = (d, pos, cfg) => {
+    if (!d) return `<div class="rk-podium-slot rk-podium-${pos}"></div>`;
+    const isMe = d.isMe;
+    const pat  = getPatente(d.id);
+    const meTag = isMe ? `<div class="rk-you-tag">Você</div>` : '';
+    return `
+      <div class="rk-podium-slot rk-podium-${pos}">
+        <div class="rk-podium-card${isMe ? ' rk-podium-me' : ''}" style="--pcol:${cfg.col};">
+          ${meTag}
+          <div class="rk-podium-crown">${cfg.crown}</div>
+          <div class="rk-podium-avatar" style="border-color:${cfg.col};box-shadow:0 0 0 3px ${cfg.glow};">${rkInitials(d.name)}</div>
+          <div class="rk-podium-name">${escHtml(d.name.split(' ')[0])}</div>
+          <div class="rk-pat-badge-inline" style="background:${pat.glow};border:1px solid ${pat.color}40;color:${pat.color};">${pat.icon} ${pat.name}</div>
+          <div class="rk-podium-pnl" style="color:${d.pnl >= 0 ? cfg.col : 'var(--red)'};">${fmtR$(d.pnl)}</div>
+          <div class="rk-podium-wr">${fmtPct(d.wr)} acerto · ${d.trades} ops</div>
+        </div>
+        <div class="rk-podium-base" style="background:linear-gradient(180deg,${cfg.col}22,${cfg.col}08);border-top:3px solid ${cfg.col};">
+          <div class="rk-podium-pos" style="color:${cfg.col};">${cfg.label}</div>
+        </div>
+      </div>`;
+  };
+
+  podiumEl.innerHTML = `
+    <div class="rk-podium-stage">
+      ${podCard(p2, 'second', { col:'#C0C0C0', glow:'rgba(192,192,192,.2)', crown:'🥈', label:'2º' })}
+      ${podCard(p1, 'first',  { col:'#FFD700', glow:'rgba(255,215,0,.25)',   crown:'👑', label:'1º' })}
+      ${podCard(p3, 'third',  { col:'#CD7F32', glow:'rgba(205,127,50,.2)',   crown:'🥉', label:'3º' })}
+    </div>`;
+
+  // Trigger entrance animations
+  requestAnimationFrame(() => {
+    podiumEl.querySelectorAll('.rk-podium-slot').forEach((el, i) => {
+      setTimeout(() => el.classList.add('rk-podium-visible'), i * 120);
+    });
+  });
+}
+
+function renderRankingPage(sorted, maxPnl) {
+  const total   = sorted.length;
+  const pages   = Math.ceil(total / RANKING_PAGE_SIZE);
+  const start   = rankingPage * RANKING_PAGE_SIZE;
+  const end     = Math.min(start + RANKING_PAGE_SIZE, total);
+  const page    = sorted.slice(start, end);
+
+  const posIcon = i => {
+    if (i === 0) return '<span class="rk-medal rk-gold">1</span>';
+    if (i === 1) return '<span class="rk-medal rk-silver">2</span>';
+    if (i === 2) return '<span class="rk-medal rk-bronze">3</span>';
+    return `<span class="rk-medal rk-num">${i+1}</span>`;
+  };
+
+  const rows = page.map((d, pi) => {
+    const i      = start + pi;
+    const isMe   = d.isMe;
+    const pat    = getPatente(d.id);
+    const barW   = Math.max(2, (Math.abs(d.pnl) / maxPnl) * 100).toFixed(0);
+    const barCol = d.pnl >= 0 ? 'var(--green)' : 'var(--red)';
     const lastUp = d.lastUpload
-      ? new Date(d.lastUpload).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' })
+      ? new Date(d.lastUpload).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' })
       : '—';
-    return `<tr style="${hl}">
-      <td style="font-weight:700;color:var(--muted);">${medal(i)} ${i + 1}</td>
-      <td>${name}</td>
-      <td style="text-align:right;font-weight:700;color:${d.pnl >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(d.pnl)}</td>
-      <td style="text-align:right;color:${d.wr >= 50 ? 'var(--green)' : 'var(--red)'};">${fmtPct(d.wr)}</td>
-      <td style="text-align:right;color:var(--muted);">${d.trades.toLocaleString('pt-BR')}</td>
-      <td style="text-align:right;color:var(--muted);">${d.dias}</td>
-      <td style="text-align:right;color:${d.avg >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(d.avg)}</td>
-      <td style="font-size:12px;color:var(--muted);">${lastUp}</td>
-    </tr>`;
+    return `
+      <div class="rk-row${isMe ? ' rk-row-me' : ''}" style="animation-delay:${pi * 25}ms">
+        <div class="rk-row-pos">${posIcon(i)}</div>
+        <div class="rk-row-info">
+          <div class="rk-row-avatar" style="${isMe ? '' : `border-color:${pat.color}30;`}">${rkInitials(d.name)}</div>
+          <div style="min-width:0;">
+            <div class="rk-row-name">${escHtml(d.name)}${isMe ? ' <span class="rk-you-inline">Você</span>' : ''}</div>
+            <div class="rk-row-sub">${d.trades} ops · ${d.dias} dias · última ativ. ${lastUp}</div>
+          </div>
+        </div>
+        <div class="rk-row-pat" style="color:${pat.color};" title="${pat.name} — ${pat.req}">
+          <span class="rk-pat-icon-sm">${pat.icon}</span>
+          <span class="rk-pat-name-sm">${pat.name}</span>
+        </div>
+        <div class="rk-row-pnl" style="color:${d.pnl >= 0 ? 'var(--green)' : 'var(--red)'};">
+          ${fmtR$(d.pnl)}
+          <div class="rk-bar-wrap"><div class="rk-bar" style="width:${barW}%;background:${barCol};"></div></div>
+        </div>
+        <div class="rk-row-wr" style="color:${d.wr >= 50 ? 'var(--green)' : 'var(--red)'};">${fmtPct(d.wr)}</div>
+        <div class="rk-row-avg" style="color:${d.avg >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(d.avg)}</div>
+      </div>`;
   });
 
-  document.getElementById('tbody-ranking').innerHTML = rows.length
-    ? rows.join('')
-    : '<tr><td colspan="8" class="td-empty">Nenhum dado disponível.</td></tr>';
+  document.getElementById('rk-list').innerHTML = `
+    <div class="rk-list-header">
+      <div style="width:52px;"></div>
+      <div class="rk-col-info">Trader</div>
+      <div class="rk-col-pat">Patente</div>
+      <div class="rk-col-pnl">P&L Total</div>
+      <div class="rk-col-wr">Win Rate</div>
+      <div class="rk-col-avg">Média/Trade</div>
+    </div>
+    <div class="rk-rows" id="rk-rows">${rows.join('')}</div>`;
+
+  // Pagination
+  const pag = document.getElementById('rk-pagination');
+  if (pages <= 1) { pag.innerHTML = ''; return; }
+  let btns = '';
+  if (rankingPage > 0) btns += `<button class="rk-page-btn" onclick="rankingGoPage(${rankingPage-1})">← Anterior</button>`;
+  for (let p = 0; p < pages; p++) {
+    if (p === rankingPage) btns += `<button class="rk-page-btn rk-page-active">${p+1}</button>`;
+    else if (p === 0 || p === pages-1 || Math.abs(p - rankingPage) <= 1)
+      btns += `<button class="rk-page-btn" onclick="rankingGoPage(${p})">${p+1}</button>`;
+    else if (Math.abs(p - rankingPage) === 2) btns += `<span class="rk-page-dots">…</span>`;
+  }
+  if (rankingPage < pages - 1) btns += `<button class="rk-page-btn" onclick="rankingGoPage(${rankingPage+1})">Próxima →</button>`;
+  pag.innerHTML = `<div class="rk-pag-wrap">${btns}<span class="rk-pag-info">Página ${rankingPage+1} de ${pages} · ${total} traders</span></div>`;
+}
+
+function rankingGoPage(p) {
+  rankingPage = p;
+  const maxPnl = Math.max(...rankingSorted.map(d => Math.abs(d.pnl)), 1);
+  renderRankingPage(rankingSorted, maxPnl);
+  document.getElementById('rk-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function exportCSV(mode) {
