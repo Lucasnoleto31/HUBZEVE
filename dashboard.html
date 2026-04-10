@@ -525,6 +525,87 @@
     #share-card .sc-trader { font-size: 12px; font-weight: 500; color: #404040; }
     #share-card .sc-brand { font-size: 10px; color: #2A2A2A; }
 
+    /* ── RISCO PAGE ── */
+    .risco-stats-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;
+    }
+    .risco-stat-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 22px; position: relative; overflow: hidden;
+    }
+    .risco-stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(248,113,113,.4) 0%, transparent 60%);
+    }
+    .risco-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 10px; }
+    .risco-stat-value { font-size: 26px; font-weight: 900; letter-spacing: -.03em; color: var(--red); line-height: 1; }
+    .risco-stat-value.neutral { color: var(--text); }
+    .risco-stat-value.green   { color: var(--green); }
+    .risco-stat-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+    .dd-chart-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 24px; margin-bottom: 20px;
+      position: relative; overflow: hidden;
+    }
+    .dd-chart-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(248,113,113,.5) 0%, transparent 50%);
+    }
+    .dd-top10-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .dd-top10-head {
+      padding: 18px 24px; border-bottom: 1px solid var(--border);
+    }
+    .dd-row {
+      display: grid; grid-template-columns: 44px 1fr 1fr auto auto auto;
+      align-items: center; gap: 16px; padding: 14px 24px;
+      border-bottom: 1px solid var(--border); transition: background .12s;
+    }
+    .dd-row:last-child { border-bottom: none; }
+    .dd-row:hover { background: var(--card-2); }
+    .dd-row-open {
+      background: rgba(248,113,113,.04) !important;
+      border-left: 3px solid var(--red) !important;
+    }
+    .dd-row-open:hover { background: rgba(248,113,113,.07) !important; }
+    .dd-rank {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800;
+      background: var(--card-2); color: var(--muted); border: 1px solid var(--border);
+    }
+    .dd-rank-1 { background: rgba(248,113,113,.12); color: var(--red); border-color: rgba(248,113,113,.3); font-size: 14px; }
+    .dd-rank-2 { background: rgba(248,113,113,.08); color: rgba(248,113,113,.8); border-color: rgba(248,113,113,.2); }
+    .dd-rank-3 { background: rgba(248,113,113,.05); color: rgba(248,113,113,.6); border-color: rgba(248,113,113,.15); }
+    .dd-dates-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
+    .dd-dates-val { font-size: 13px; font-weight: 600; color: var(--text); }
+    .dd-amount { font-size: 17px; font-weight: 900; letter-spacing: -.02em; color: var(--red); }
+    .dd-amount-big { font-size: 22px; }
+    .dd-dur { font-size: 13px; font-weight: 700; color: var(--muted); text-align: center; }
+    .dd-badge-open {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(248,113,113,.12); border: 1px solid rgba(248,113,113,.3);
+      color: var(--red); border-radius: 20px; padding: 5px 12px;
+      font-size: 11px; font-weight: 700;
+    }
+    .dd-pulse {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--red);
+      animation: ddPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes ddPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .4; transform: scale(1.3); }
+    }
+    .dd-badge-rec {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+      color: var(--green); border-radius: 20px; padding: 5px 12px;
+      font-size: 11px; font-weight: 700;
+    }
+
     /* ── CALENDÁRIO PAGE ── */
     .cal-controls {
       background: var(--card); border: 1px solid var(--border);
@@ -1316,63 +1397,71 @@
       <!-- ==================== RISCO ==================== -->
       <div id="sec-risco" class="section">
 
-        <div class="sec-header" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;">
-          <div>
-            <div class="sec-header-title">Risco</div>
-            <div class="sec-header-sub">Entenda o drawdown real — quanto você perdeu, por quanto tempo e como se recuperou</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <label style="font-size:13px;color:var(--muted);font-weight:600;">Capital (R$)</label>
-            <input type="number" id="risco-capital-input" placeholder="Ex: 50000" min="0" step="1000"
-              style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;outline:none;width:160px;font-family:Inter;"
-              oninput="onRiscoCapitalChange()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
+        <!-- Hero -->
+        <div class="upl-hero" style="margin-bottom:24px;">
+          <div class="upl-hero-title">RISCO</div>
+          <div class="upl-hero-sub">Entenda o drawdown real — quanto você perdeu, por quanto tempo e como se recuperou</div>
+        </div>
+
+        <!-- Controls + Stats -->
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:12px;color:var(--muted);font-weight:600;">Capital (R$)</span>
+            <input type="number" id="risco-capital-input" placeholder="Ex: 50.000" min="0" step="1000"
+              style="background:var(--card-2);border:1px solid var(--bord-2);color:var(--text);border-radius:9px;padding:8px 12px;font-size:13px;outline:none;width:160px;font-family:Inter;transition:border-color .15s;"
+              oninput="onRiscoCapitalChange()"
+              onfocus="this.style.borderColor='var(--accent)'"
+              onblur="this.style.borderColor='var(--bord-2)'" />
           </div>
         </div>
 
-        <!-- Curva de Drawdown -->
-        <div class="chart-card" style="margin-bottom:14px;">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:4px;">
+        <!-- Stat cards -->
+        <div class="risco-stats-bar">
+          <div class="risco-stat-card">
+            <div class="risco-stat-label">Max Drawdown</div>
+            <div class="risco-stat-value" id="risco-max-dd">—</div>
+            <div class="risco-stat-sub">pior queda do pico</div>
+          </div>
+          <div class="risco-stat-card">
+            <div class="risco-stat-label">Eventos DD</div>
+            <div class="risco-stat-value neutral" id="risco-eventos">—</div>
+            <div class="risco-stat-sub">sequências de perda</div>
+          </div>
+          <div class="risco-stat-card">
+            <div class="risco-stat-label">Em Aberto</div>
+            <div class="risco-stat-value" id="risco-open-count">—</div>
+            <div class="risco-stat-sub">drawdowns não recuperados</div>
+          </div>
+          <div class="risco-stat-card">
+            <div class="risco-stat-label">Recuperados</div>
+            <div class="risco-stat-value green" id="risco-rec-count">—</div>
+            <div class="risco-stat-sub">ciclos encerrados</div>
+          </div>
+        </div>
+
+        <!-- Drawdown curve chart -->
+        <div class="dd-chart-card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px;">
             <div>
-              <div class="chart-title">Curva de Drawdown</div>
-              <div class="chart-sub" id="dd-curve-sub">Informe o capital para ver % consumido por operação</div>
-            </div>
-            <div style="display:flex;gap:20px;">
-              <div style="text-align:right;">
-                <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Max DD</div>
-                <div style="font-size:20px;font-weight:800;color:var(--red);" id="risco-max-dd">—</div>
-              </div>
-              <div style="text-align:right;">
-                <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Eventos</div>
-                <div style="font-size:20px;font-weight:800;" id="risco-eventos">—</div>
-              </div>
+              <div class="chart-title" style="font-size:17px;">Curva de Drawdown</div>
+              <div class="chart-sub" id="dd-curve-sub" style="margin-bottom:0;">Informe o capital para ver % consumido por operação</div>
             </div>
           </div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Cada ponto = uma operação encerrada · quando volta a 0 = recuperação total</div>
-          <div class="chart-wrap" style="height:280px;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:18px;margin-top:4px;">
+            Cada ponto = uma operação · linha abaixo de 0 = em drawdown · retorno a 0 = recuperação total
+          </div>
+          <div class="chart-wrap" style="height:300px;">
             <canvas id="chart-dd-curve"></canvas>
           </div>
         </div>
 
-        <!-- Top 10 Maiores Drawdowns -->
-        <div class="chart-card">
-          <div class="chart-title" style="margin-bottom:4px;">Top 10 Maiores Drawdowns</div>
-          <div class="chart-sub" style="margin-bottom:14px;">Eventos discretos de perda do pico ao fundo</div>
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:13px;">
-              <thead>
-                <tr style="border-bottom:1px solid var(--border);">
-                  <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">#</th>
-                  <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Início (Pico)</th>
-                  <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Fundo</th>
-                  <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">DD (R$)</th>
-                  <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;" id="dd-pct-col">DD (%)</th>
-                  <th style="text-align:right;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Duração (ops)</th>
-                  <th style="text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Status</th>
-                </tr>
-              </thead>
-              <tbody id="tbody-top-dd"></tbody>
-            </table>
+        <!-- Top 10 maiores drawdowns -->
+        <div class="dd-top10-card">
+          <div class="dd-top10-head">
+            <div class="chart-title" style="margin-bottom:3px;">Top 10 Maiores Drawdowns</div>
+            <div class="chart-sub" style="margin-bottom:0;">Eventos discretos ordenados por profundidade — drawdowns em aberto em destaque</div>
           </div>
+          <div id="tbody-top-dd"></div>
         </div>
 
       </div>
@@ -3459,102 +3548,138 @@ function calcDrawdownData(sorted) {
 
 function renderDDCurve(ddSeries) {
   destroyChart('dd-curve');
+  if (!ddSeries.length) return;
 
   const usePct = riscoCapital > 0;
   const vals   = ddSeries.map(d => -(usePct ? d.ddPct : d.ddAbs));
   const maxDD  = Math.max(...ddSeries.map(d => d.ddAbs), 0);
   const maxPct = riscoCapital > 0 ? (maxDD / riscoCapital) * 100 : null;
 
-  // KPI display
   set('risco-max-dd',
     usePct ? maxPct.toFixed(2) + '%' : fmtR$(maxDD),
     'var(--red)'
   );
 
-  // Subtitle
   const subEl = document.getElementById('dd-curve-sub');
   if (subEl) subEl.textContent = usePct
-    ? '% do capital consumido por operação · quando volta a 0% = recuperação total'
-    : 'R$ consumido por operação · informe o capital para ver em % · quando volta a 0 = recuperação total';
+    ? '% do capital consumido por operação · retorno a 0% = recuperação total'
+    : 'R$ consumido por operação · informe o capital para ver em % · retorno a 0 = recuperação total';
 
-  // Build simplified x-labels: show date only when it changes
   const labels = ddSeries.map((d, i) =>
     (i === 0 || d.date !== ddSeries[i - 1].date)
       ? (d.date ? d.date.split('-').slice(1).reverse().join('/') : '')
       : ''
   );
 
-  charts['dd-curve'] = new Chart(document.getElementById('chart-dd-curve'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: vals,
-        borderColor: '#EF4444',
-        backgroundColor: 'rgba(239,68,68,0.1)',
-        fill: true,
-        tension: 0.2,
-        pointRadius: ddSeries.length > 200 ? 0 : 2,
-        pointHoverRadius: 5,
-        borderWidth: 1.5,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            title: ctx => ddSeries[ctx[0].dataIndex]?.date || '',
-            label: ctx => {
-              const v = Math.abs(ctx.raw);
-              return usePct ? ` DD: ${v.toFixed(2)}%` : ` DD: ${fmtR$(v)}`;
+  requestAnimationFrame(() => {
+    const canvas = document.getElementById('chart-dd-curve');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const h   = canvas.offsetHeight || 300;
+    const gradient = ctx.createLinearGradient(0, 0, 0, h);
+    gradient.addColorStop(0,   'rgba(239,68,68,0.45)');
+    gradient.addColorStop(0.6, 'rgba(239,68,68,0.12)');
+    gradient.addColorStop(1,   'rgba(239,68,68,0.00)');
+
+    charts['dd-curve'] = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: vals,
+          borderColor: '#F87171',
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.25,
+          pointRadius: ddSeries.length > 300 ? 0 : 2,
+          pointBackgroundColor: '#F87171',
+          pointHoverRadius: 6,
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111',
+            borderColor: 'rgba(248,113,113,.3)',
+            borderWidth: 1,
+            titleColor: '#999',
+            bodyColor: '#F87171',
+            callbacks: {
+              title: ctx => ddSeries[ctx[0].dataIndex]?.date || '',
+              label: ctx => {
+                const v = Math.abs(ctx.raw);
+                return usePct ? `  DD: −${v.toFixed(2)}%` : `  DD: −${fmtR$(v)}`;
+              }
             }
           }
-        }
-      },
-      scales: {
-        x: { ticks: { maxTicksLimit: 12, maxRotation: 0 }, grid: { color: '#181818' } },
-        y: {
-          max: 0,
-          ticks: { callback: v => usePct ? v.toFixed(1) + '%' : fmtR$(Math.abs(v)) },
-          grid: { color: '#181818' },
+        },
+        scales: {
+          x: {
+            ticks: { maxTicksLimit: 14, maxRotation: 0, color: '#444', font: { size: 10 } },
+            grid: { display: false },
+            border: { display: false },
+          },
+          y: {
+            max: 0,
+            ticks: {
+              callback: v => usePct ? v.toFixed(1) + '%' : fmtR$(Math.abs(v)),
+              color: '#444', font: { size: 10 }
+            },
+            grid: { color: 'rgba(255,255,255,.04)' },
+            border: { display: false },
+          }
         }
       }
-    }
+    });
   });
 }
 
 function renderTopDDTable(events) {
-  const evEl = document.getElementById('risco-eventos');
-  if (evEl) evEl.textContent = events.length;
+  const openCount = events.filter(e => !e.recovered).length;
+  const recCount  = events.filter(e =>  e.recovered).length;
+  set('risco-eventos',   events.length);
+  set('risco-open-count', openCount, openCount > 0 ? 'var(--red)' : 'var(--muted)');
+  set('risco-rec-count',  recCount,  'var(--green)');
 
-  const top10 = [...events].sort((a, b) => b.ddAbs - a.ddAbs).slice(0, 10);
-  const fmtD  = d => d ? d.split('-').reverse().join('/') : '—';
+  const top10  = [...events].sort((a, b) => b.ddAbs - a.ddAbs).slice(0, 10);
+  const fmtD   = d => d ? d.split('-').reverse().join('/') : '—';
   const usePct = riscoCapital > 0;
+  const rankCls = i => i === 0 ? 'dd-rank dd-rank-1' : i === 1 ? 'dd-rank dd-rank-2' : i === 2 ? 'dd-rank dd-rank-3' : 'dd-rank';
+  const amtCls  = i => i < 3 ? 'dd-amount dd-amount-big' : 'dd-amount';
 
   const rows = top10.map((ev, i) => {
-    const pctCell = usePct && ev.ddPct !== null
-      ? `<span style="color:var(--red);font-weight:700;">${ev.ddPct.toFixed(2)}%</span>`
-      : `<span style="color:var(--muted);">—</span>`;
-    const status = ev.recovered
-      ? '<span class="badge badge-green">Recuperado</span>'
-      : '<span class="badge badge-red">Em curso</span>';
-    return `<tr style="border-bottom:1px solid var(--border);">
-      <td style="padding:10px 12px;color:var(--muted);font-weight:700;">${i + 1}</td>
-      <td style="padding:10px 12px;">${fmtD(ev.startDate)}</td>
-      <td style="padding:10px 12px;">${fmtD(ev.troughDate)}</td>
-      <td style="padding:10px 12px;text-align:right;color:var(--red);font-weight:700;">${fmtR$(ev.ddAbs)}</td>
-      <td style="padding:10px 12px;text-align:right;">${pctCell}</td>
-      <td style="padding:10px 12px;text-align:right;color:var(--muted);">${ev.durOps}</td>
-      <td style="padding:10px 12px;">${status}</td>
-    </tr>`;
+    const isOpen  = !ev.recovered;
+    const rowCls  = isOpen ? 'dd-row dd-row-open' : 'dd-row';
+    const pctTxt  = usePct && ev.ddPct !== null ? `${ev.ddPct.toFixed(2)}%` : null;
+    const status  = isOpen
+      ? `<span class="dd-badge-open"><span class="dd-pulse"></span>Em Aberto</span>`
+      : `<span class="dd-badge-rec">✓ Recuperado</span>`;
+    return `
+      <div class="${rowCls}">
+        <div class="${rankCls(i)}">${i + 1}</div>
+        <div>
+          <div class="dd-dates-label">Início → Fundo</div>
+          <div class="dd-dates-val">${fmtD(ev.startDate)} → ${fmtD(ev.troughDate)}</div>
+        </div>
+        <div>
+          <div class="${amtCls(i)}">${fmtR$(ev.ddAbs)}</div>
+          ${pctTxt ? `<div style="font-size:11px;color:rgba(248,113,113,.7);margin-top:2px;">${pctTxt} do capital</div>` : ''}
+        </div>
+        <div class="dd-dur">
+          <div style="font-size:18px;font-weight:900;color:var(--text);">${ev.durOps}</div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">operações</div>
+        </div>
+        <div>${status}</div>
+      </div>`;
   });
 
   document.getElementById('tbody-top-dd').innerHTML = rows.length
     ? rows.join('')
-    : '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">Nenhum evento de drawdown registrado.</td></tr>';
+    : '<div style="padding:40px;text-align:center;color:var(--muted);font-size:13px;">Nenhum evento de drawdown registrado.</div>';
 }
 
 /* ============================================================
