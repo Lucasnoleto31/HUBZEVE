@@ -14,35 +14,49 @@
   <style>
     * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
     :root {
-      --accent:   #4ADE80;
-      --accent-d: #22C55E;
-      --bg:       #0A0A0A;
-      --card:     #111111;
-      --card-2:   #1A1A1A;
-      --card-3:   #222222;
-      --border:   rgba(255,255,255,0.055);
+      --accent:   #49A8FC;
+      --accent-d: #0D1E95;
+      --accent-3: #101C4E;
+      --accent-l: #7DC4FF;
+      --bg:       #080808;
+      --card:     #0F0F0F;
+      --card-2:   #161616;
+      --card-3:   #1E1E1E;
+      --border:   rgba(255,255,255,0.06);
       --bord-2:   rgba(255,255,255,0.10);
-      --text:     #E4E4E4;
-      --muted:    #5C5C5C;
-      --mut-2:    #2C2C2C;
-      --green:    #4ADE80;
+      --text:     #E8E8E8;
+      --muted:    #666;
+      --mut-2:    #2A2A2A;
+      --green:    #49A8FC;
       --red:      #F87171;
       --yellow:   #FBBF24;
     }
+    /* grid bg like landing */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.014) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px);
+      background-size: 52px 52px;
+    }
+    .layout { position: relative; z-index: 1; }
     html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); }
     .layout { display: flex; height: 100vh; overflow: hidden; }
 
     /* ── SIDEBAR ── */
     .sidebar {
-      width: 224px; background: var(--card); border-right: 1px solid var(--border);
+      width: 224px;
+      background: linear-gradient(180deg, #0D0D0D 0%, #0A0A12 100%);
+      border-right: 1px solid var(--border);
       display: flex; flex-direction: column; flex-shrink: 0;
     }
     .sb-logo { padding: 20px 18px 18px; border-bottom: 1px solid var(--border); }
     .sb-logo img { height: 26px; width: auto; }
     .sb-badge {
       font-size: 9px; font-weight: 700; letter-spacing: .08em;
-      color: var(--accent); background: rgba(74,222,128,.08);
-      border: 1px solid rgba(74,222,128,.15); border-radius: 4px;
+      color: var(--accent); background: rgba(73,168,252,.08);
+      border: 1px solid rgba(73,168,252,.15); border-radius: 4px;
       padding: 2px 6px; margin-top: 7px; display: inline-block; text-transform: uppercase;
     }
     .sb-section {
@@ -58,7 +72,7 @@
     }
     .nav-item:hover { background: var(--card-2); color: var(--text); }
     .nav-item.active {
-      background: rgba(74,222,128,.07); color: var(--accent); font-weight: 500;
+      background: rgba(73,168,252,.07); color: var(--accent); font-weight: 500;
     }
     .nav-item.active::before {
       content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
@@ -71,7 +85,9 @@
     }
     .sb-avatar {
       width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(74,222,128,.1); color: var(--accent);
+      background: linear-gradient(135deg, rgba(13,30,149,.5), rgba(73,168,252,.2));
+      border: 1px solid rgba(73,168,252,.3);
+      color: var(--accent-l);
       font-size: 11px; font-weight: 700; display: flex; align-items: center;
       justify-content: center; flex-shrink: 0;
     }
@@ -83,7 +99,8 @@
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
     .topbar {
       padding: 14px 26px; border-bottom: 1px solid var(--border);
-      background: var(--bg); display: flex; align-items: center;
+      background: rgba(8,8,8,.95); backdrop-filter: blur(8px);
+      display: flex; align-items: center;
       justify-content: space-between; flex-shrink: 0;
     }
     .topbar-title { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -.01em; }
@@ -101,7 +118,7 @@
     }
     .period-btn:hover { background: var(--card-2); color: var(--text); border-color: var(--border); }
     .period-btn.active {
-      background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.2);
+      background: rgba(73,168,252,.08); border-color: rgba(73,168,252,.2);
       color: var(--accent); font-weight: 500;
     }
     .period-input {
@@ -111,19 +128,50 @@
     }
     .period-input:focus { border-color: var(--accent); }
 
+    /* ── WELCOME HEADER ── */
+    .welcome-header {
+      margin-bottom: 24px;
+    }
+    .welcome-greeting {
+      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      background: linear-gradient(90deg, #49A8FC 0%, #7DC4FF 40%, #0D1E95 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .welcome-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
     /* ── KPIs ── */
     .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
     .kpi {
       background: var(--card); border: 1px solid var(--border);
+      border-left: 3px solid rgba(73,168,252,.35);
       border-radius: 12px; padding: 18px 18px 16px;
-      transition: border-color .2s;
+      transition: border-color .2s, transform .15s;
+      position: relative; overflow: hidden;
     }
-    .kpi:hover { border-color: var(--bord-2); }
+    .kpi::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(73,168,252,.3) 0%, transparent 70%);
+    }
+    .kpi:hover {
+      border-color: rgba(73,168,252,.5);
+      border-left-color: rgba(73,168,252,.7);
+      transform: translateY(-1px);
+    }
     .kpi-label {
       font-size: 10px; font-weight: 500; color: var(--muted);
       margin-bottom: 10px; text-transform: uppercase; letter-spacing: .08em;
     }
-    .kpi-value { font-size: 22px; font-weight: 700; line-height: 1.1; letter-spacing: -.02em; }
+    .kpi-value { font-size: 24px; font-weight: 800; line-height: 1.1; letter-spacing: -.02em; color: var(--text); }
     .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 
     /* ── CHARTS ── */
@@ -152,15 +200,15 @@
       text-align: center; cursor: pointer; transition: all .2s; margin-bottom: 22px;
     }
     .upload-zone:hover, .upload-zone.drag-over {
-      border-color: var(--accent); background: rgba(74,222,128,.03);
+      border-color: var(--accent); background: rgba(73,168,252,.03);
     }
     #file-input { display: none; }
     .upload-btn {
-      background: var(--accent); color: #000; border: none; border-radius: 8px;
+      background: #0D1E95; color: #fff; border: none; border-radius: 8px;
       padding: 9px 22px; font-size: 13px; font-weight: 600; cursor: pointer;
-      font-family: Inter; transition: opacity .15s; margin-top: 14px; display: inline-block;
+      font-family: Inter; transition: all .15s; margin-top: 14px; display: inline-block;
     }
-    .upload-btn:hover { opacity: .85; }
+    .upload-btn:hover { background: #1428be; }
 
     /* ── PROGRESS ── */
     .progress-wrap {
@@ -203,9 +251,9 @@
 
     /* ── BADGES ── */
     .badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 5px; font-size: 10px; font-weight: 600; letter-spacing: .03em; }
-    .badge-green { background: rgba(74,222,128,.08); color: var(--green); border: 1px solid rgba(74,222,128,.18); }
+    .badge-green { background: rgba(73,168,252,.08); color: var(--green); border: 1px solid rgba(73,168,252,.18); }
     .badge-red { background: rgba(248,113,113,.08); color: var(--red); border: 1px solid rgba(248,113,113,.18); }
-    .badge-blue { background: rgba(74,222,128,.08); color: var(--accent); border: 1px solid rgba(74,222,128,.18); }
+    .badge-blue { background: rgba(73,168,252,.08); color: var(--accent); border: 1px solid rgba(73,168,252,.18); }
     .badge-muted { background: rgba(100,100,100,.08); color: var(--muted); border: 1px solid rgba(100,100,100,.18); }
 
     /* ── UPLOAD LIST ── */
@@ -215,8 +263,8 @@
     }
     .upload-row:last-child { border-bottom: none; }
     .upload-icon-box {
-      width: 34px; height: 34px; background: rgba(74,222,128,.07);
-      border: 1px solid rgba(74,222,128,.15); border-radius: 8px;
+      width: 34px; height: 34px; background: rgba(73,168,252,.07);
+      border: 1px solid rgba(73,168,252,.15); border-radius: 8px;
       display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
     }
 
@@ -238,11 +286,11 @@
     .empty-title { font-size: 16px; font-weight: 600; margin-bottom: 7px; }
     .empty-sub { font-size: 13px; color: var(--muted); max-width: 360px; margin: 0 auto 22px; line-height: 1.6; }
     .btn-primary {
-      background: var(--accent); color: #000; border: none; border-radius: 8px;
+      background: #0D1E95; color: #fff; border: none; border-radius: 8px;
       padding: 9px 22px; font-size: 13px; font-weight: 600; cursor: pointer;
-      font-family: Inter; transition: opacity .15s;
+      font-family: Inter; transition: all .15s;
     }
-    .btn-primary:hover { opacity: .85; }
+    .btn-primary:hover { background: #1428be; }
 
     /* ── PAGINATION ── */
     .pagination {
@@ -265,7 +313,7 @@
       display: flex; align-items: center; gap: 9px; min-width: 260px; max-width: 340px;
       animation: slideIn .2s ease; box-shadow: 0 8px 28px rgba(0,0,0,.5);
     }
-    .toast.success { border-color: rgba(74,222,128,.3); }
+    .toast.success { border-color: rgba(73,168,252,.3); }
     .toast.error { border-color: rgba(248,113,113,.3); }
     @keyframes slideIn { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
@@ -289,8 +337,8 @@
 
     /* ── KPI PNL DESTAQUE ── */
     .kpi-pnl-pos {
-      border-color: rgba(74,222,128,0.22) !important;
-      background: linear-gradient(145deg, rgba(74,222,128,0.05) 0%, var(--card) 60%) !important;
+      border-color: rgba(73,168,252,0.22) !important;
+      background: linear-gradient(145deg, rgba(73,168,252,0.05) 0%, var(--card) 60%) !important;
     }
     .kpi-pnl-neg {
       border-color: rgba(248,113,113,0.22) !important;
@@ -304,7 +352,7 @@
       border: 1px solid var(--border); border-radius: 7px;
       padding: 7px 14px; cursor: pointer; transition: all .15s;
     }
-    .btn-share:hover { border-color: var(--accent); color: var(--accent); background: rgba(74,222,128,.05); }
+    .btn-share:hover { border-color: var(--accent); color: var(--accent); background: rgba(73,168,252,.05); }
 
     /* ── SHARE MODAL ── */
     .share-overlay {
@@ -320,11 +368,11 @@
     .share-modal-actions { display: flex; gap: 10px; }
     .btn-download {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--accent); color: #000; font-weight: 700; font-size: 13px;
+      background: #0D1E95; color: #fff; font-weight: 700; font-size: 13px;
       border: none; border-radius: 8px; padding: 11px 26px; cursor: pointer;
-      transition: opacity .15s, transform .15s;
+      transition: all .15s, transform .15s;
     }
-    .btn-download:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-download:hover { background: #1428be; transform: translateY(-1px); }
     .btn-share-close {
       background: var(--card-2); color: var(--muted); border: 1px solid var(--border);
       border-radius: 8px; padding: 11px 18px; cursor: pointer; font-size: 13px; font-weight: 400;
@@ -463,6 +511,12 @@
 
       <!-- ==================== VISÃO GERAL ==================== -->
       <div id="sec-overview" class="section active">
+
+        <!-- Welcome header -->
+        <div class="welcome-header">
+          <div class="welcome-greeting" id="welcome-greeting">Bem-vindo de volta</div>
+          <div class="welcome-sub">Acompanhe sua performance e evolua como trader</div>
+        </div>
 
         <!-- Period selector -->
         <div class="period-bar">
@@ -1198,6 +1252,8 @@ let lastMetrics = null;
     .split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   document.getElementById('sb-avatar').textContent = initials;
   document.getElementById('sb-name').textContent   = p.full_name || p.email;
+  const firstName = (p.full_name || '').split(' ')[0] || '';
+  if (firstName) document.getElementById('welcome-greeting').textContent = `Olá, ${firstName}`;
 
   await Promise.all([loadTrades(), loadUploads()]);
 })();
@@ -1511,8 +1567,8 @@ function renderCharts(m) {
   destroyChart('equity');
   const eqLabels = m.equity.map(p => p.date);
   const eqVals   = m.equity.map(p => p.y);
-  const eqColor  = (eqVals[eqVals.length - 1] || 0) >= 0 ? '#22C55E' : '#EF4444';
-  const eqBg     = (eqVals[eqVals.length - 1] || 0) >= 0 ? 'rgba(34,197,94,.07)' : 'rgba(239,68,68,.07)';
+  const eqColor  = (eqVals[eqVals.length - 1] || 0) >= 0 ? '#49A8FC' : '#EF4444';
+  const eqBg     = (eqVals[eqVals.length - 1] || 0) >= 0 ? 'rgba(73,168,252,.07)' : 'rgba(239,68,68,.07)';
   charts['equity'] = new Chart(document.getElementById('chart-equity'), {
     type: 'line',
     data: {
@@ -1547,8 +1603,8 @@ function renderCharts(m) {
     data: {
       labels: ['Ganhos', 'Perdas'],
       datasets: [{ data: [m.wins, m.losses],
-        backgroundColor: ['rgba(34,197,94,.8)', 'rgba(239,68,68,.7)'],
-        borderColor: ['#22C55E','#EF4444'],
+        backgroundColor: ['rgba(73,168,252,.8)', 'rgba(239,68,68,.7)'],
+        borderColor: ['#49A8FC','#EF4444'],
         borderWidth: 1, hoverOffset: 6 }]
     },
     options: {
@@ -1562,7 +1618,7 @@ function renderCharts(m) {
   destroyChart('daily');
   const dKeys = Object.keys(m.byDay).sort();
   const dVals = dKeys.map(k => m.byDay[k].pnl);
-  const dColors = dVals.map(v => v >= 0 ? 'rgba(34,197,94,.75)' : 'rgba(239,68,68,.75)');
+  const dColors = dVals.map(v => v >= 0 ? 'rgba(73,168,252,.75)' : 'rgba(239,68,68,.75)');
   charts['daily'] = new Chart(document.getElementById('chart-daily'), {
     type: 'bar',
     data: {
@@ -1586,7 +1642,7 @@ function renderCharts(m) {
     data: {
       labels: ['Compra', 'Venda'],
       datasets: [
-        { label: 'Ganhos', data: [m.cWins, m.vWins], backgroundColor: 'rgba(34,197,94,.75)', borderRadius: 4 },
+        { label: 'Ganhos', data: [m.cWins, m.vWins], backgroundColor: 'rgba(73,168,252,.75)', borderRadius: 4 },
         { label: 'Perdas', data: [m.cLoss, m.vLoss], backgroundColor: 'rgba(239,68,68,.7)',  borderRadius: 4 }
       ]
     },
@@ -1623,7 +1679,7 @@ function renderHeatmap(hourly) {
     } else {
       const alpha = 0.25 + (n / maxN) * 0.65;
       cell.style.background = pnl >= 0
-        ? `rgba(34,197,94,${alpha.toFixed(2)})`
+        ? `rgba(73,168,252,${alpha.toFixed(2)})`
         : `rgba(239,68,68,${alpha.toFixed(2)})`;
       cell.textContent = n;
     }
@@ -1655,7 +1711,7 @@ function renderStatsRow(m) {
     const cWr = (m.cWins + m.cLoss) > 0 ? (m.cWins / (m.cWins + m.cLoss) * 100).toFixed(0) : 0;
     const vWr = (m.vWins + m.vLoss) > 0 ? (m.vWins / (m.vWins + m.vLoss) * 100).toFixed(0) : 0;
     cvEl.innerHTML = `
-      <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:8px;padding:8px 10px;">
+      <div style="background:rgba(73,168,252,.06);border:1px solid rgba(73,168,252,.15);border-radius:8px;padding:8px 10px;">
         <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Compra</div>
         <div style="font-size:15px;font-weight:800;color:${m.cPnl >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(m.cPnl)}</div>
         <div style="font-size:11px;color:var(--muted);margin-top:2px;">${m.cWins + m.cLoss} ops · ${cWr}% acerto</div>
@@ -2417,8 +2473,8 @@ function renderCalGrid() {
         const hasData = cell.n > 0;
         const pos     = hasData && cell.pnl > 0;
         const neg     = hasData && cell.pnl < 0;
-        const bg      = pos ? 'rgba(34,197,94,.10)' : neg ? 'rgba(239,68,68,.10)' : 'var(--card-2)';
-        const border  = pos ? 'rgba(34,197,94,.30)' : neg ? 'rgba(239,68,68,.30)' : 'var(--border)';
+        const bg      = pos ? 'rgba(73,168,252,.10)' : neg ? 'rgba(239,68,68,.10)' : 'var(--card-2)';
+        const border  = pos ? 'rgba(73,168,252,.30)' : neg ? 'rgba(239,68,68,.30)' : 'var(--border)';
         const pnlColor= pos ? 'var(--green)' : neg ? 'var(--red)' : 'var(--muted)';
         const wr      = cell.n ? Math.round(cell.wins/cell.n*100) : null;
         html += `
@@ -2901,7 +2957,7 @@ function renderComparativo() {
     type: 'line',
     data: {
       datasets: [
-        { label: 'Período A', data: eqA, borderColor: '#4ADE80', backgroundColor: 'rgba(74,222,128,.07)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 },
+        { label: 'Período A', data: eqA, borderColor: '#49A8FC', backgroundColor: 'rgba(73,168,252,.07)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 },
         { label: 'Período B', data: eqB, borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,.07)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 },
       ]
     },
@@ -2990,7 +3046,7 @@ function buildHeatmapDH() {
         html += `<td style="background:var(--card-2);border-radius:6px;height:54px;min-width:60px;"></td>`;
       } else {
         const alpha  = 0.2 + (Math.abs(cell.pnl) / maxAbs) * 0.7;
-        const bg     = cell.pnl >= 0 ? `rgba(34,197,94,${alpha.toFixed(2)})` : `rgba(239,68,68,${alpha.toFixed(2)})`;
+        const bg     = cell.pnl >= 0 ? `rgba(73,168,252,${alpha.toFixed(2)})` : `rgba(239,68,68,${alpha.toFixed(2)})`;
         const wr     = (cell.wins / cell.n * 100).toFixed(0);
         const pFmt   = (cell.pnl >= 0 ? '+' : '') + fmtR$(cell.pnl);
         html += `<td style="background:${bg};border-radius:6px;height:54px;min-width:60px;text-align:center;cursor:default;vertical-align:middle;"
@@ -3018,7 +3074,7 @@ function renderHourlyBar() {
     data[hi].n++;
   });
   const vals   = data.map(d => d.pnl);
-  const colors = vals.map(v => v >= 0 ? 'rgba(34,197,94,.8)' : 'rgba(239,68,68,.8)');
+  const colors = vals.map(v => v >= 0 ? 'rgba(73,168,252,.8)' : 'rgba(239,68,68,.8)');
   charts['hourly-pnl'] = new Chart(document.getElementById('chart-hourly-pnl'), {
     type: 'bar',
     data: { labels: HOURS.map(h => String(h).padStart(2,'0') + 'h'), datasets: [{ data: vals, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
@@ -3042,7 +3098,7 @@ function renderWeekdayBar() {
     if (t.is_winner) data[wd].wins++;
   });
   const vals   = data.map(d => d.pnl);
-  const colors = vals.map(v => v >= 0 ? 'rgba(34,197,94,.8)' : 'rgba(239,68,68,.8)');
+  const colors = vals.map(v => v >= 0 ? 'rgba(73,168,252,.8)' : 'rgba(239,68,68,.8)');
   charts['weekday-bar'] = new Chart(document.getElementById('chart-weekday-bar'), {
     type: 'bar',
     data: { labels: DNAMES, datasets: [{ data: vals, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
@@ -3108,7 +3164,7 @@ function renderMetasContent() {
 
   document.getElementById('metas-kpis').innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
-      <div class="kpi" style="border-color:${pnlMes >= 0 ? 'rgba(34,197,94,.25)' : 'rgba(239,68,68,.25)'};">
+      <div class="kpi" style="border-color:${pnlMes >= 0 ? 'rgba(73,168,252,.25)' : 'rgba(239,68,68,.25)'};">
         <div class="kpi-label">P&L do Mês</div>
         <div class="kpi-value" style="color:${pnlMes >= 0 ? 'var(--green)' : 'var(--red)'};">${fmtR$(pnlMes)}</div>
         <div class="kpi-sub">${diasOp} dia${diasOp !== 1 ? 's' : ''} operado${diasOp !== 1 ? 's' : ''}</div>
@@ -3159,9 +3215,9 @@ function renderMetasContent() {
     const pnl  = byDay[iso] ?? null;
     let bg = 'var(--card-2)', textColor = 'var(--muted)', pnlText = '';
     if (pnl !== null) {
-      if (metaDia > 0 && pnl >= metaDia)      { bg = 'rgba(34,197,94,.18)'; textColor = 'var(--green)'; }
+      if (metaDia > 0 && pnl >= metaDia)      { bg = 'rgba(73,168,252,.18)'; textColor = 'var(--green)'; }
       else if (pnl > 0 && metaDia > 0)         { bg = 'rgba(245,158,11,.15)'; textColor = 'var(--yellow)'; }
-      else if (pnl > 0)                         { bg = 'rgba(34,197,94,.18)'; textColor = 'var(--green)'; }
+      else if (pnl > 0)                         { bg = 'rgba(73,168,252,.18)'; textColor = 'var(--green)'; }
       else                                      { bg = 'rgba(239,68,68,.15)'; textColor = 'var(--red)'; }
       pnlText = `<div style="font-size:10px;font-weight:600;color:${textColor};margin-top:2px;">${pnl >= 0 ? '+' : ''}${fmtR$(pnl)}</div>`;
     }
@@ -3245,7 +3301,7 @@ function renderConsistencia() {
     data: {
       labels,
       datasets: [
-        { type: 'bar',  data: barVals, backgroundColor: barVals.map(v => v >= 0 ? 'rgba(34,197,94,.6)' : 'rgba(239,68,68,.6)'), borderRadius: 2, borderSkipped: false, order: 2 },
+        { type: 'bar',  data: barVals, backgroundColor: barVals.map(v => v >= 0 ? 'rgba(73,168,252,.6)' : 'rgba(239,68,68,.6)'), borderRadius: 2, borderSkipped: false, order: 2 },
         { type: 'line', data: maVals, label: 'Média 10d', borderColor: '#F59E0B', backgroundColor: 'transparent', tension: 0.4, pointRadius: 0, borderWidth: 2, order: 1 },
       ]
     },
@@ -3275,7 +3331,7 @@ function renderConsistencia() {
     else if (v < buckets[10]) hist[10]++;
     else                      hist[11]++;
   });
-  const histColors = hist.map((_, i) => i < 6 ? 'rgba(239,68,68,.75)' : 'rgba(34,197,94,.75)');
+  const histColors = hist.map((_, i) => i < 6 ? 'rgba(239,68,68,.75)' : 'rgba(73,168,252,.75)');
   charts['con-hist'] = new Chart(document.getElementById('chart-con-hist'), {
     type: 'bar',
     data: { labels: labels2, datasets: [{ data: hist, backgroundColor: histColors, borderRadius: 4, borderSkipped: false }] },
@@ -3376,7 +3432,7 @@ function applyRankingSort() {
 
   // KPIs
   document.getElementById('ranking-kpis').innerHTML = me ? `
-    <div class="kpi" style="border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.04);">
+    <div class="kpi" style="border-color:rgba(73,168,252,.25);background:rgba(73,168,252,.04);">
       <div class="kpi-label">Sua Posição</div>
       <div class="kpi-value" style="color:var(--accent);">#${myPos}</div>
       <div class="kpi-sub">de ${sorted.length} clientes</div>
@@ -3402,9 +3458,9 @@ function applyRankingSort() {
 
   const rows = sorted.map((d, i) => {
     const isMe  = d.isMe;
-    const hl    = isMe ? 'background:rgba(74,222,128,.05);' : '';
+    const hl    = isMe ? 'background:rgba(73,168,252,.05);' : '';
     const name  = isMe
-      ? `<span style="color:var(--accent);font-weight:600;">${escHtml(d.name)} <span style="font-size:10px;background:rgba(74,222,128,.1);color:var(--accent);border-radius:4px;padding:1px 6px;margin-left:4px;">Você</span></span>`
+      ? `<span style="color:var(--accent);font-weight:600;">${escHtml(d.name)} <span style="font-size:10px;background:rgba(73,168,252,.1);color:var(--accent);border-radius:4px;padding:1px 6px;margin-left:4px;">Você</span></span>`
       : escHtml(d.name);
     const lastUp = d.lastUpload
       ? new Date(d.lastUpload).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' })
@@ -3468,7 +3524,7 @@ function openShareModal() {
   if (!lastMetrics) return;
   const m   = lastMetrics;
   const pos = m.pnl >= 0;
-  const accent = pos ? '#22C55E' : '#EF4444';
+  const accent = pos ? '#49A8FC' : '#EF4444';
 
   // Period label
   const periodLabels = { '7d':'Últimos 7 dias', '30d':'Últimos 30 dias', '90d':'Últimos 90 dias',
@@ -3487,11 +3543,11 @@ function openShareModal() {
 
   // Stats
   document.getElementById('sc-wr').textContent     = fmtPct(m.wr);
-  document.getElementById('sc-wr').style.color      = pos ? '#22C55E' : '#EF4444';
+  document.getElementById('sc-wr').style.color      = pos ? '#49A8FC' : '#EF4444';
   document.getElementById('sc-trades').textContent  = m.totalTrades;
   document.getElementById('sc-dias').textContent    = m.dias;
   document.getElementById('sc-payoff').textContent  = m.payoff.toFixed(2) + 'x';
-  document.getElementById('sc-payoff').style.color  = m.payoff >= 1 ? '#22C55E' : '#EF4444';
+  document.getElementById('sc-payoff').style.color  = m.payoff >= 1 ? '#49A8FC' : '#EF4444';
 
   // Trader name
   document.getElementById('sc-trader').textContent =
@@ -3500,11 +3556,11 @@ function openShareModal() {
   // Glow color
   const glow = document.getElementById('sc-glow');
   glow.style.background = pos
-    ? 'radial-gradient(ellipse, rgba(34,197,94,0.12) 0%, transparent 70%)'
+    ? 'radial-gradient(ellipse, rgba(73,168,252,0.12) 0%, transparent 70%)'
     : 'radial-gradient(ellipse, rgba(239,68,68,0.10) 0%, transparent 70%)';
 
   // Equity SVG mini-curve
-  _drawShareCurve(m.equity, pos ? '#22C55E' : '#EF4444');
+  _drawShareCurve(m.equity, pos ? '#49A8FC' : '#EF4444');
 
   document.getElementById('share-overlay').classList.add('open');
 }
