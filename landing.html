@@ -220,14 +220,23 @@
 
     /* ── FEATURES ── */
     .feat-row {
-      display: grid; grid-template-columns: 72px 1fr 1fr; gap: 28px;
-      align-items: start; padding: 44px 0;
+      display: grid; grid-template-columns: 110px 1fr 1fr; gap: 36px;
+      align-items: start; padding: 56px 0;
       border-bottom: 1px solid var(--border);
     }
     .feat-row:last-child { border-bottom: none; }
-    .feat-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #555; padding-top: 4px; }
-    .feat-title { font-size: 1.4rem; font-weight: 700; color: #fff; line-height: 1.15; letter-spacing: -.02em; }
-    .feat-desc { font-size: 13px; color: var(--muted); line-height: 1.75; padding-top: 4px; }
+    .feat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(4rem, 7vw, 6.5rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+    .feat-num.n1 { color: #49A8FC; }
+    .feat-num.n2 { color: #0D1E95; text-shadow: 0 0 40px rgba(13,30,149,.4); }
+    .feat-num.n3 { color: #7DC4FF; }
+    .feat-title { font-size: 1.6rem; font-weight: 700; color: #fff; line-height: 1.15; letter-spacing: -.025em; }
+    .feat-desc { font-size: 15px; color: var(--muted); line-height: 1.8; padding-top: 6px; }
 
     /* ── SECTION HEADER ── */
     .s-eyebrow {
@@ -313,8 +322,8 @@
     @media (max-width: 768px) {
       .stat-strip { grid-template-columns: repeat(2, 1fr); }
       .stat-cell:nth-child(2) { border-right: none; }
-      .feat-row { grid-template-columns: 1fr; gap: 6px; }
-      .feat-num { display: none; }
+      .feat-row { grid-template-columns: 1fr; gap: 8px; }
+      .feat-num { font-size: 3rem; margin-bottom: 4px; }
       .dash-body { grid-template-columns: 1fr; }
       .dash-sidebar { display: none; }
       .kpis { grid-template-columns: repeat(2, 1fr); }
@@ -591,12 +600,21 @@
       <h2 class="s-title">Dados que traders de verdade<br/>usam para evoluir.</h2>
     </div>
     <div>
-      <div class="feat-row reveal d0"><div class="feat-num">01</div><div><div class="feat-title">Curva de Performance</div></div><div class="feat-desc">Veja a trajetória real do seu capital dia a dia. Descubra exatamente quando você saiu do plano, onde estão os vales de drawdown e como se deu cada recuperação.</div></div>
-      <div class="feat-row reveal d1"><div class="feat-num">02</div><div><div class="feat-title">Heatmap de Horários</div></div><div class="feat-desc">Descubra seu horário mais lucrativo — e o que está te fazendo sangrar. A maioria dos traders perde em apenas 1 ou 2 janelas que destroem o resultado da semana inteira.</div></div>
-      <div class="feat-row reveal d2"><div class="feat-num">03</div><div><div class="feat-title">Controle de Drawdown</div></div><div class="feat-desc">Drawdown detalhado operação a operação, top 10 eventos de perda e percentual consumido do capital. Saiba onde estão seus piores dias e o que eles têm em comum.</div></div>
-      <div class="feat-row reveal d3"><div class="feat-num">04</div><div><div class="feat-title">Análise de Consistência</div></div><div class="feat-desc">Sequências de ganho e perda, média móvel de 10 operações, distribuição de resultados. O que mesas proprietárias monitoram — aplicado ao seu trading pessoal.</div></div>
-      <div class="feat-row reveal d4"><div class="feat-num">05</div><div><div class="feat-title">Metas e Calendário</div></div><div class="feat-desc">Defina sua meta diária e mensal, acompanhe no calendário visual e veja em quantos dias você realmente cumpriu o planejado — sem autoengano.</div></div>
-      <div class="feat-row reveal d5"><div class="feat-num">06</div><div><div class="feat-title">Feedback do Assessor</div></div><div class="feat-desc">Seu assessor acessa seus dados reais e deixa análise direto no Hub. Sem print de WhatsApp, sem achismo — só dado, diagnóstico e orientação.</div></div>
+      <div class="feat-row reveal d0">
+        <div class="feat-num n1">01</div>
+        <div><div class="feat-title">Curva de Performance</div></div>
+        <div class="feat-desc">Veja a trajetória real do seu capital dia a dia. Descubra exatamente quando você começou a sair do plano, onde estão os momentos de maior perda e como foi cada recuperação.</div>
+      </div>
+      <div class="feat-row reveal d1">
+        <div class="feat-num n2">02</div>
+        <div><div class="feat-title">Heatmap de Horários</div></div>
+        <div class="feat-desc">Descubra qual janela do dia está destruindo seu resultado. A maioria dos traders perde dinheiro em apenas 1 ou 2 horários específicos que comprometem toda a semana.</div>
+      </div>
+      <div class="feat-row reveal d2">
+        <div class="feat-num n3">03</div>
+        <div><div class="feat-title">Feedback do Assessor</div></div>
+        <div class="feat-desc">Seu assessor acessa seus dados reais e deixa análise direto no Hub. Sem print de WhatsApp, sem palpite. Só dado, diagnóstico e orientação com base no que você realmente operou.</div>
+      </div>
     </div>
   </div>
 </section>
