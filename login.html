@@ -38,26 +38,65 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      padding: 44px 52px 44px 52px;
+      padding: 44px 52px 52px 52px;
       overflow: hidden;
       z-index: 1;
     }
 
-    /* Glow blob behind chart */
-    .chart-glow {
-      position: absolute;
-      bottom: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 700px;
-      height: 400px;
-      background: radial-gradient(ellipse at center, rgba(74,222,128,0.08) 0%, transparent 65%);
+    /* Background image with Ken Burns */
+    .left-bg {
+      position: absolute; inset: 0; z-index: 0;
+      overflow: hidden;
+    }
+    .left-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      animation: kenBurns 18s ease-in-out infinite alternate;
+      transform-origin: center center;
+      filter: brightness(.45) saturate(.3);
+    }
+    @keyframes kenBurns {
+      0%   { transform: scale(1)    translateX(0)      translateY(0); }
+      33%  { transform: scale(1.06) translateX(-1%)    translateY(.5%); }
+      66%  { transform: scale(1.09) translateX(1.5%)   translateY(-1%); }
+      100% { transform: scale(1.04) translateX(-.5%)   translateY(1%); }
+    }
+
+    /* Dark gradient overlay layers */
+    .left-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right,  rgba(7,7,7,0) 0%, rgba(7,7,7,.62) 100%),
+        linear-gradient(to bottom, rgba(7,7,7,.3) 0%, rgba(7,7,7,0)  40%, rgba(7,7,7,.7) 100%);
       pointer-events: none;
-      animation: glowPulse 4s ease-in-out infinite;
+    }
+
+    /* Green tint layer — subtle atmosphere */
+    .left-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 60%, rgba(74,222,128,.07) 0%, transparent 65%);
+      pointer-events: none;
+      animation: glowPulse 6s ease-in-out infinite;
     }
     @keyframes glowPulse {
-      0%,100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-      50%      { opacity: 1;   transform: translateX(-50%) scale(1.06); }
+      0%,100% { opacity: .7; }
+      50%      { opacity: 1; }
+    }
+
+    /* Scanline texture */
+    .left-scan {
+      position: absolute; inset: 0; z-index: 1;
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.06) 2px,
+        rgba(0,0,0,.06) 4px
+      );
+      pointer-events: none;
     }
 
     /* ─── TOP NAV ─────────────────────── */
@@ -65,7 +104,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: relative; z-index: 2;
+      position: relative; z-index: 3;
       animation: fadeDown .6s ease both;
     }
     @keyframes fadeDown { from { opacity:0; transform: translateY(-12px); } to { opacity:1; transform: none; } }
@@ -85,7 +124,7 @@
 
     /* ─── HERO TEXT ───────────────────── */
     .left-hero {
-      position: relative; z-index: 2;
+      position: relative; z-index: 3;
       margin-top: 64px;
       animation: fadeUp .7s .1s ease both;
     }
@@ -121,50 +160,60 @@
       max-width: 380px;
     }
 
-    /* ─── CHART AREA ──────────────────── */
+    /* ─── BOTTOM STATS OVERLAY ─────────── */
     .chart-area {
-      position: relative; z-index: 2;
+      position: relative; z-index: 3;
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding-bottom: 8px;
-      animation: fadeUp .8s .25s ease both;
+      padding-bottom: 0;
+      animation: fadeUp .8s .35s ease both;
     }
 
-    .chart-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 12px;
+    /* Glassmorphism P&L card */
+    .pnl-glass {
+      background: rgba(7,7,7,.55);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid rgba(255,255,255,.07);
+      border-bottom: none;
+      border-radius: 16px 16px 0 0;
+      padding: 24px 28px 20px;
     }
 
-    /* Big P&L counter */
+    .pnl-label {
+      font-size: 10px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: #2E2E2E;
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pnl-label::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4ADE80;
+      box-shadow: 0 0 6px #4ADE80;
+      animation: dotBlink 2s ease-in-out infinite;
+    }
     .pnl-big {
-      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      font-size: clamp(2.2rem, 3.8vw, 3.2rem);
       font-weight: 800;
       letter-spacing: -.04em;
       color: #4ADE80;
       line-height: 1;
-    }
-    .pnl-label {
-      font-size: 11px; font-weight: 500; letter-spacing: .06em;
-      text-transform: uppercase; color: #2A2A2A;
-      margin-bottom: 6px;
+      margin-bottom: 18px;
+      text-shadow: 0 0 40px rgba(74,222,128,.25);
     }
 
     /* Floating stat chips */
-    .stat-chips {
-      display: flex; gap: 10px; flex-wrap: wrap;
-    }
+    .stat-chips { display: flex; gap: 10px; flex-wrap: wrap; }
     .chip {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
       border-radius: 8px;
       padding: 8px 14px;
       font-size: 12px;
+      backdrop-filter: blur(8px);
       opacity: 0;
       animation: chipIn .5s ease both;
     }
@@ -178,73 +227,7 @@
       from { opacity:0; transform: translateY(10px) scale(.96); }
       to   { opacity:1; transform: none; }
     }
-
-    /* SVG Chart */
-    .equity-svg-wrap {
-      position: relative;
-      background: rgba(255,255,255,.015);
-      border: 1px solid rgba(255,255,255,.05);
-      border-radius: 14px;
-      padding: 24px 24px 16px;
-      overflow: hidden;
-    }
-
-    .equity-svg-wrap::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(74,222,128,.03) 100%);
-      pointer-events: none;
-    }
-
-    #eqSvg {
-      width: 100%;
-      height: 140px;
-      display: block;
-    }
-
-    /* Animated path draw */
-    #eqLine {
-      stroke: #4ADE80;
-      stroke-width: 2;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 2000;
-      stroke-dashoffset: 2000;
-      animation: drawLine 2s .4s cubic-bezier(.4,0,.2,1) both;
-    }
-    @keyframes drawLine {
-      to { stroke-dashoffset: 0; }
-    }
-
-    #eqArea {
-      opacity: 0;
-      animation: areaFade .8s 2.2s ease both;
-    }
-    @keyframes areaFade { to { opacity: 1; } }
-
-    /* Live dot */
-    #eqDot {
-      fill: #4ADE80;
-      filter: drop-shadow(0 0 6px #4ADE80);
-      opacity: 0;
-      animation: dotPop .3s 2.4s ease both, dotBlink 2s 2.7s ease-in-out infinite;
-    }
-    @keyframes dotPop  { from { opacity:0; r:0; } to { opacity:1; } }
-    @keyframes dotBlink { 0%,100% { filter:drop-shadow(0 0 4px #4ADE80); } 50% { filter:drop-shadow(0 0 12px #4ADE80); } }
-
-    /* X axis ticks */
-    .chart-ticks {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      padding: 0 4px;
-    }
-    .chart-ticks span {
-      font-size: 9px;
-      color: #282828;
-      letter-spacing: .04em;
-    }
+    @keyframes dotBlink { 0%,100% { box-shadow:0 0 4px #4ADE80; } 50% { box-shadow:0 0 12px #4ADE80; } }
 
     /* ─── RIGHT PANEL ─────────────────── */
     .right {
@@ -408,7 +391,12 @@
      LEFT — Animated showcase
 ═══════════════════════════════════ -->
 <div class="left">
-  <div class="chart-glow"></div>
+
+  <!-- Background image with Ken Burns -->
+  <div class="left-bg">
+    <img src="loginimagem.png" alt="" />
+  </div>
+  <div class="left-scan"></div>
 
   <!-- Nav -->
   <div class="left-nav">
@@ -433,13 +421,11 @@
     </p>
   </div>
 
-  <!-- Chart -->
+  <!-- Bottom glass overlay with stats -->
   <div class="chart-area">
-    <div class="chart-header">
-      <div>
-        <div class="pnl-label">P&L acumulado — 2025</div>
-        <div class="pnl-big" id="pnlCounter">R$ 0</div>
-      </div>
+    <div class="pnl-glass">
+      <div class="pnl-label">P&L acumulado — 2025</div>
+      <div class="pnl-big" id="pnlCounter">R$ 0</div>
       <div class="stat-chips">
         <div class="chip">
           <strong>67,4%</strong>
@@ -457,57 +443,6 @@
           <strong>2,1×</strong>
           <span>Payoff</span>
         </div>
-      </div>
-    </div>
-
-    <div class="equity-svg-wrap">
-      <svg id="eqSvg" viewBox="0 0 800 140" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stop-color="#4ADE80" stop-opacity=".12"/>
-            <stop offset="100%" stop-color="#4ADE80" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-
-        <!-- Area fill -->
-        <path id="eqArea" fill="url(#areaGrad)"
-          d="M0 130
-             C20 126,30 120,50 115
-             C75 108,80 116,105 110
-             C135 102,140 96,170 88
-             C200 80,205 87,235 79
-             C265 70,270 60,305 52
-             C340 44,345 54,380 45
-             C415 36,420 28,460 22
-             C500 16,505 24,545 17
-             C585 10,590 6,630 4
-             C665 2,670 9,710 5
-             C750 1,770 3,800 2
-             L800 140 L0 140 Z"/>
-
-        <!-- Line -->
-        <path id="eqLine"
-          d="M0 130
-             C20 126,30 120,50 115
-             C75 108,80 116,105 110
-             C135 102,140 96,170 88
-             C200 80,205 87,235 79
-             C265 70,270 60,305 52
-             C340 44,345 54,380 45
-             C415 36,420 28,460 22
-             C500 16,505 24,545 17
-             C585 10,590 6,630 4
-             C665 2,670 9,710 5
-             C750 1,770 3,800 2"/>
-
-        <!-- Live dot -->
-        <circle id="eqDot" cx="800" cy="2" r="4"/>
-      </svg>
-
-      <div class="chart-ticks">
-        <span>JAN</span><span>FEV</span><span>MAR</span>
-        <span>ABR</span><span>MAI</span><span>JUN</span>
-        <span>JUL</span><span>AGO</span>
       </div>
     </div>
   </div>
