@@ -105,7 +105,7 @@
     }
     .topbar-title { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -.01em; }
     .topbar-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .content { flex: 1; overflow-y: auto; padding: 24px 26px; }
+    .content { flex: 1; overflow-y: auto; padding: 28px 32px; }
     .section { display: none; }
     .section.active { display: block; }
 
@@ -129,26 +129,57 @@
     .period-input:focus { border-color: var(--accent); }
 
     /* ── WELCOME HEADER ── */
-    .welcome-header {
-      margin-bottom: 24px;
-    }
+    .welcome-header { margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
     .welcome-greeting {
-      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
-      font-weight: 800;
-      letter-spacing: -.03em;
-      line-height: 1.1;
-      background: linear-gradient(90deg, #49A8FC 0%, #7DC4FF 40%, #0D1E95 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      font-weight: 800; letter-spacing: -.03em; line-height: 1.1;
+      background: linear-gradient(90deg, #49A8FC 0%, #7DC4FF 50%, #fff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .welcome-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 6px;
+    .welcome-sub { font-size: 13px; color: var(--muted); margin-top: 5px; }
+
+    /* ── HERO RESULT ── */
+    .hero-result {
+      margin-bottom: 28px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+    }
+    .hero-result-label {
+      font-size: 11px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .hero-result-value {
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      font-weight: 900; line-height: 1; letter-spacing: -.04em;
+      color: #22C55E;
+      text-shadow: 0 0 60px rgba(34,197,94,.25);
+      transition: color .4s, text-shadow .4s;
+    }
+    .hero-result-value.negative {
+      color: var(--red);
+      text-shadow: 0 0 60px rgba(239,68,68,.2);
+    }
+    .hero-result-sub {
+      font-size: 14px; color: var(--muted); margin-top: 2px;
     }
 
-    /* ── KPIs ── */
+    /* ── STAT PILLS ── */
+    .stat-pills {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px;
+    }
+    .stat-pill {
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 14px 20px; border-radius: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-top: 2px solid rgba(73,168,252,.2);
+      min-width: 110px; flex: 1;
+      transition: border-color .2s, transform .15s;
+    }
+    .stat-pill:hover { border-color: rgba(73,168,252,.35); transform: translateY(-1px); }
+    .stat-pill-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .stat-pill-value { font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+    .stat-pill-hint  { font-size: 11px; color: var(--muted); }
+
+    /* ── KPIs (other sections) ── */
     .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
     .kpi {
       background: var(--card); border: 1px solid var(--border);
@@ -158,30 +189,59 @@
       position: relative; overflow: hidden;
     }
     .kpi::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
       background: linear-gradient(90deg, rgba(73,168,252,.3) 0%, transparent 70%);
     }
-    .kpi:hover {
-      border-color: rgba(73,168,252,.5);
-      border-left-color: rgba(73,168,252,.7);
-      transform: translateY(-1px);
-    }
-    .kpi-label {
-      font-size: 10px; font-weight: 500; color: var(--muted);
-      margin-bottom: 10px; text-transform: uppercase; letter-spacing: .08em;
-    }
+    .kpi:hover { border-color: rgba(73,168,252,.5); border-left-color: rgba(73,168,252,.7); transform: translateY(-1px); }
+    .kpi-label { font-size: 10px; font-weight: 500; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .08em; }
     .kpi-value { font-size: 24px; font-weight: 800; line-height: 1.1; letter-spacing: -.02em; color: var(--text); }
     .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 
     /* ── CHARTS ── */
     .chart-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 18px;
+      border-radius: 16px; padding: 22px;
+    }
+    .chart-card.borderless {
+      background: transparent; border: none; padding: 0;
     }
     .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
     .chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
     .chart-wrap { position: relative; }
+
+    /* ── EQUITY HERO ── */
+    .equity-hero-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px 28px 20px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .equity-hero-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #22C55E 0%, rgba(34,197,94,.2) 60%, transparent 100%);
+      transition: background .4s;
+    }
+    .equity-hero-card.negative::before {
+      background: linear-gradient(90deg, #EF4444 0%, rgba(239,68,68,.2) 60%, transparent 100%);
+    }
+    .equity-hero-label {
+      font-size: 10px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .equity-glow {
+      position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);
+      width: 70%; height: 160px; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(34,197,94,.07) 0%, transparent 70%);
+      transition: background .4s;
+    }
+    .equity-glow.negative {
+      background: radial-gradient(ellipse, rgba(239,68,68,.06) 0%, transparent 70%);
+    }
 
     /* ── HEATMAP ── */
     .heatmap-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; }
@@ -512,24 +572,25 @@
       <!-- ==================== VISÃO GERAL ==================== -->
       <div id="sec-overview" class="section active">
 
-        <!-- Welcome header -->
+        <!-- Welcome + period selector row -->
         <div class="welcome-header">
-          <div class="welcome-greeting" id="welcome-greeting">Bem-vindo de volta</div>
-          <div class="welcome-sub">Acompanhe sua performance e evolua como trader</div>
-        </div>
-
-        <!-- Period selector -->
-        <div class="period-bar">
-          <button class="period-btn" id="pbtn-30d" onclick="setPeriod('30d',this)">30 dias</button>
-          <button class="period-btn" id="pbtn-7d"  onclick="setPeriod('7d',this)">7 dias</button>
-          <button class="period-btn" id="pbtn-month" onclick="setPeriod('month',this)">Este mês</button>
-          <button class="period-btn" id="pbtn-90d" onclick="setPeriod('90d',this)">90 dias</button>
-          <button class="period-btn active" id="pbtn-all" onclick="setPeriod('all',this)">Todo período</button>
-          <button class="period-btn" id="pbtn-custom" onclick="setPeriod('custom',this)">Personalizado</button>
-          <div id="custom-dates" style="display:none;align-items:center;gap:8px;">
-            <input type="date" class="period-input" id="date-from" onchange="applyCustomPeriod()" />
-            <span style="color:var(--muted)">—</span>
-            <input type="date" class="period-input" id="date-to" onchange="applyCustomPeriod()" />
+          <div>
+            <div class="welcome-greeting" id="welcome-greeting">Bem-vindo de volta</div>
+            <div class="welcome-sub">Aqui está um resumo da sua jornada como trader</div>
+          </div>
+          <!-- Period selector inline -->
+          <div class="period-bar" style="margin-bottom:0;">
+            <button class="period-btn" id="pbtn-30d" onclick="setPeriod('30d',this)">30 dias</button>
+            <button class="period-btn" id="pbtn-7d"  onclick="setPeriod('7d',this)">7 dias</button>
+            <button class="period-btn" id="pbtn-month" onclick="setPeriod('month',this)">Este mês</button>
+            <button class="period-btn" id="pbtn-90d" onclick="setPeriod('90d',this)">90 dias</button>
+            <button class="period-btn active" id="pbtn-all" onclick="setPeriod('all',this)">Todo período</button>
+            <button class="period-btn" id="pbtn-custom" onclick="setPeriod('custom',this)">Personalizado</button>
+            <div id="custom-dates" style="display:none;align-items:center;gap:8px;">
+              <input type="date" class="period-input" id="date-from" onchange="applyCustomPeriod()" />
+              <span style="color:var(--muted)">—</span>
+              <input type="date" class="period-input" id="date-to" onchange="applyCustomPeriod()" />
+            </div>
           </div>
         </div>
 
@@ -544,103 +605,102 @@
         <!-- Dashboard content -->
         <div id="dash-content">
 
-          <!-- ── ROW 1: KPIs principais ── -->
-          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px;">
-            <div class="kpi" id="kpi-pnl" style="grid-column:span 1;">
-              <div class="kpi-label">P&L Total</div>
-              <div class="kpi-value" id="v-pnl" style="font-size:20px;">—</div>
-              <div class="kpi-sub" id="sub-pnl">resultado líquido</div>
+          <!-- ── HERO: Resultado Total ── -->
+          <div class="hero-result">
+            <div class="hero-result-label">Resultado Total</div>
+            <div class="hero-result-value" id="v-pnl">—</div>
+            <div class="hero-result-sub" id="sub-pnl">resultado líquido do período</div>
+          </div>
+
+          <!-- ── STAT PILLS ── -->
+          <div class="stat-pills">
+            <div class="stat-pill">
+              <div class="stat-pill-label">Operações</div>
+              <div class="stat-pill-value" id="stat-total">—</div>
+              <div class="stat-pill-hint" id="sub-stat-dias">— dias operados</div>
             </div>
-            <div class="kpi">
-              <div class="kpi-label">Total de Ops</div>
-              <div class="kpi-value" id="stat-total" style="font-size:20px;">—</div>
-              <div class="kpi-sub" id="sub-stat-dias">— dias operados</div>
+            <div class="stat-pill">
+              <div class="stat-pill-label">Taxa de Acerto</div>
+              <div class="stat-pill-value" id="v-wr">—</div>
+              <div class="stat-pill-hint" id="sub-wr">das operações</div>
             </div>
-            <div class="kpi">
-              <div class="kpi-label">Taxa de Acerto</div>
-              <div class="kpi-value" id="v-wr" style="font-size:20px;">—</div>
-              <div class="kpi-sub" id="sub-wr">—</div>
+            <div class="stat-pill">
+              <div class="stat-pill-label">Fator de Lucro</div>
+              <div class="stat-pill-value" id="v-pf">—</div>
+              <div class="stat-pill-hint" id="sub-pf">bruto G / bruto P</div>
             </div>
-            <div class="kpi">
-              <div class="kpi-label">Fator de Lucro</div>
-              <div class="kpi-value" id="v-pf" style="font-size:20px;">—</div>
-              <div class="kpi-sub" id="sub-pf">bruto G / bruto P</div>
+            <div class="stat-pill">
+              <div class="stat-pill-label">Max Drawdown</div>
+              <div class="stat-pill-value" id="v-dd" style="color:var(--red);">—</div>
+              <div class="stat-pill-hint">maior retração</div>
             </div>
-            <div class="kpi">
-              <div class="kpi-label">Max Drawdown</div>
-              <div class="kpi-value" id="v-dd" style="color:var(--red);font-size:20px;">—</div>
-              <div class="kpi-sub">maior retração</div>
+            <div class="stat-pill">
+              <div class="stat-pill-label">Payoff</div>
+              <div class="stat-pill-value" id="v-payoff">—</div>
+              <div class="stat-pill-hint" id="sub-payoff">ganho / perda média</div>
             </div>
-            <div class="kpi">
-              <div class="kpi-label">Payoff</div>
-              <div class="kpi-value" id="v-payoff" style="font-size:20px;">—</div>
-              <div class="kpi-sub" id="sub-payoff">ganho médio / perda média</div>
+            <div class="stat-pill">
+              <div class="stat-pill-label">Melhor Dia</div>
+              <div class="stat-pill-value" id="stat-best" style="color:#22C55E;">—</div>
+              <div class="stat-pill-hint">maior resultado diário</div>
             </div>
           </div>
 
-          <!-- ── ROW 2: Curva de Performance (full-width) ── -->
-          <div class="chart-card" style="margin-bottom:14px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-              <div>
-                <div class="chart-title">Curva de Performance</div>
-                <div class="chart-sub">Resultado acumulado ao longo do tempo</div>
-              </div>
-              <div style="text-align:right;">
-                <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Consistência</div>
-                <div style="font-size:18px;font-weight:800;" id="stat-consistencia">—</div>
-              </div>
+          <!-- ── CURVA DE PERFORMANCE ── -->
+          <div class="equity-hero-card" id="equity-hero-card">
+            <div class="equity-glow" id="equity-glow"></div>
+            <div class="equity-hero-label">
+              <span>Curva de Performance &nbsp;·&nbsp; resultado acumulado ao longo do tempo</span>
+              <span style="display:flex;align-items:center;gap:18px;">
+                <span>Consistência&nbsp;<strong id="stat-consistencia" style="color:var(--text);font-size:13px;">—</strong></span>
+                <span>Dias operados&nbsp;<strong id="stat-dias" style="color:var(--text);font-size:13px;">—</strong></span>
+              </span>
             </div>
-            <div class="chart-wrap" style="height:260px;">
+            <div class="chart-wrap" style="height:280px;">
               <canvas id="chart-equity"></canvas>
             </div>
           </div>
 
-          <!-- ── ROW 3: P&L por Dia | Compra vs Venda ── -->
+          <!-- ── ROW: Resultado por Dia | Compra vs Venda ── -->
           <div style="display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:14px;">
             <div class="chart-card">
-              <div class="chart-title">P&L por Dia</div>
+              <div class="chart-title">Resultado por Dia</div>
               <div class="chart-sub">Resultado diário em R$</div>
-              <div class="chart-wrap" style="height:220px;">
+              <div class="chart-wrap" style="height:200px;">
                 <canvas id="chart-daily"></canvas>
               </div>
             </div>
             <div class="chart-card">
               <div class="chart-title">Compra vs Venda</div>
               <div class="chart-sub">Performance por lado da operação</div>
-              <div class="chart-wrap" style="height:160px;">
+              <div class="chart-wrap" style="height:140px;">
                 <canvas id="chart-side"></canvas>
               </div>
-              <!-- mini-stats compra/venda -->
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;" id="cv-stats"></div>
             </div>
           </div>
 
-          <!-- ── ROW 4: Taxa de Acerto (donut) | Stats rápidos ── -->
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-            <div class="chart-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <div class="chart-title" style="text-align:center;width:100%;">Taxa de Acerto</div>
-              <div class="chart-wrap" style="height:130px;width:130px;">
+          <!-- ── ROW: Taxa de Acerto + Stats ── -->
+          <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div class="chart-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:180px;">
+              <div class="chart-title" style="text-align:center;width:100%;margin-bottom:8px;">Taxa de Acerto</div>
+              <div class="chart-wrap" style="height:120px;width:120px;">
                 <canvas id="chart-donut"></canvas>
               </div>
-              <div style="text-align:center;margin-top:4px;">
-                <span id="donut-pct" style="font-size:22px;font-weight:800;">—</span>
+              <div style="text-align:center;margin-top:6px;">
+                <span id="donut-pct" style="font-size:24px;font-weight:900;letter-spacing:-.03em;">—</span>
                 <span style="font-size:11px;color:var(--muted);margin-left:3px;">acerto</span>
               </div>
             </div>
-            <div class="kpi">
-              <div class="kpi-label">Dias Operados</div>
-              <div class="kpi-value" id="stat-dias">—</div>
-              <div class="kpi-sub">dias com operações</div>
-            </div>
-            <div class="kpi">
+            <div class="kpi" style="display:flex;flex-direction:column;justify-content:center;">
               <div class="kpi-label">Média por Trade</div>
               <div class="kpi-value" id="stat-avg">—</div>
-              <div class="kpi-sub">resultado médio</div>
+              <div class="kpi-sub">resultado médio por operação</div>
             </div>
-            <div class="kpi">
-              <div class="kpi-label">Melhor Dia</div>
-              <div class="kpi-value" id="stat-best" style="color:var(--green)">—</div>
-              <div class="kpi-sub">maior P&L diário</div>
+            <div class="kpi" style="display:flex;flex-direction:column;justify-content:center;">
+              <div class="kpi-label">Dias Operados</div>
+              <div class="kpi-value" id="stat-dias-kpi">—</div>
+              <div class="kpi-sub">dias com ao menos 1 operação</div>
             </div>
           </div>
 
@@ -1529,18 +1589,31 @@ function fnum(v) { return parseFloat(v) || 0; }
    KPIs
 ============================================================ */
 function renderKPIs(m) {
-  const pnlEl = document.getElementById('kpi-pnl');
-  pnlEl.classList.remove('kpi-pnl-pos', 'kpi-pnl-neg');
-  pnlEl.classList.add(m.pnl >= 0 ? 'kpi-pnl-pos' : 'kpi-pnl-neg');
-  set('v-pnl',    fmtR$(m.pnl), m.pnl >= 0 ? 'var(--green)' : 'var(--red)');
-  set('sub-pnl',  `${m.totalTrades} operações · ${m.dias} dias`);
-  set('v-wr',     fmtPct(m.wr), m.wr >= 50 ? 'var(--green)' : 'var(--yellow)');
+  // Hero result — big number, green/red, no card
+  const heroEl = document.getElementById('v-pnl');
+  if (heroEl) {
+    heroEl.textContent = fmtR$(m.pnl);
+    if (m.pnl >= 0) {
+      heroEl.classList.remove('negative');
+      heroEl.style.color = '#22C55E';
+      heroEl.style.textShadow = '0 0 60px rgba(34,197,94,.25)';
+    } else {
+      heroEl.classList.add('negative');
+      heroEl.style.color = 'var(--red)';
+      heroEl.style.textShadow = '0 0 60px rgba(239,68,68,.2)';
+    }
+  }
+  set('sub-pnl',  `${m.totalTrades} operações · ${m.dias} dias operados`);
+  set('v-wr',     fmtPct(m.wr), m.wr >= 50 ? '#22C55E' : 'var(--yellow)');
   set('sub-wr',   `${m.wins} ganhos · ${m.losses} perdas`);
   set('v-dd',     fmtR$(m.maxDD), 'var(--red)');
-  set('v-payoff', m.payoff.toFixed(2) + 'x', m.payoff >= 1 ? 'var(--green)' : 'var(--yellow)');
+  set('v-payoff', m.payoff.toFixed(2) + 'x', m.payoff >= 1 ? '#22C55E' : 'var(--yellow)');
   set('sub-payoff', `+${fmtR$(m.avgWin)} / -${fmtR$(m.avgLoss)}`);
-  set('v-pf',     m.pf.toFixed(2), m.pf >= 1.5 ? 'var(--green)' : m.pf >= 1 ? 'var(--yellow)' : 'var(--red)');
+  set('v-pf',     m.pf.toFixed(2), m.pf >= 1.5 ? '#22C55E' : m.pf >= 1 ? 'var(--yellow)' : 'var(--red)');
   set('sub-pf',   `${fmtR$(m.grossWin)} / ${fmtR$(m.grossLoss)}`);
+  // also update stat-total and sub-stat-dias
+  set('stat-total', m.totalTrades);
+  set('sub-stat-dias', `${m.dias} dias operados`);
 }
 
 function set(id, text, color) {
@@ -1567,8 +1640,31 @@ function renderCharts(m) {
   destroyChart('equity');
   const eqLabels = m.equity.map(p => p.date);
   const eqVals   = m.equity.map(p => p.y);
-  const eqColor  = (eqVals[eqVals.length - 1] || 0) >= 0 ? '#49A8FC' : '#EF4444';
-  const eqBg     = (eqVals[eqVals.length - 1] || 0) >= 0 ? 'rgba(73,168,252,.07)' : 'rgba(239,68,68,.07)';
+  const eqPos    = (eqVals[eqVals.length - 1] || 0) >= 0;
+  const eqColor  = eqPos ? '#22C55E' : '#EF4444';
+  const eqBg     = eqPos
+    ? (ctx => {
+        const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
+        g.addColorStop(0,   'rgba(34,197,94,.18)');
+        g.addColorStop(1,   'rgba(34,197,94,.01)');
+        return g;
+      })
+    : (ctx => {
+        const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
+        g.addColorStop(0,   'rgba(239,68,68,.15)');
+        g.addColorStop(1,   'rgba(239,68,68,.01)');
+        return g;
+      });
+
+  // Update equity card accent
+  const eqCard = document.getElementById('equity-hero-card');
+  const eqGlow = document.getElementById('equity-glow');
+  if (eqCard) eqCard.classList.toggle('negative', !eqPos);
+  if (eqGlow) eqGlow.classList.toggle('negative', !eqPos);
+  if (!eqPos && eqCard) {
+    eqCard.style.setProperty('--eq-glow', 'rgba(239,68,68,.06)');
+  }
+
   charts['equity'] = new Chart(document.getElementById('chart-equity'), {
     type: 'line',
     data: {
@@ -1578,18 +1674,18 @@ function renderCharts(m) {
         borderColor: eqColor,
         backgroundColor: eqBg,
         fill: true,
-        tension: 0.35,
-        pointRadius: eqVals.length > 80 ? 0 : 3,
-        pointHoverRadius: 5,
-        borderWidth: 2,
+        tension: 0.4,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        borderWidth: 2.5,
       }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmtR$(ctx.raw) } } },
       scales: {
-        x: { ticks: { maxTicksLimit: 8, maxRotation: 0 }, grid: { color: '#181818' } },
-        y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#181818' } }
+        x: { ticks: { maxTicksLimit: 8, maxRotation: 0 }, grid: { display: false }, border: { display: false } },
+        y: { ticks: { callback: v => fmtR$(v) }, grid: { display: false }, border: { display: false } }
       }
     }
   });
@@ -1597,14 +1693,14 @@ function renderCharts(m) {
   /* ---- Win rate donut ---- */
   destroyChart('donut');
   document.getElementById('donut-pct').textContent = fmtPct(m.wr);
-  document.getElementById('donut-pct').style.color = m.wr >= 50 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('donut-pct').style.color = m.wr >= 50 ? '#22C55E' : 'var(--red)';
   charts['donut'] = new Chart(document.getElementById('chart-donut'), {
     type: 'doughnut',
     data: {
       labels: ['Ganhos', 'Perdas'],
       datasets: [{ data: [m.wins, m.losses],
-        backgroundColor: ['rgba(73,168,252,.8)', 'rgba(239,68,68,.7)'],
-        borderColor: ['#49A8FC','#EF4444'],
+        backgroundColor: ['rgba(34,197,94,.8)', 'rgba(239,68,68,.7)'],
+        borderColor: ['#22C55E','#EF4444'],
         borderWidth: 1, hoverOffset: 6 }]
     },
     options: {
@@ -1618,7 +1714,7 @@ function renderCharts(m) {
   destroyChart('daily');
   const dKeys = Object.keys(m.byDay).sort();
   const dVals = dKeys.map(k => m.byDay[k].pnl);
-  const dColors = dVals.map(v => v >= 0 ? 'rgba(73,168,252,.75)' : 'rgba(239,68,68,.75)');
+  const dColors = dVals.map(v => v >= 0 ? 'rgba(34,197,94,.75)' : 'rgba(239,68,68,.75)');
   charts['daily'] = new Chart(document.getElementById('chart-daily'), {
     type: 'bar',
     data: {
@@ -1629,8 +1725,8 @@ function renderCharts(m) {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmtR$(ctx.raw) } } },
       scales: {
-        x: { ticks: { maxTicksLimit: 12, maxRotation: 0 }, grid: { color: '#181818' } },
-        y: { ticks: { callback: v => fmtR$(v) }, grid: { color: '#181818' } }
+        x: { ticks: { maxTicksLimit: 12, maxRotation: 0 }, grid: { display: false }, border: { display: false } },
+        y: { ticks: { callback: v => fmtR$(v) }, grid: { display: false }, border: { display: false } }
       }
     }
   });
@@ -1642,7 +1738,7 @@ function renderCharts(m) {
     data: {
       labels: ['Compra', 'Venda'],
       datasets: [
-        { label: 'Ganhos', data: [m.cWins, m.vWins], backgroundColor: 'rgba(73,168,252,.75)', borderRadius: 4 },
+        { label: 'Ganhos', data: [m.cWins, m.vWins], backgroundColor: 'rgba(34,197,94,.75)', borderRadius: 4 },
         { label: 'Perdas', data: [m.cLoss, m.vLoss], backgroundColor: 'rgba(239,68,68,.7)',  borderRadius: 4 }
       ]
     },
@@ -1650,8 +1746,8 @@ function renderCharts(m) {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { position: 'bottom', labels: { padding: 14, font: { size: 12 } } } },
       scales: {
-        x: { ticks: { font: { size: 13 } }, grid: { color: '#181818' } },
-        y: { grid: { color: '#181818' } }
+        x: { ticks: { font: { size: 13 } }, grid: { display: false }, border: { display: false } },
+        y: { grid: { display: false }, border: { display: false } }
       }
     }
   });
@@ -1698,12 +1794,19 @@ function renderHeatmap(hourly) {
    STATS ROW
 ============================================================ */
 function renderStatsRow(m) {
-  document.getElementById('stat-total').textContent = m.totalTrades;
-  document.getElementById('stat-dias').textContent  = m.dias;
+  // stat-total is now set inside renderKPIs; guard both
+  const stEl = document.getElementById('stat-total');
+  if (stEl) stEl.textContent = m.totalTrades;
   const sdEl = document.getElementById('sub-stat-dias');
   if (sdEl) sdEl.textContent = `${m.dias} dia${m.dias !== 1 ? 's' : ''} operado${m.dias !== 1 ? 's' : ''}`;
-  set('stat-avg',  fmtR$(m.avgTrd), m.avgTrd >= 0 ? 'var(--green)' : 'var(--red)');
-  set('stat-best', isFinite(m.bestDay) && m.dias > 0 ? fmtR$(m.bestDay) : '—', 'var(--green)');
+  // stat-dias in equity header
+  const diasEl = document.getElementById('stat-dias');
+  if (diasEl) diasEl.textContent = m.dias;
+  // stat-dias-kpi in bottom row
+  const diasKpi = document.getElementById('stat-dias-kpi');
+  if (diasKpi) diasKpi.textContent = m.dias;
+  set('stat-avg',  fmtR$(m.avgTrd), m.avgTrd >= 0 ? '#22C55E' : 'var(--red)');
+  set('stat-best', isFinite(m.bestDay) && m.dias > 0 ? fmtR$(m.bestDay) : '—', '#22C55E');
 
   // Mini-stats Compra vs Venda
   const cvEl = document.getElementById('cv-stats');
