@@ -402,6 +402,18 @@
       .reveal-l, .reveal-r { transform: translateY(28px); }
     }
 
+    @media (max-width: 480px) {
+      /* extra small */
+      .hero { padding: 80px 16px 48px; }
+      .hero-headline { font-size: clamp(2.2rem, 13vw, 3.2rem); }
+      section, #funcionalidades, #como-funciona { padding: 48px 16px !important; }
+      .stat-cell { padding: 22px 16px; }
+      .stat-strip { grid-template-columns: repeat(2,1fr); }
+      .btn-green-lg, .btn-outline { font-size: 14px; padding: 12px 22px; }
+      .cta-block { padding: 40px 18px; }
+      footer > div[style] { flex-direction: column !important; gap: 24px !important; }
+    }
+
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
   </style>
 </head>

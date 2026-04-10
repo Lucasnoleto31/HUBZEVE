@@ -1368,6 +1368,173 @@
     .upl-row-meta-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); display: block; margin-bottom: 3px; }
     .upl-row-meta-val { font-size: 14px; font-weight: 700; color: var(--text); }
     .upl-row-actions { display: flex; align-items: center; gap: 8px; }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE — MOBILE
+    ══════════════════════════════════════════ */
+
+    /* ── Hamburger button ── */
+    .mob-menu-btn {
+      display: none; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border);
+      background: none; color: var(--text); cursor: pointer; flex-shrink: 0;
+      transition: background .15s;
+    }
+    .mob-menu-btn:hover { background: var(--card-2); }
+
+    /* ── Mobile Nav Drawer ── */
+    .mob-nav-drawer {
+      display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,.98); backdrop-filter: blur(20px);
+      z-index: 999; padding: 20px 20px 40px; overflow-y: auto;
+      flex-direction: column; gap: 6px;
+    }
+    .mob-nav-drawer.open { display: flex; }
+    .mob-nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; border-radius: 12px; cursor: pointer;
+      font-size: 15px; font-weight: 500; white-space: nowrap;
+      color: var(--muted); transition: all .12s; border: 1px solid transparent;
+      text-decoration: none; background: none;
+      font-family: Inter;
+    }
+    .mob-nav-item:hover { background: var(--card-2); color: var(--text); border-color: var(--border); }
+    .mob-nav-item.active { color: var(--text); font-weight: 700; background: rgba(73,168,252,.06); border-color: rgba(73,168,252,.15); }
+    .mob-nav-section { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 12px 18px 4px; }
+    .mob-nav-logout {
+      margin-top: auto; padding: 14px 18px; border-radius: 12px; cursor: pointer;
+      font-size: 14px; font-weight: 600; color: var(--red); background: rgba(248,113,113,.06);
+      border: 1px solid rgba(248,113,113,.15); transition: all .15s; font-family: Inter;
+    }
+    .mob-nav-logout:hover { background: rgba(248,113,113,.12); }
+
+    @media (max-width: 900px) {
+      /* ── TOPNAV ── */
+      .topnav { padding: 0 16px; gap: 0; }
+      .tn-logo { padding-right: 14px; }
+      .tn-logo .sb-badge { display: none; }
+      .tn-nav { display: none; }
+      .mob-menu-btn { display: flex; }
+      .tn-right { padding-left: 12px; gap: 8px; }
+      .sb-name-wrap { display: none; }
+      .btn-share { display: none !important; }
+
+      /* ── CONTENT SECTIONS ── */
+      .section:not(#sec-overview) { padding: 20px 16px; }
+      .ov-wrap { padding: 20px 16px; }
+
+      /* ── OVERVIEW ── */
+      .ov-hero { grid-template-columns: 1fr; }
+      .ov-pnl-panel { padding: 24px 20px; border-right: none; border-bottom: 1px solid var(--border); }
+      .ov-stats-grid { grid-template-columns: repeat(2,1fr); }
+      .ov-stat:nth-child(2)  { border-right: none; }
+      .ov-stat:nth-child(3)  { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+      .ov-stat:nth-child(4)  { border-bottom: none; }
+      .ov-stat:nth-child(5)  { border-right: none; border-bottom: none; }
+      .ov-stat:nth-child(6)  { display: none; }
+      .ov-stat { padding: 18px 16px; }
+      .ov-stat-value { font-size: 20px; }
+      .ov-bottom { grid-template-columns: 1fr; }
+      .ov-equity-label { flex-wrap: wrap; gap: 10px; }
+      .ov-equity-label-right { gap: 16px; }
+      .ov-topbar { flex-direction: column; align-items: flex-start; }
+
+      /* ── KPI GRIDS ── */
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
+      .kpi-value { font-size: 20px; }
+
+      /* ── HERO TITLES ── */
+      .upl-hero-title { font-size: clamp(2.4rem, 9vw, 3.8rem); }
+
+      /* ── UPLOADS ── */
+      .upl-steps { grid-template-columns: 1fr; gap: 12px; }
+      .upl-step-arrow { display: none; }
+      .upl-row { grid-template-columns: 44px 1fr; gap: 12px; }
+      .upl-row-meta-group { display: none; }
+
+      /* ── TABLES ── */
+      .table-wrap { overflow-x: auto; }
+      table { min-width: 520px; }
+      .tr-filters-bar { flex-wrap: wrap; }
+      .tr-filter-divider { display: none; }
+      .tr-count-pill { margin-left: 0; }
+
+      /* ── CALENDÁRIO ── */
+      .cal-main-grid { grid-template-columns: 1fr; }
+      .cal-controls { gap: 10px; }
+      .cal-capital-group { margin-left: 0; width: 100%; }
+      .cal-capital-input { width: 100%; }
+      .cal-month-title { font-size: 16px; min-width: unset; }
+      .cal-top10-grid { grid-template-columns: 1fr; }
+
+      /* ── COMPARATIVO ── */
+      .cmp-filters { grid-template-columns: 1fr; }
+      .cmp-vs-divider { width: 100%; height: 36px; border-radius: 10px; }
+
+      /* ── RANKING ── */
+      .rk-me-banner { flex-wrap: wrap; padding: 16px 20px; gap: 12px; }
+      .rk-me-rank-num { font-size: 36px; margin-left: auto; }
+      .rk-podium-stage { gap: 6px; }
+      .rk-podium-card { padding: 14px 10px 12px; }
+      .rk-podium-avatar { width: 44px !important; height: 44px !important; font-size: 14px !important; }
+      .rk-podium-name { font-size: 12px !important; }
+      .rk-podium-pnl { font-size: 14px !important; }
+      .rk-podium-base { font-size: 28px !important; padding: 10px 0 0 !important; }
+      .rk-col-avg, .rk-col-wr { display: none; }
+      .rk-row-avg, .rk-row-wr { display: none; }
+      .rk-col-pnl { width: 120px; }
+      .rk-row-pnl { width: 120px; }
+      #rk-list .rk-row { padding: 12px; }
+      .rk-patentes-tiers { grid-template-columns: repeat(4,1fr); }
+
+      /* ── METAS ── */
+      .meta-config-grid { grid-template-columns: 1fr !important; }
+      #metas-kpis > div { grid-template-columns: repeat(2,1fr) !important; }
+
+      /* ── HORÁRIOS ── */
+      .hor-insights { grid-template-columns: 1fr; }
+      .hor-quick-stats { grid-template-columns: repeat(2,1fr); }
+      .hor-heatmap-table { font-size: 9px; }
+      .hor-hm-cell { padding: 4px 2px !important; min-width: 0 !important; }
+
+      /* ── RISCO ── */
+      .risk-grid { grid-template-columns: 1fr !important; }
+    }
+
+    @media (max-width: 480px) {
+      /* topnav tighter */
+      .topnav { height: 56px; }
+      .mob-nav-drawer { top: 56px; }
+      .tn-logo img { height: 22px; }
+
+      /* smaller text */
+      .upl-hero-title { font-size: clamp(2rem, 10vw, 3rem); }
+      .ov-pnl-value { font-size: clamp(2rem, 10vw, 3rem); }
+
+      /* KPIs 2-col */
+      .kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .kpi { padding: 14px 12px 12px; }
+      .kpi-value { font-size: 18px; }
+
+      /* ranking table: hide even more */
+      .rk-col-pat, .rk-row-pat { display: none; }
+      .rk-patentes-tiers { grid-template-columns: repeat(2,1fr); }
+      .rk-podium-stage { gap: 4px; }
+
+      /* period bar wrap */
+      .period-bar { gap: 4px; }
+      .period-btn { padding: 4px 9px; font-size: 10px; }
+      .period-input { width: 110px; }
+
+      /* cal */
+      .cal-month-nav { gap: 6px; }
+      .cal-nav-btn { width: 30px; height: 30px; font-size: 14px; }
+
+      /* section padding minimum */
+      .section:not(#sec-overview) { padding: 16px 12px; }
+      .ov-wrap { padding: 16px 12px; }
+    }
+
   </style>
 </head>
 <body>
@@ -1408,8 +1575,34 @@
       <button class="btn-logout" onclick="logout()" title="Sair">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
+      <!-- Hamburger (mobile only) -->
+      <button class="mob-menu-btn" id="mob-menu-btn" onclick="toggleMobMenu()" aria-label="Menu">
+        <svg id="mob-menu-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <line x1="2" y1="5"  x2="16" y2="5"/>
+          <line x1="2" y1="9"  x2="16" y2="9"/>
+          <line x1="2" y1="13" x2="16" y2="13"/>
+        </svg>
+      </button>
     </div>
   </nav>
+
+  <!-- ── Mobile Nav Drawer ── -->
+  <div class="mob-nav-drawer" id="mob-nav-drawer">
+    <div class="mob-nav-section">Navegação</div>
+    <button class="mob-nav-item active" id="mob-nav-overview"   onclick="mobNav('overview',this)">📊 Visão Geral</button>
+    <button class="mob-nav-item"        id="mob-nav-uploads"    onclick="mobNav('uploads',this)">📁 Uploads</button>
+    <button class="mob-nav-item"        id="mob-nav-trades"     onclick="mobNav('trades',this)">📋 Operações</button>
+    <button class="mob-nav-item"        id="mob-nav-calendario" onclick="mobNav('calendario',this)">📅 Calendário</button>
+    <button class="mob-nav-item"        id="mob-nav-risco"      onclick="mobNav('risco',this)">🛡️ Risco</button>
+    <button class="mob-nav-item"        id="mob-nav-comparativo" onclick="mobNav('comparativo',this)">⚖️ Comparativo</button>
+    <button class="mob-nav-item"        id="mob-nav-horarios"   onclick="mobNav('horarios',this)">⏱️ Horários</button>
+    <button class="mob-nav-item"        id="mob-nav-metas"      onclick="mobNav('metas',this)">🎯 Metas</button>
+    <button class="mob-nav-item"        id="mob-nav-exportar"   onclick="mobNav('exportar',this)">💾 Exportar</button>
+    <button class="mob-nav-item"        id="mob-nav-ranking"    onclick="mobNav('ranking',this)">🏆 Ranking</button>
+    <div class="mob-nav-section" style="margin-top:8px;">Conta</div>
+    <a    class="mob-nav-item" href="perfil.html">👤 Meu Perfil</a>
+    <button class="mob-nav-logout" onclick="logout()">Sair da conta</button>
+  </div>
 
   <!-- ==================== MAIN ==================== -->
   <div class="main">
@@ -5376,6 +5569,30 @@ async function downloadShareCard() {
     btn.disabled = false;
     btn.innerHTML = orig;
   }
+}
+
+/* ── Mobile menu ── */
+function toggleMobMenu() {
+  const drawer = document.getElementById('mob-nav-drawer');
+  const icon   = document.getElementById('mob-menu-icon');
+  const open   = drawer.classList.toggle('open');
+  icon.innerHTML = open
+    ? '<line x1="3" y1="3" x2="15" y2="15"/><line x1="15" y1="3" x2="3" y2="15"/>'
+    : '<line x1="2" y1="5" x2="16" y2="5"/><line x1="2" y1="9" x2="16" y2="9"/><line x1="2" y1="13" x2="16" y2="13"/>';
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
+function mobNav(name, btn) {
+  // mirror the desktop nav
+  const desktopBtn = document.getElementById('nav-' + name);
+  if (desktopBtn) showSection(name, desktopBtn);
+  // update mobile active state
+  document.querySelectorAll('.mob-nav-item').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+  // close drawer
+  document.getElementById('mob-nav-drawer').classList.remove('open');
+  document.getElementById('mob-menu-icon').innerHTML = '<line x1="2" y1="5" x2="16" y2="5"/><line x1="2" y1="9" x2="16" y2="9"/><line x1="2" y1="13" x2="16" y2="13"/>';
+  document.body.style.overflow = '';
 }
 </script>
 </body>

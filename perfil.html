@@ -212,6 +212,36 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--card-3); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--mut-2); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .topnav { padding: 0 16px; }
+      .tn-nav { display: none; }
+      .sb-name { display: none; }
+      .sb-badge { display: none; }
+      .main { padding: 24px 16px; }
+      .upl-hero-title { font-size: clamp(2.4rem, 9vw, 3.8rem); }
+      .upl-hero-sub { font-size: 14px; }
+      /* Hero card — stack vertically */
+      .pf-hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .pf-stats { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 16px; width: 100%; }
+      .pf-hero-card { padding: 24px 20px; }
+      .pf-name { font-size: 22px; }
+      /* Form cards */
+      .pf-card-body { padding: 20px; }
+      .pf-card-footer { padding: 0 20px 20px; }
+    }
+    @media (max-width: 480px) {
+      .main { padding: 16px 12px; }
+      .pf-hero-card { padding: 20px 16px; }
+      .pf-stats { grid-template-columns: repeat(2,auto); }
+      .pf-stat:last-child { display: none; }
+      .upl-hero-title { font-size: clamp(2rem, 11vw, 3rem); }
+      .pf-avatar { width: 70px; height: 70px; font-size: 22px; }
+      .pf-card-body { padding: 16px; }
+      .pf-card-footer { padding: 0 16px 16px; flex-direction: column; }
+      .pf-card-footer button { width: 100%; }
+    }
   </style>
 </head>
 <body>

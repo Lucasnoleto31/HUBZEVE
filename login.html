@@ -403,15 +403,18 @@
       .right {
         width: 100%;
         border-left: none;
-        padding: 40px 24px 48px;
+        padding: 48px 24px 56px;
         min-height: 100svh;
-        justify-content: flex-start;
-        padding-top: 56px;
+        justify-content: center;
       }
       .mobile-logo { display: block !important; }
       input[type="text"],
       input[type="email"],
       input[type="password"] { font-size: 16px; /* prevents iOS zoom */ }
+    }
+    @media (max-width: 400px) {
+      .right { padding: 40px 18px 48px; }
+      .form-title { font-size: 1.25rem; }
     }
   </style>
 </head>
