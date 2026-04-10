@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ZeveHub — Performance para Day Traders</title>
+  <link rel="icon" type="image/png" href="fav icon 4seelt.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -384,13 +385,12 @@
      NAV
 ═══════════════════════════════════════ -->
 <nav>
-  <img src="zeve logo completo.svg" alt="ZeveHub" style="height:20px;opacity:.85;"
+  <img src="zeve logo completo.svg" alt="ZeveHub" style="height:30px;opacity:.95;"
        onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
-  <span style="display:none;font-size:16px;font-weight:800;color:#fff;">ZeveHub</span>
+  <span style="display:none;font-size:20px;font-weight:800;color:#fff;">ZeveHub</span>
   <div style="display:flex;align-items:center;gap:22px;">
     <a href="#funcionalidades" class="nav-link" style="display:none;" id="navLink1">Funcionalidades</a>
     <a href="#como-funciona"   class="nav-link" style="display:none;" id="navLink2">Como funciona</a>
-    <a href="#assessores"      class="nav-link" style="display:none;" id="navLink3">Assessores</a>
     <a href="login.html" class="btn-cta">Acessar Hub →</a>
   </div>
 </nav>
@@ -759,7 +759,7 @@
 <script>
   /* ── Show nav links after animation ── */
   setTimeout(() => {
-    ['navLink1','navLink2','navLink3'].forEach(id => {
+    ['navLink1','navLink2'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'inline';
     });
