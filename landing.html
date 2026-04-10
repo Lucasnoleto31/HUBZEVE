@@ -356,7 +356,7 @@
   <div class="hero-glow"></div>
 
   <div style="max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:2;">
-    <div style="display:grid;grid-template-columns:1fr 400px;gap:60px;align-items:center;">
+    <div style="display:grid;grid-template-columns:1fr;gap:60px;align-items:center;max-width:680px;">
 
       <!-- Copy -->
       <div>
@@ -393,87 +393,6 @@
           <div>
             <div class="mono" style="font-size:1.5rem;font-weight:600;color:#fff;"><span id="heroStat3">0</span><span style="color:var(--green);">+</span></div>
             <div style="font-size:11px;color:var(--muted);margin-top:3px;">análises automáticas</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Terminal panel -->
-      <div class="aR" style="background:#0C0C0C;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.85);">
-        <!-- header -->
-        <div style="background:#111;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
-          <div style="display:flex;gap:6px;">
-            <div style="width:9px;height:9px;border-radius:50%;background:#EF4444;"></div>
-            <div style="width:9px;height:9px;border-radius:50%;background:#F59E0B;"></div>
-            <div style="width:9px;height:9px;border-radius:50%;background:#22C55E;"></div>
-          </div>
-          <div class="mono" style="font-size:10px;color:#555;">dashboard — João Silva</div>
-          <div style="width:36px;"></div>
-        </div>
-
-        <div style="padding:18px;">
-          <!-- P&L -->
-          <div style="margin-bottom:16px;">
-            <div style="font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;">P&L ACUMULADO — JAN/25</div>
-            <div class="mono" style="font-size:2.2rem;font-weight:700;color:var(--green);line-height:1;" id="heroPnl">R$ 0</div>
-            <div class="mono" style="font-size:11px;color:var(--green);margin-top:4px;opacity:0;" id="heroPnlSub">▲ 12,4% vs mês anterior</div>
-          </div>
-
-          <!-- Equity SVG -->
-          <div style="background:#0A0A0A;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
-            <div style="font-size:9px;color:var(--muted);margin-bottom:8px;letter-spacing:.07em;text-transform:uppercase;">Curva de Performance</div>
-            <svg viewBox="0 0 360 72" style="width:100%;display:block;" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#49A8FC" stop-opacity=".15"/>
-                  <stop offset="100%" stop-color="#49A8FC" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              <path class="eq-area fade-in"
-                d="M0 66 C10 63,18 59,28 55 C38 51,44 58,56 53 C68 48,74 41,88 35 C102 29,106 36,120 30 C134 24,140 21,156 16 C172 11,176 19,192 14 C208 9,214 6,232 3 C250 0,256 7,274 4 C292 1,300 2,320 1 C340 0,352 1,360 1 L360 72 L0 72 Z"
-                fill="url(#heroGrad)"/>
-              <path class="eq-line draw-hero"
-                d="M0 66 C10 63,18 59,28 55 C38 51,44 58,56 53 C68 48,74 41,88 35 C102 29,106 36,120 30 C134 24,140 21,156 16 C172 11,176 19,192 14 C208 9,214 6,232 3 C250 0,256 7,274 4 C292 1,300 2,320 1 C340 0,352 1,360 1"/>
-              <circle class="eq-dot" cx="360" cy="1" r="3.5" fill="#49A8FC"/>
-            </svg>
-          </div>
-
-          <!-- 2x2 KPIs -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
-            <div style="background:#0A0A0A;border:1px solid var(--border);border-radius:7px;padding:9px 11px;">
-              <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">Acerto</div>
-              <div class="mono" style="font-size:1rem;font-weight:600;color:#fff;">64,2%</div>
-            </div>
-            <div style="background:#0A0A0A;border:1px solid var(--border);border-radius:7px;padding:9px 11px;">
-              <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">Payoff</div>
-              <div class="mono" style="font-size:1rem;font-weight:600;color:#fff;">1.84×</div>
-            </div>
-            <div style="background:#0A0A0A;border:1px solid rgba(248,113,113,.12);border-radius:7px;padding:9px 11px;">
-              <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">Max DD</div>
-              <div class="mono" style="font-size:1rem;font-weight:600;color:var(--red);">−R$890</div>
-            </div>
-            <div style="background:#0A0A0A;border:1px solid var(--border);border-radius:7px;padding:9px 11px;">
-              <div style="font-size:9px;color:var(--muted);margin-bottom:3px;">Ops</div>
-              <div class="mono" style="font-size:1rem;font-weight:600;color:#fff;">128</div>
-            </div>
-          </div>
-
-          <!-- Trades recentes -->
-          <div>
-            <div style="font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:.07em;text-transform:uppercase;">Últimas operações</div>
-            <div style="display:flex;flex-direction:column;gap:4px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-radius:5px;background:#0A0A0A;border:1px solid rgba(73,168,252,.10);">
-                <span class="mono" style="font-size:10px;color:#6A6A6A;">WIN · 09:17</span>
-                <span class="mono" style="font-size:10px;color:var(--green);font-weight:600;">+R$ 480</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-radius:5px;background:#0A0A0A;border:1px solid rgba(248,113,113,.08);">
-                <span class="mono" style="font-size:10px;color:#6A6A6A;">WIN · 10:42</span>
-                <span class="mono" style="font-size:10px;color:var(--red);font-weight:600;">−R$ 240</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-radius:5px;background:#0A0A0A;border:1px solid rgba(73,168,252,.10);">
-                <span class="mono" style="font-size:10px;color:#6A6A6A;">WDO · 11:05</span>
-                <span class="mono" style="font-size:10px;color:var(--green);font-weight:600;">+R$ 360</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -883,16 +802,6 @@
     }
     requestAnimationFrame(step);
   }
-
-  /* Hero P&L */
-  setTimeout(() => {
-    const el = document.getElementById('heroPnl');
-    animateCounter(el, 4280, 2000, 'R$ ', '', 0);
-    setTimeout(() => {
-      const sub = document.getElementById('heroPnlSub');
-      if (sub) sub.style.opacity = '1';
-    }, 2200);
-  }, 700);
 
   /* Hero mini stats */
   setTimeout(() => {
