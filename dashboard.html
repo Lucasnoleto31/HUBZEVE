@@ -531,6 +531,57 @@
     .guide-title { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
     .guide-text { font-size: 11px; color: var(--muted); line-height: 1.55; }
 
+    /* ── TRADES PAGE ── */
+    .tr-stat-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 22px;
+      position: relative; overflow: hidden;
+      transition: border-color .2s, transform .15s;
+    }
+    .tr-stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(73,168,252,.3) 0%, transparent 70%);
+    }
+    .tr-stat-card:hover { border-color: rgba(73,168,252,.3); transform: translateY(-1px); }
+    .tr-stat-icon {
+      width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+      background: rgba(73,168,252,.08); border: 1px solid rgba(73,168,252,.15);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+    }
+    .tr-stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 8px; }
+    .tr-stat-value { font-size: 26px; font-weight: 800; letter-spacing: -.03em; color: var(--text); line-height: 1; }
+    .tr-stat-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+    .tr-filter-bar {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px 22px; margin-bottom: 16px;
+      display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;
+    }
+    .tr-filter-group { display: flex; flex-direction: column; gap: 5px; }
+    .tr-filter-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .tr-filter-select {
+      background: var(--card-2); border: 1px solid var(--bord-2); color: var(--text);
+      border-radius: 9px; padding: 8px 12px; font-size: 13px; font-family: Inter;
+      outline: none; cursor: pointer; min-width: 160px; transition: border-color .15s;
+    }
+    .tr-filter-select:focus { border-color: var(--accent); }
+    .tr-filter-select option { background: #1A1A1A; }
+    .tr-filter-divider { width: 1px; height: 36px; background: var(--border); align-self: flex-end; margin-bottom: 2px; }
+    .tr-count-pill {
+      margin-left: auto; align-self: flex-end;
+      background: rgba(73,168,252,.08); border: 1px solid rgba(73,168,252,.15);
+      color: var(--accent); border-radius: 20px; padding: 6px 14px;
+      font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .tr-table-wrap {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .tr-table-head {
+      padding: 16px 22px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .tr-table-title { font-size: 15px; font-weight: 700; color: var(--text); }
+
     /* ── UPLOADS PAGE ── */
     .upl-hero { margin-bottom: 32px; }
     .upl-hero-title {
@@ -924,35 +975,101 @@
 
       <!-- ==================== OPERAÇÕES ==================== -->
       <div id="sec-trades" class="section">
-        <div class="sec-header">
-          <div class="sec-header-title">Operações</div>
-          <div class="sec-header-sub">Histórico completo de todas as suas operações</div>
+
+        <!-- Hero -->
+        <div class="upl-hero">
+          <div class="upl-hero-title">OPERAÇÕES</div>
+          <div class="upl-hero-sub">Histórico completo de todas as suas operações com filtros avançados</div>
         </div>
-        <div class="table-wrap">
-          <div class="table-header">
-            <h3>Operações</h3>
-            <div class="filters-row">
-              <select class="filter-select" id="f-ativo" onchange="applyFilters()">
-                <option value="">Todos os ativos</option>
-              </select>
-              <select class="filter-select" id="f-lado" onchange="applyFilters()">
-                <option value="">Compra e Venda</option>
-                <option value="C">Compra (C)</option>
-                <option value="V">Venda (V)</option>
-              </select>
-              <select class="filter-select" id="f-result" onchange="applyFilters()">
-                <option value="">Todos resultados</option>
-                <option value="1">Ganhos</option>
-                <option value="0">Perdas</option>
-              </select>
-              <span id="trades-count" style="font-size:13px;color:var(--muted);white-space:nowrap">0 operações</span>
+
+        <!-- Stat cards -->
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;">
+
+          <div class="tr-stat-card">
+            <div class="tr-stat-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M3 3h18v18H3z"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
             </div>
+            <div class="tr-stat-label">Total Operações</div>
+            <div class="tr-stat-value" id="tr-stat-total">—</div>
+            <div class="tr-stat-sub" id="tr-stat-total-sub">no período</div>
+          </div>
+
+          <div class="tr-stat-card" style="--card-accent: rgba(34,197,94,.3);">
+            <div class="tr-stat-icon" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <div class="tr-stat-label">Compras</div>
+            <div class="tr-stat-value" id="tr-stat-compra" style="color:var(--green)">—</div>
+            <div class="tr-stat-sub" id="tr-stat-compra-sub">operações</div>
+          </div>
+
+          <div class="tr-stat-card">
+            <div class="tr-stat-icon" style="background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.2);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+            </div>
+            <div class="tr-stat-label">Vendas</div>
+            <div class="tr-stat-value" id="tr-stat-venda" style="color:var(--red)">—</div>
+            <div class="tr-stat-sub" id="tr-stat-venda-sub">operações</div>
+          </div>
+
+          <div class="tr-stat-card">
+            <div class="tr-stat-icon" style="background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.2);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="tr-stat-label">Ativo Mais Operado</div>
+            <div class="tr-stat-value" id="tr-stat-ativo" style="font-size:20px;color:var(--yellow)">—</div>
+            <div class="tr-stat-sub" id="tr-stat-ativo-sub">operações</div>
+          </div>
+
+          <div class="tr-stat-card">
+            <div class="tr-stat-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            </div>
+            <div class="tr-stat-label">Total Contratos</div>
+            <div class="tr-stat-value" id="tr-stat-contratos">—</div>
+            <div class="tr-stat-sub">contratos negociados</div>
+          </div>
+
+        </div>
+
+        <!-- Filter bar -->
+        <div class="tr-filter-bar">
+          <div class="tr-filter-group">
+            <span class="tr-filter-label">Ativo</span>
+            <select class="tr-filter-select" id="f-ativo" onchange="applyFilters()">
+              <option value="">Todos os ativos</option>
+            </select>
+          </div>
+          <div class="tr-filter-group">
+            <span class="tr-filter-label">Direção</span>
+            <select class="tr-filter-select" id="f-lado" onchange="applyFilters()">
+              <option value="">Compra e Venda</option>
+              <option value="C">Compra</option>
+              <option value="V">Venda</option>
+            </select>
+          </div>
+          <div class="tr-filter-group">
+            <span class="tr-filter-label">Resultado</span>
+            <select class="tr-filter-select" id="f-result" onchange="applyFilters()">
+              <option value="">Todos</option>
+              <option value="1">Ganhos</option>
+              <option value="0">Perdas</option>
+            </select>
+          </div>
+          <div class="tr-filter-divider"></div>
+          <span class="tr-count-pill" id="trades-count">0 operações</span>
+        </div>
+
+        <!-- Table -->
+        <div class="tr-table-wrap">
+          <div class="tr-table-head">
+            <div class="tr-table-title">Tabela de Operações</div>
           </div>
           <div style="overflow-x:auto;">
             <table>
               <thead>
                 <tr>
-                  <th>Ativo</th>
+                  <th style="padding-left:22px;">Ativo</th>
                   <th>Data</th>
                   <th>Abertura</th>
                   <th>Fechamento</th>
@@ -961,8 +1078,8 @@
                   <th>Qtd</th>
                   <th>Preço C</th>
                   <th>Preço V</th>
-                  <th>Resultado</th>
-                  <th>Total Acum.</th>
+                  <th style="text-align:right;">Resultado</th>
+                  <th style="text-align:right;padding-right:22px;">Acumulado</th>
                 </tr>
               </thead>
               <tbody id="trades-tbody">
@@ -972,10 +1089,11 @@
           </div>
           <div class="pagination">
             <button class="page-btn" id="btn-prev" onclick="changePage(-1)" disabled>← Anterior</button>
-            <span id="page-info" style="font-size:13px;color:var(--muted);">Página 1</span>
+            <span id="page-info" style="font-size:13px;color:var(--muted);">Página 1 de 1</span>
             <button class="page-btn" id="btn-next" onclick="changePage(1)">Próxima →</button>
           </div>
         </div>
+
       </div>
 
       <!-- ==================== CALENDÁRIO ==================== -->
@@ -2337,7 +2455,27 @@ function renderTradesTable() {
 
   rows.sort((a, b) => new Date(b.abertura) - new Date(a.abertura));
 
-  document.getElementById('trades-count').textContent = `${rows.length} operações`;
+  // ── Stat cards ──
+  const compras  = rows.filter(t => t.lado === 'C').length;
+  const vendas   = rows.filter(t => t.lado === 'V').length;
+  const contratos = rows.reduce((s, t) => s + (fnum(t.qtd_compra) || fnum(t.qtd_venda) || 0), 0);
+
+  const ativoCount = {};
+  rows.forEach(t => { if (t.ativo) ativoCount[t.ativo] = (ativoCount[t.ativo] || 0) + 1; });
+  const topAtivo = Object.entries(ativoCount).sort((a,b) => b[1]-a[1])[0];
+
+  const set = n => (el => el && (el.textContent = n));
+  set(rows.length)(document.getElementById('tr-stat-total'));
+  set(`${rows.length} op${rows.length !== 1 ? 's' : ''} no período`)(document.getElementById('tr-stat-total-sub'));
+  set(compras)(document.getElementById('tr-stat-compra'));
+  set(`${compras > 0 ? ((compras/rows.length*100)|0) : 0}% do total`)(document.getElementById('tr-stat-compra-sub'));
+  set(vendas)(document.getElementById('tr-stat-venda'));
+  set(`${vendas > 0 ? ((vendas/rows.length*100)|0) : 0}% do total`)(document.getElementById('tr-stat-venda-sub'));
+  set(topAtivo ? topAtivo[0] : '—')(document.getElementById('tr-stat-ativo'));
+  set(topAtivo ? `${topAtivo[1]} operações` : '—')(document.getElementById('tr-stat-ativo-sub'));
+  set(contratos)(document.getElementById('tr-stat-contratos'));
+
+  document.getElementById('trades-count').textContent = `${rows.length} operação${rows.length !== 1 ? 'ões' : ''}`;
 
   const totalPages = Math.max(1, Math.ceil(rows.length / PER_PAGE));
   const start      = (page - 1) * PER_PAGE;
@@ -2350,9 +2488,10 @@ function renderTradesTable() {
     tbody.innerHTML = pageRows.map(t => {
       const r      = fnum(t.resultado_reais);
       const rColor = r >= 0 ? 'var(--green)' : 'var(--red)';
+      const rBg    = r >= 0 ? 'rgba(34,197,94,.06)' : 'rgba(248,113,113,.06)';
       const lado   = t.lado === 'C'
-        ? '<span class="badge badge-green">C</span>'
-        : '<span class="badge badge-red">V</span>';
+        ? '<span class="badge badge-green" style="font-size:11px;padding:3px 9px;">Compra</span>'
+        : '<span class="badge badge-red" style="font-size:11px;padding:3px 9px;">Venda</span>';
       const dur = t.duracao_minutos
         ? (t.duracao_minutos >= 60
             ? `${Math.floor(t.duracao_minutos/60)}h${String(Math.round(t.duracao_minutos % 60)).padStart(2,'0')}m`
@@ -2360,18 +2499,20 @@ function renderTradesTable() {
         : '—';
       const hr = t.hora_abertura ? String(t.hora_abertura).substring(0, 5) : '—';
       const fc = t.fechamento ? fmtTime(t.fechamento) : '—';
-      return `<tr>
-        <td><strong>${escHtml(t.ativo)}</strong></td>
-        <td>${fmtDate(t.data_trade)}</td>
-        <td style="color:var(--muted)">${hr}</td>
-        <td style="color:var(--muted)">${fc}</td>
-        <td style="color:var(--muted)">${dur}</td>
+      const acum = t.total_acumulado ? fnum(t.total_acumulado) : null;
+      const acumColor = acum !== null ? (acum >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--muted)';
+      return `<tr style="background:${r < 0 ? rBg : 'transparent'}">
+        <td style="padding-left:22px;"><strong style="font-size:13px;">${escHtml(t.ativo)}</strong></td>
+        <td style="font-size:13px;">${fmtDate(t.data_trade)}</td>
+        <td style="color:var(--muted);font-size:13px;">${hr}</td>
+        <td style="color:var(--muted);font-size:13px;">${fc}</td>
+        <td style="color:var(--muted);font-size:13px;">${dur}</td>
         <td>${lado}</td>
-        <td>${t.qtd_compra || t.qtd_venda || '—'}</td>
-        <td style="color:var(--muted)">${t.preco_compra ? fmtNum(t.preco_compra) : '—'}</td>
-        <td style="color:var(--muted)">${t.preco_venda  ? fmtNum(t.preco_venda)  : '—'}</td>
-        <td><strong style="color:${rColor}">${fmtR$(r)}</strong></td>
-        <td style="color:var(--muted)">${t.total_acumulado ? fmtR$(t.total_acumulado) : '—'}</td>
+        <td style="font-size:13px;font-weight:600;">${t.qtd_compra || t.qtd_venda || '—'}</td>
+        <td style="color:var(--muted);font-size:13px;">${t.preco_compra ? fmtNum(t.preco_compra) : '—'}</td>
+        <td style="color:var(--muted);font-size:13px;">${t.preco_venda  ? fmtNum(t.preco_venda)  : '—'}</td>
+        <td style="text-align:right;"><strong style="color:${rColor};font-size:14px;">${fmtR$(r)}</strong></td>
+        <td style="text-align:right;padding-right:22px;color:${acumColor};font-size:13px;">${acum !== null ? fmtR$(acum) : '—'}</td>
       </tr>`;
     }).join('');
   }
