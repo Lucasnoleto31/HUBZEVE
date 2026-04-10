@@ -334,7 +334,12 @@
       padding: 14px 18px; border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
     }
-    .table-header h3 { font-size: 13px; font-weight: 600; }
+    .table-header h3 { font-size: 15px; font-weight: 700; }
+
+    /* ── SECTION HEADER ── */
+    .sec-header { margin-bottom: 28px; }
+    .sec-header-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; letter-spacing: -.02em; }
+    .sec-header-sub { font-size: 14px; color: var(--muted); line-height: 1.5; }
     table { width: 100%; border-collapse: collapse; }
     th {
       font-size: 10px; font-weight: 500; color: var(--muted); text-transform: uppercase;
@@ -705,6 +710,11 @@
       <!-- ==================== UPLOADS ==================== -->
       <div id="sec-uploads" class="section">
 
+        <div class="sec-header">
+          <div class="sec-header-title">Uploads</div>
+          <div class="sec-header-sub">Importe os relatórios de performance exportados do Profit</div>
+        </div>
+
         <!-- Upload Zone -->
         <div class="upload-zone" id="upload-zone"
           onclick="document.getElementById('file-input').click()"
@@ -760,6 +770,10 @@
 
       <!-- ==================== OPERAÇÕES ==================== -->
       <div id="sec-trades" class="section">
+        <div class="sec-header">
+          <div class="sec-header-title">Operações</div>
+          <div class="sec-header-sub">Histórico completo de todas as suas operações</div>
+        </div>
         <div class="table-wrap">
           <div class="table-header">
             <h3>Operações</h3>
@@ -812,6 +826,11 @@
 
       <!-- ==================== CALENDÁRIO ==================== -->
       <div id="sec-calendario" class="section">
+
+        <div class="sec-header">
+          <div class="sec-header-title">Calendário</div>
+          <div class="sec-header-sub">Performance diária — clique em um dia para ver os detalhes</div>
+        </div>
 
         <!-- Capital + navegação de mês -->
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;">
@@ -911,11 +930,10 @@
       <!-- ==================== RISCO ==================== -->
       <div id="sec-risco" class="section">
 
-        <!-- Header + capital input -->
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;">
+        <div class="sec-header" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;">
           <div>
-            <div style="font-size:20px;font-weight:800;margin-bottom:4px;">Controle de Drawdown</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.6;">Entenda o risco real da sua operação — quanto você perdeu, por quanto tempo e como você se recuperou.</div>
+            <div class="sec-header-title">Risco</div>
+            <div class="sec-header-sub">Entenda o drawdown real — quanto você perdeu, por quanto tempo e como se recuperou</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
             <label style="font-size:13px;color:var(--muted);font-weight:600;">Capital (R$)</label>
@@ -976,6 +994,10 @@
 
       <!-- ==================== COMPARATIVO ==================== -->
       <div id="sec-comparativo" class="section">
+        <div class="sec-header">
+          <div class="sec-header-title">Comparativo</div>
+          <div class="sec-header-sub">Compare dois períodos e veja como sua performance evoluiu</div>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
           <div class="chart-card">
             <div style="font-size:10px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Período A</div>
@@ -1016,6 +1038,10 @@
 
       <!-- ==================== HORÁRIOS ==================== -->
       <div id="sec-horarios" class="section">
+        <div class="sec-header">
+          <div class="sec-header-title">Horários</div>
+          <div class="sec-header-sub">Descubra em quais horários e dias você opera melhor</div>
+        </div>
         <div class="chart-card" style="margin-bottom:14px;">
           <div class="chart-title" style="margin-bottom:4px;">Heatmap — Dia da Semana × Horário</div>
           <div class="chart-sub" style="margin-bottom:16px;">Performance por combinação de dia e hora do pregão · cor = P&L · número = operações</div>
@@ -1037,6 +1063,10 @@
 
       <!-- ==================== METAS ==================== -->
       <div id="sec-metas" class="section">
+        <div class="sec-header">
+          <div class="sec-header-title">Metas</div>
+          <div class="sec-header-sub">Defina objetivos e acompanhe seu progresso dia a dia</div>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;">
           <div class="kpi">
             <div class="kpi-label">Meta Diária (R$)</div>
@@ -1070,6 +1100,10 @@
 
       <!-- ==================== CONSISTÊNCIA ==================== -->
       <div id="sec-consistencia" class="section">
+        <div class="sec-header">
+          <div class="sec-header-title">Consistência</div>
+          <div class="sec-header-sub">Analise a regularidade e disciplina da sua operação</div>
+        </div>
         <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:14px;">
           <div class="kpi">
             <div class="kpi-label">Dias Positivos</div>
@@ -1111,6 +1145,10 @@
 
       <!-- ==================== EXPORTAR ==================== -->
       <div id="sec-exportar" class="section">
+        <div class="sec-header">
+          <div class="sec-header-title">Exportar</div>
+          <div class="sec-header-sub">Baixe seus dados em CSV para análise externa</div>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
           <div class="chart-card" style="cursor:pointer;transition:border-color .15s;" id="export-csv-card"
             onclick="exportCSV('all')"
@@ -1137,6 +1175,11 @@
 
       <!-- ==================== RANKING ==================== -->
       <div id="sec-ranking" class="section">
+
+        <div class="sec-header">
+          <div class="sec-header-title">Ranking</div>
+          <div class="sec-header-sub">Compare sua performance com a de outros traders da plataforma</div>
+        </div>
 
         <!-- KPI sua posição -->
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="ranking-kpis"></div>
