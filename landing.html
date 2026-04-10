@@ -320,15 +320,59 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
+      /* NAV */
+      nav { padding: 0 18px; }
+      nav .nav-link { display: none !important; }
+
+      /* HERO */
+      .hero { padding: 88px 20px 56px; align-items: flex-end; min-height: 100svh; }
+      .hero-headline { font-size: clamp(2.6rem, 11vw, 3.8rem); }
+      .hero > div > div { max-width: 100% !important; }
+      .hero-bg img { object-position: 70% center; }
+
+      /* HERO BUTTONS */
+      .a5 { flex-direction: column; }
+      .btn-green-lg, .btn-outline { width: 100%; text-align: center; justify-content: center; }
+
+      /* HERO MINI STATS */
+      .a6 { gap: 18px; }
+
+      /* STAT STRIP */
       .stat-strip { grid-template-columns: repeat(2, 1fr); }
       .stat-cell:nth-child(2) { border-right: none; }
-      .feat-row { grid-template-columns: 1fr; gap: 8px; }
-      .feat-num { font-size: 3rem; margin-bottom: 4px; }
+      .stat-cell:nth-child(3) { border-right: none; }
+      .stat-num { font-size: 1.8rem; }
+
+      /* SECTIONS PADDING */
+      section, #funcionalidades, #como-funciona { padding: 64px 20px !important; }
+
+      /* DASHBOARD SECTION */
+      .dash-wrap { overflow-x: auto; }
       .dash-body { grid-template-columns: 1fr; }
       .dash-sidebar { display: none; }
       .kpis { grid-template-columns: repeat(2, 1fr); }
       .charts-row { grid-template-columns: 1fr; }
+
+      /* FEATURES */
+      .feat-row { grid-template-columns: 1fr; gap: 10px; padding: 40px 0; }
+      .feat-num { font-size: clamp(3rem, 14vw, 4.5rem); margin-bottom: 2px; }
+      .feat-title { font-size: 1.3rem; }
+      .feat-desc { font-size: 14px; }
+
+      /* STEPS */
+      div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
+
+      /* CTA */
+      .cta-block { padding: 48px 24px; }
+      .cta-block div[style*="flex"] { flex-direction: column; }
+
+      /* SECTION HEADERS */
+      .s-title { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+      .s-sub { font-size: 13px; }
+
+      /* ANIMATIONS — simplify on mobile */
       .aR { animation: fadeUp .7s .3s ease both; }
+      .reveal-l, .reveal-r { transform: translateY(28px); }
     }
 
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
