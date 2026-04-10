@@ -525,11 +525,117 @@
     #share-card .sc-trader { font-size: 12px; font-weight: 500; color: #404040; }
     #share-card .sc-brand { font-size: 10px; color: #2A2A2A; }
 
-    /* ── GUIDE CARD ── */
+    /* ── GUIDE CARD (legacy, kept for compat) ── */
     .guide-step { background: var(--card-2); border-radius: 10px; padding: 16px; }
     .guide-num { font-size: 20px; margin-bottom: 8px; }
     .guide-title { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
     .guide-text { font-size: 11px; color: var(--muted); line-height: 1.55; }
+
+    /* ── UPLOADS PAGE ── */
+    .upl-hero { margin-bottom: 32px; }
+    .upl-hero-title {
+      font-size: clamp(3.2rem, 6vw, 5.2rem);
+      font-weight: 900; letter-spacing: -.05em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,.45) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 10px;
+    }
+    .upl-hero-sub { font-size: 15px; color: var(--muted); max-width: 580px; line-height: 1.65; }
+
+    .upl-guide-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 28px 32px; margin-bottom: 24px;
+      position: relative; overflow: hidden;
+    }
+    .upl-guide-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(73,168,252,.6) 0%, transparent 60%);
+    }
+    .upl-guide-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 6px;
+    }
+    .upl-guide-heading { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 22px; }
+    .upl-steps { display: grid; grid-template-columns: 1fr 28px 1fr 28px 1fr 28px 1fr; align-items: center; gap: 0; }
+    .upl-step { display: flex; flex-direction: column; gap: 14px; }
+    .upl-step-top { display: flex; align-items: center; gap: 12px; }
+    .upl-step-num {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(73,168,252,.1); border: 1px solid rgba(73,168,252,.3);
+      color: var(--accent); font-size: 15px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .upl-step-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .upl-step-path {
+      font-size: 11px; color: var(--muted); line-height: 1.6;
+      padding: 10px 14px; background: var(--card-2);
+      border: 1px solid var(--border); border-radius: 10px;
+    }
+    .upl-step-path strong { color: var(--text); font-weight: 600; }
+    .upl-step-path code {
+      background: rgba(73,168,252,.08); color: var(--accent);
+      border: 1px solid rgba(73,168,252,.2); border-radius: 4px;
+      padding: 1px 5px; font-size: 11px; font-family: Inter;
+    }
+    .upl-step-arrow { text-align: center; color: rgba(255,255,255,.15); font-size: 18px; }
+
+    /* Upload zone redesigned */
+    .upload-zone-new {
+      border: 1.5px dashed rgba(73,168,252,.25); border-radius: 16px; padding: 52px 24px;
+      text-align: center; cursor: pointer; transition: all .2s; margin-bottom: 24px;
+      background: radial-gradient(ellipse at center, rgba(73,168,252,.03) 0%, transparent 70%);
+      position: relative; overflow: hidden;
+    }
+    .upload-zone-new:hover, .upload-zone-new.drag-over {
+      border-color: var(--accent); background: radial-gradient(ellipse at center, rgba(73,168,252,.06) 0%, transparent 70%);
+    }
+    .upload-zone-new::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(73,168,252,.25) 50%, transparent 100%);
+    }
+    .upload-zone-icon {
+      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 18px;
+      background: rgba(73,168,252,.08); border: 1px solid rgba(73,168,252,.2);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .upload-zone-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: -.02em; }
+    .upload-zone-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
+    .upload-zone-meta { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; }
+    .upload-zone-tag {
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      background: var(--card-2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 10px;
+    }
+
+    /* History */
+    .upl-history-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .upl-history-head {
+      padding: 18px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .upl-history-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .upl-history-count { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .upl-row {
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: 44px 1fr auto auto auto;
+      align-items: center; gap: 20px; transition: background .1s;
+    }
+    .upl-row:last-child { border-bottom: none; }
+    .upl-row:hover { background: var(--card-2); }
+    .upl-row-icon {
+      width: 44px; height: 44px; background: rgba(73,168,252,.07);
+      border: 1px solid rgba(73,168,252,.15); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .upl-row-filename { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .upl-row-date { font-size: 11px; color: var(--muted); }
+    .upl-row-meta-group { text-align: center; }
+    .upl-row-meta-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); display: block; margin-bottom: 3px; }
+    .upl-row-meta-val { font-size: 14px; font-weight: 700; color: var(--text); }
+    .upl-row-actions { display: flex; align-items: center; gap: 8px; }
   </style>
 </head>
 <body>
@@ -710,20 +816,87 @@
       <!-- ==================== UPLOADS ==================== -->
       <div id="sec-uploads" class="section">
 
-        <div class="sec-header">
-          <div class="sec-header-title">Uploads</div>
-          <div class="sec-header-sub">Importe os relatórios de performance exportados do Profit</div>
+        <!-- Hero title -->
+        <div class="upl-hero">
+          <div class="upl-hero-title">UPLOADS</div>
+          <div class="upl-hero-sub">Importe os relatórios de performance exportados do Profit para visualizar suas métricas em tempo real</div>
+        </div>
+
+        <!-- Step-by-step guide -->
+        <div class="upl-guide-card">
+          <div class="upl-guide-label">Passo a passo</div>
+          <div class="upl-guide-heading">Como exportar do Profit Pro e fazer o upload</div>
+          <div class="upl-steps">
+
+            <div class="upl-step">
+              <div class="upl-step-top">
+                <div class="upl-step-num">1</div>
+                <div class="upl-step-title">Abra o Profit Pro</div>
+              </div>
+              <div class="upl-step-path">
+                No menu superior acesse<br/>
+                <strong>Boleta</strong> → <strong>Relatórios</strong> → <strong>Relatório de Performance</strong>
+              </div>
+            </div>
+
+            <div class="upl-step-arrow">›</div>
+
+            <div class="upl-step">
+              <div class="upl-step-top">
+                <div class="upl-step-num">2</div>
+                <div class="upl-step-title">Selecione o período</div>
+              </div>
+              <div class="upl-step-path">
+                Defina a <strong>data de início</strong> e <strong>data de fim</strong> e clique em <strong>Aplicar</strong> para carregar os dados
+              </div>
+            </div>
+
+            <div class="upl-step-arrow">›</div>
+
+            <div class="upl-step">
+              <div class="upl-step-top">
+                <div class="upl-step-num">3</div>
+                <div class="upl-step-title">Exporte como CSV</div>
+              </div>
+              <div class="upl-step-path">
+                Clique em <strong>Exportar</strong> e salve o arquivo<br/>
+                Separador: <code>ponto e vírgula ( ; )</code><br/>
+                Formato: <code>.csv</code> · Máx <strong>10 MB</strong>
+              </div>
+            </div>
+
+            <div class="upl-step-arrow">›</div>
+
+            <div class="upl-step">
+              <div class="upl-step-top">
+                <div class="upl-step-num">4</div>
+                <div class="upl-step-title">Faça o upload</div>
+              </div>
+              <div class="upl-step-path">
+                Arraste o arquivo para a área abaixo ou clique em <strong>Selecionar Arquivo</strong> para importar
+              </div>
+            </div>
+
+          </div>
         </div>
 
         <!-- Upload Zone -->
-        <div class="upload-zone" id="upload-zone"
+        <div class="upload-zone-new" id="upload-zone"
           onclick="document.getElementById('file-input').click()"
           ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
           <input type="file" id="file-input" accept=".csv,.txt" onchange="handleFileSelect(event)" />
-          <div style="font-size:42px;margin-bottom:12px">📂</div>
-          <div style="font-size:17px;font-weight:700;margin-bottom:6px">Arraste o arquivo CSV aqui</div>
-          <div style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:16px">Exporte o Relatório de Performance do Profit e faça upload aqui<br/>Formato: .csv separado por ponto e vírgula · Máx 10 MB</div>
+          <div class="upload-zone-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="upload-zone-title">Arraste o arquivo CSV aqui</div>
+          <div class="upload-zone-sub">Solte o arquivo exportado do Profit para importar suas operações<br/>ou clique para selecionar manualmente</div>
           <button class="upload-btn" onclick="event.stopPropagation()">Selecionar Arquivo</button>
+          <div class="upload-zone-meta">
+            <span class="upload-zone-tag">.csv</span>
+            <span class="upload-zone-tag">.txt</span>
+            <span class="upload-zone-tag">Máx 10 MB</span>
+            <span class="upload-zone-tag">Separador: ponto e vírgula</span>
+          </div>
         </div>
 
         <!-- Progress bar -->
@@ -737,35 +910,16 @@
         </div>
 
         <!-- Upload history -->
-        <div class="table-wrap">
-          <div class="table-header">
-            <h3>Histórico de Uploads</h3>
-            <span style="font-size:13px;color:var(--muted);" id="upload-count">0 uploads</span>
+        <div class="upl-history-card">
+          <div class="upl-history-head">
+            <div>
+              <div class="upl-history-title">Histórico de Uploads</div>
+              <div class="upl-history-count" id="upload-count">0 uploads</div>
+            </div>
           </div>
           <div id="upload-list"><div class="td-empty">Nenhum upload ainda.</div></div>
         </div>
 
-        <!-- How to export guide -->
-        <div class="chart-card" style="margin-top:8px;">
-          <div class="chart-title" style="margin-bottom:14px;">Como exportar do Profit</div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
-            <div class="guide-step">
-              <div class="guide-num">1️⃣</div>
-              <div class="guide-title">Abra o Profit Pro</div>
-              <div class="guide-text">Vá em Boleta → Relatórios → Relatório de Performance</div>
-            </div>
-            <div class="guide-step">
-              <div class="guide-num">2️⃣</div>
-              <div class="guide-title">Selecione o período</div>
-              <div class="guide-text">Escolha o intervalo de datas desejado e aplique o filtro</div>
-            </div>
-            <div class="guide-step">
-              <div class="guide-num">3️⃣</div>
-              <div class="guide-title">Exporte como CSV</div>
-              <div class="guide-text">Clique em Exportar → Salvar como CSV (separador: ponto e vírgula)</div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- ==================== OPERAÇÕES ==================== -->
@@ -2048,34 +2202,47 @@ function renderUploadList() {
   document.getElementById('upload-count').textContent = `${uploads.length} upload${uploads.length !== 1 ? 's' : ''}`;
   const el = document.getElementById('upload-list');
   if (!uploads.length) {
-    el.innerHTML = '<div class="td-empty">Nenhum upload ainda.</div>';
+    el.innerHTML = `
+      <div style="text-align:center;padding:52px 24px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:rgba(73,168,252,.07);border:1px solid rgba(73,168,252,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">Nenhum upload ainda</div>
+        <div style="font-size:13px;color:var(--muted);">Faça seu primeiro upload acima para começar a visualizar suas métricas</div>
+      </div>`;
     return;
   }
   el.innerHTML = uploads.map(u => {
     const badge = u.status === 'done'
-      ? '<span class="badge badge-green">Concluído</span>'
+      ? '<span class="badge badge-green" style="padding:5px 12px;font-size:11px;">Concluído</span>'
       : u.status === 'error'
-        ? `<span class="badge badge-red">Erro</span>`
-        : '<span class="badge badge-blue">Processando</span>';
+        ? '<span class="badge badge-red" style="padding:5px 12px;font-size:11px;">Erro</span>'
+        : '<span class="badge badge-blue" style="padding:5px 12px;font-size:11px;">Processando</span>';
     const periodo = u.periodo_inicio && u.periodo_fim
       ? `${fmtDate(u.periodo_inicio)} — ${fmtDate(u.periodo_fim)}`
       : '—';
     const fixBtn = u.status === 'processing'
-      ? `<button onclick="fixUploadStatus('${u.id}')" style="background:none;border:1px solid var(--bord-2);color:var(--muted);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:Inter;margin-left:8px;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Marcar concluído</button>`
+      ? `<button onclick="fixUploadStatus('${u.id}')" style="background:none;border:1px solid var(--bord-2);color:var(--muted);border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:Inter;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--muted)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--bord-2)'">Marcar concluído</button>`
       : '';
-    const delBtn = `<button onclick="deleteUpload('${u.id}')" style="background:none;border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:Inter;margin-left:8px;" onmouseover="this.style.background='rgba(239,68,68,.1)'" onmouseout="this.style.background='none'">Excluir</button>`;
+    const delBtn = `<button onclick="deleteUpload('${u.id}')" style="background:none;border:1px solid rgba(248,113,113,.2);color:var(--red);border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:Inter;" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background='none'">Excluir</button>`;
     return `
-      <div class="upload-row">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div class="upload-icon-box">📄</div>
-          <div>
-            <div style="font-size:14px;font-weight:600;">${escHtml(u.nome_arquivo)}</div>
-            <div style="font-size:12px;color:var(--muted);">
-              Período: ${periodo} · ${u.total_trades} ops · ${fmtDateTime(u.created_at)}
-            </div>
-          </div>
+      <div class="upl-row">
+        <div class="upl-row-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
-        <div style="display:flex;align-items:center;">${badge}${fixBtn}${delBtn}</div>
+        <div>
+          <div class="upl-row-filename">${escHtml(u.nome_arquivo)}</div>
+          <div class="upl-row-date">Enviado em ${fmtDateTime(u.created_at)}</div>
+        </div>
+        <div class="upl-row-meta-group">
+          <span class="upl-row-meta-label">Período</span>
+          <span class="upl-row-meta-val">${periodo}</span>
+        </div>
+        <div class="upl-row-meta-group">
+          <span class="upl-row-meta-label">Operações</span>
+          <span class="upl-row-meta-val">${u.total_trades ?? '—'}</span>
+        </div>
+        <div class="upl-row-actions">${badge}${fixBtn}${delBtn}</div>
       </div>`;
   }).join('');
 }
