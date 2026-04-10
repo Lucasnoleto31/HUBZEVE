@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /perfil
+Disallow: /login
+Disallow: /admin
+Disallow: /assessor
+Disallow: /reset-senha
+
+Sitemap: https://zevehub.vercel.app/sitemap.xml
