@@ -110,105 +110,154 @@
     .content { flex: 1; overflow-y: auto; padding: 0; }
     .section { display: none; }
     .section.active { display: block; }
-    #sec-overview.active { display: flex; flex-direction: column; }
-    /* non-overview sections get standard padding */
     .section:not(#sec-overview) { padding: 28px 36px; }
 
     /* ── PERIOD BAR ── */
-    .period-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 22px; flex-wrap: wrap; }
+    .period-bar { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
     .period-btn {
-      padding: 5px 13px; border-radius: 6px; font-size: 12px; font-weight: 400;
+      padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 400;
       cursor: pointer; border: 1px solid transparent; background: none;
       color: var(--muted); transition: all .12s; font-family: Inter;
     }
     .period-btn:hover { background: var(--card-2); color: var(--text); border-color: var(--border); }
     .period-btn.active {
       background: rgba(73,168,252,.08); border-color: rgba(73,168,252,.2);
-      color: var(--accent); font-weight: 500;
+      color: var(--accent); font-weight: 600;
     }
     .period-input {
       background: var(--card); border: 1px solid var(--border); color: var(--text);
-      border-radius: 7px; padding: 5px 10px; font-size: 12px; font-family: Inter;
+      border-radius: 7px; padding: 4px 9px; font-size: 11px; font-family: Inter;
       outline: none; color-scheme: dark;
     }
     .period-input:focus { border-color: var(--accent); }
 
-    /* ── OVERVIEW LAYOUT ── */
-    #sec-overview { display: flex; flex-direction: column; height: 100%; }
+    /* ══════════════════════════════════════════
+       VISÃO GERAL — layout
+    ══════════════════════════════════════════ */
+    .ov-wrap { padding: 32px 40px; }
 
-    /* First fold: two columns, fills viewport */
-    .overview-fold {
+    /* Top bar: greeting + period */
+    .ov-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 36px;
+    }
+    .ov-greeting { font-size: 13px; color: var(--muted); }
+    .ov-greeting strong { color: var(--text); font-weight: 700; font-size: 15px; }
+
+    /* Hero: big number + stats side by side */
+    .ov-hero {
       display: grid;
-      grid-template-columns: 340px 1fr;
-      flex-shrink: 0;
-      height: calc(100vh - 52px);
-      border-bottom: 1px solid var(--border);
+      grid-template-columns: auto 1fr;
+      gap: 0;
+      align-items: stretch;
+      margin-bottom: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+    .ov-hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(34,197,94,.5) 0%, transparent 50%);
+      transition: background .4s;
+    }
+    .ov-hero.negative::before {
+      background: linear-gradient(90deg, rgba(239,68,68,.45) 0%, transparent 50%);
     }
 
-    /* Left panel: greeting + number + stats */
-    .fold-left {
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 36px 36px 36px 40px;
+    /* Left: big number */
+    .ov-pnl-panel {
+      padding: 32px 40px;
       border-right: 1px solid var(--border);
       position: relative; overflow: hidden;
     }
-    .fold-left::after {
+    .ov-pnl-panel::after {
       content: '';
-      position: absolute; bottom: -100px; left: -60px;
-      width: 360px; height: 360px; border-radius: 50%; pointer-events: none;
-      background: radial-gradient(ellipse, rgba(34,197,94,.07) 0%, transparent 65%);
+      position: absolute; bottom: -60px; left: -40px;
+      width: 240px; height: 240px; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(34,197,94,.08) 0%, transparent 65%);
       transition: background .5s;
     }
-    .fold-left.negative::after {
+    .ov-hero.negative .ov-pnl-panel::after {
       background: radial-gradient(ellipse, rgba(239,68,68,.06) 0%, transparent 65%);
     }
-
-    /* Right panel: chart fills full height */
-    .fold-right {
-      display: flex; flex-direction: column;
-      padding: 24px 28px 20px;
-      min-height: 0;
-    }
-
-    /* ── WELCOME ── */
-    .welcome-greeting {
-      font-size: 12px; font-weight: 500;
-      color: var(--muted); margin-bottom: 24px;
-    }
-    .welcome-greeting span { color: var(--text); font-weight: 700; }
-
-    /* ── HERO RESULT ── */
-    .hero-result-label {
+    .ov-pnl-label {
       font-size: 9px; font-weight: 600; letter-spacing: .16em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
     }
-    .hero-result-value {
-      font-size: clamp(2.6rem, 4.5vw, 4rem);
+    .ov-pnl-value {
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
       font-weight: 900; line-height: 1; letter-spacing: -.04em;
       color: #22C55E;
-      text-shadow: 0 0 70px rgba(34,197,94,.25);
-      transition: color .4s, text-shadow .4s;
-      margin-bottom: 6px;
+      text-shadow: 0 0 60px rgba(34,197,94,.3);
+      margin-bottom: 6px; white-space: nowrap;
       font-variant-numeric: tabular-nums;
     }
-    .hero-result-value.negative {
-      color: var(--red);
-      text-shadow: 0 0 50px rgba(239,68,68,.18);
+    .ov-pnl-value.negative {
+      color: var(--red); text-shadow: 0 0 50px rgba(239,68,68,.2);
     }
-    .hero-result-sub {
-      font-size: 12px; color: var(--muted); margin-bottom: 32px;
+    .ov-pnl-sub { font-size: 11px; color: var(--muted); }
+
+    /* Right: stat grid */
+    .ov-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 1fr 1fr;
+    }
+    .ov-stat {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    .ov-stat:nth-child(3)  { border-right: none; }
+    .ov-stat:nth-child(4),
+    .ov-stat:nth-child(5),
+    .ov-stat:nth-child(6)  { border-bottom: none; }
+    .ov-stat:nth-child(6)  { border-right: none; }
+    .ov-stat-label { font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .ov-stat-value { font-size: 20px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+
+    /* Equity chart card */
+    .ov-equity-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 22px 24px 16px;
+      margin-bottom: 20px; position: relative; overflow: hidden;
+    }
+    .ov-equity-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, rgba(34,197,94,.5) 0%, transparent 50%);
+      transition: background .4s;
+    }
+    .ov-equity-card.negative::before {
+      background: linear-gradient(90deg, rgba(239,68,68,.4) 0%, transparent 50%);
+    }
+    .ov-equity-label {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .ov-equity-label-left { font-size: 13px; font-weight: 600; color: var(--text); }
+    .ov-equity-label-right { display: flex; gap: 20px; }
+    .ov-equity-stat { text-align: right; }
+    .ov-equity-stat-label { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .ov-equity-stat-val { font-size: 14px; font-weight: 700; color: var(--text); }
+    .ov-equity-glow {
+      position: absolute; bottom: -50px; right: 20%; pointer-events: none;
+      width: 300px; height: 200px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(34,197,94,.05) 0%, transparent 70%);
+      transition: background .4s;
+    }
+    .ov-equity-card.negative .ov-equity-glow {
+      background: radial-gradient(ellipse, rgba(239,68,68,.04) 0%, transparent 70%);
     }
 
-    /* ── STAT LIST ── */
-    .stat-pills { display: flex; flex-direction: column; gap: 0; }
-    .stat-pill {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+    /* Bottom row */
+    .ov-bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr 180px;
+      gap: 16px;
     }
-    .stat-pill:last-child { border-bottom: none; }
-    .stat-pill-label { font-size: 11px; color: var(--muted); }
-    .stat-pill-value { font-size: 14px; font-weight: 700; letter-spacing: -.01em; color: var(--text); }
-    .stat-pill-hint  { display: none; }
 
     /* ── KPIs (other sections) ── */
     .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
@@ -240,47 +289,6 @@
     .chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
     .chart-wrap { position: relative; }
 
-    /* ── EQUITY CHART PANEL ── */
-    .equity-hero-card {
-      flex: 1; display: flex; flex-direction: column;
-      position: relative; overflow: hidden;
-      min-height: 0;
-    }
-    .equity-hero-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, rgba(34,197,94,.45) 0%, transparent 55%);
-      transition: background .4s; z-index: 1;
-    }
-    .equity-hero-card.negative::before {
-      background: linear-gradient(90deg, rgba(239,68,68,.4) 0%, transparent 55%);
-    }
-    .equity-hero-label {
-      font-size: 10px; font-weight: 500; letter-spacing: .08em;
-      text-transform: uppercase; color: var(--muted);
-      margin-bottom: 12px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .equity-chart-wrap {
-      flex: 1; position: relative; min-height: 0;
-    }
-    .equity-chart-wrap canvas { position: absolute; inset: 0; }
-    .equity-glow {
-      position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-      width: 80%; height: 160px; border-radius: 50%; pointer-events: none;
-      background: radial-gradient(ellipse, rgba(34,197,94,.05) 0%, transparent 70%);
-      transition: background .4s; z-index: 0;
-    }
-    .equity-glow.negative {
-      background: radial-gradient(ellipse, rgba(239,68,68,.04) 0%, transparent 70%);
-    }
-
-    /* ── BELOW FOLD (secondary charts, scrollable) ── */
-    .below-fold { padding: 32px 40px 40px; }
-    .below-fold-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 200px;
-      gap: 16px;
-    }
 
     /* ── HEATMAP ── */
     .heatmap-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; }
@@ -566,139 +574,131 @@
 
       <!-- ==================== VISÃO GERAL ==================== -->
       <div id="sec-overview" class="section active">
+      <div class="ov-wrap" id="dash-content">
 
-        <!-- ── FIRST FOLD ── -->
-        <div class="overview-fold" id="dash-content">
-
-          <!-- LEFT PANEL: greeting + period + result + stats -->
-          <div class="fold-left" id="fold-left">
-
-            <div class="welcome-greeting" id="welcome-greeting">
-              Olá, <span>Trader</span>
-            </div>
-
-            <!-- Period selector -->
-            <div class="period-bar" style="margin-bottom:24px;">
-              <button class="period-btn" id="pbtn-7d"   onclick="setPeriod('7d',this)">7 dias</button>
-              <button class="period-btn" id="pbtn-30d"  onclick="setPeriod('30d',this)">30 dias</button>
-              <button class="period-btn" id="pbtn-month" onclick="setPeriod('month',this)">Mês</button>
-              <button class="period-btn" id="pbtn-90d"  onclick="setPeriod('90d',this)">90 dias</button>
-              <button class="period-btn active" id="pbtn-all" onclick="setPeriod('all',this)">Tudo</button>
-              <button class="period-btn" id="pbtn-custom" onclick="setPeriod('custom',this)">…</button>
-              <div id="custom-dates" style="display:none;align-items:center;gap:6px;width:100%;margin-top:6px;">
-                <input type="date" class="period-input" id="date-from" onchange="applyCustomPeriod()" />
-                <span style="color:var(--muted);font-size:11px;">até</span>
-                <input type="date" class="period-input" id="date-to" onchange="applyCustomPeriod()" />
-              </div>
-            </div>
-
-            <!-- Big result number -->
-            <div class="hero-result-label">Resultado Total</div>
-            <div class="hero-result-value" id="v-pnl">—</div>
-            <div class="hero-result-sub" id="sub-pnl">resultado líquido do período</div>
-
-            <!-- Stats list -->
-            <div class="stat-pills">
-              <div class="stat-pill">
-                <span class="stat-pill-label">Operações</span>
-                <span class="stat-pill-value" id="stat-total">—</span>
-              </div>
-              <div class="stat-pill">
-                <span class="stat-pill-label">Taxa de Acerto</span>
-                <span class="stat-pill-value" id="v-wr">—</span>
-              </div>
-              <div class="stat-pill">
-                <span class="stat-pill-label">Fator de Lucro</span>
-                <span class="stat-pill-value" id="v-pf">—</span>
-              </div>
-              <div class="stat-pill">
-                <span class="stat-pill-label">Payoff</span>
-                <span class="stat-pill-value" id="v-payoff">—</span>
-              </div>
-              <div class="stat-pill">
-                <span class="stat-pill-label">Max Drawdown</span>
-                <span class="stat-pill-value" id="v-dd" style="color:var(--red);">—</span>
-              </div>
-              <div class="stat-pill">
-                <span class="stat-pill-label">Melhor Dia</span>
-                <span class="stat-pill-value" id="stat-best" style="color:#22C55E;">—</span>
-              </div>
-            </div>
-
-          </div><!-- /fold-left -->
-
-          <!-- RIGHT PANEL: equity curve -->
-          <div class="fold-right">
-            <div class="equity-hero-card" id="equity-hero-card">
-              <div class="equity-glow" id="equity-glow"></div>
-              <div class="equity-hero-label">
-                <span>Curva de Performance · acumulado no período</span>
-                <span style="display:flex;gap:16px;">
-                  <span>Consistência &nbsp;<strong id="stat-consistencia" style="color:var(--text);">—</strong></span>
-                  <span>Dias &nbsp;<strong id="stat-dias" style="color:var(--text);">—</strong></span>
-                </span>
-              </div>
-              <div class="equity-chart-wrap">
-                <canvas id="chart-equity"></canvas>
-              </div>
-            </div>
-          </div><!-- /fold-right -->
-
-        </div><!-- /overview-fold -->
-
-        <!-- ── EMPTY STATE (no data) ── -->
-        <div id="empty-overview" class="empty-state" style="display:none;padding:80px 32px;position:absolute;inset:52px 0 0;background:var(--bg);z-index:10;">
+        <!-- Empty state -->
+        <div id="empty-overview" class="empty-state" style="display:none;">
           <div class="empty-icon">📊</div>
           <div class="empty-title">Nenhuma operação no período</div>
           <div class="empty-sub">Faça upload do seu relatório de operações do Profit para visualizar suas métricas.</div>
           <button class="btn-primary" onclick="showSection('uploads',document.getElementById('nav-uploads'))">Fazer Upload</button>
         </div>
 
-        <!-- ── BELOW FOLD: secondary charts ── -->
-        <div class="below-fold">
-          <div class="below-fold-grid">
+        <!-- ── TOP: greeting + period ── -->
+        <div class="ov-topbar">
+          <div class="ov-greeting" id="welcome-greeting">Olá, <strong>Trader</strong></div>
+          <div class="period-bar">
+            <button class="period-btn" id="pbtn-7d"    onclick="setPeriod('7d',this)">7 dias</button>
+            <button class="period-btn" id="pbtn-30d"   onclick="setPeriod('30d',this)">30 dias</button>
+            <button class="period-btn" id="pbtn-month" onclick="setPeriod('month',this)">Este mês</button>
+            <button class="period-btn" id="pbtn-90d"   onclick="setPeriod('90d',this)">90 dias</button>
+            <button class="period-btn active" id="pbtn-all" onclick="setPeriod('all',this)">Todo período</button>
+            <button class="period-btn" id="pbtn-custom" onclick="setPeriod('custom',this)">Personalizado</button>
+            <div id="custom-dates" style="display:none;align-items:center;gap:6px;">
+              <input type="date" class="period-input" id="date-from" onchange="applyCustomPeriod()" />
+              <span style="color:var(--muted)">—</span>
+              <input type="date" class="period-input" id="date-to" onchange="applyCustomPeriod()" />
+            </div>
+          </div>
+        </div>
 
-            <!-- Resultado por Dia -->
-            <div class="chart-card">
-              <div class="chart-title">Resultado por Dia</div>
-              <div class="chart-sub">Resultado diário em R$</div>
-              <div class="chart-wrap" style="height:200px;">
-                <canvas id="chart-daily"></canvas>
+        <!-- ── HERO CARD: big number + 6 stats ── -->
+        <div class="ov-hero" id="ov-hero">
+          <!-- Big P&L -->
+          <div class="ov-pnl-panel">
+            <div class="ov-pnl-label">Resultado Total</div>
+            <div class="ov-pnl-value" id="v-pnl">—</div>
+            <div class="ov-pnl-sub" id="sub-pnl">resultado líquido</div>
+          </div>
+          <!-- Stats 3x2 grid -->
+          <div class="ov-stats-grid">
+            <div class="ov-stat">
+              <div class="ov-stat-label">Operações</div>
+              <div class="ov-stat-value" id="stat-total">—</div>
+            </div>
+            <div class="ov-stat">
+              <div class="ov-stat-label">Taxa de Acerto</div>
+              <div class="ov-stat-value" id="v-wr">—</div>
+            </div>
+            <div class="ov-stat">
+              <div class="ov-stat-label">Fator de Lucro</div>
+              <div class="ov-stat-value" id="v-pf">—</div>
+            </div>
+            <div class="ov-stat">
+              <div class="ov-stat-label">Payoff</div>
+              <div class="ov-stat-value" id="v-payoff">—</div>
+            </div>
+            <div class="ov-stat">
+              <div class="ov-stat-label">Max Drawdown</div>
+              <div class="ov-stat-value" id="v-dd" style="color:var(--red);">—</div>
+            </div>
+            <div class="ov-stat">
+              <div class="ov-stat-label">Melhor Dia</div>
+              <div class="ov-stat-value" id="stat-best" style="color:#22C55E;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── EQUITY CHART ── -->
+        <div class="ov-equity-card" id="equity-hero-card">
+          <div class="ov-equity-glow" id="equity-glow"></div>
+          <div class="ov-equity-label">
+            <div class="ov-equity-label-left">Curva de Performance</div>
+            <div class="ov-equity-label-right">
+              <div class="ov-equity-stat">
+                <div class="ov-equity-stat-label">Consistência</div>
+                <div class="ov-equity-stat-val" id="stat-consistencia">—</div>
+              </div>
+              <div class="ov-equity-stat">
+                <div class="ov-equity-stat-label">Dias operados</div>
+                <div class="ov-equity-stat-val" id="stat-dias">—</div>
               </div>
             </div>
+          </div>
+          <div class="chart-wrap" style="height:300px;">
+            <canvas id="chart-equity"></canvas>
+          </div>
+        </div>
 
-            <!-- Compra vs Venda -->
-            <div class="chart-card">
-              <div class="chart-title">Compra vs Venda</div>
-              <div class="chart-sub">Performance por lado</div>
-              <div class="chart-wrap" style="height:140px;">
-                <canvas id="chart-side"></canvas>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;" id="cv-stats"></div>
+        <!-- ── BOTTOM ROW: daily + side + donut ── -->
+        <div class="ov-bottom">
+          <div class="chart-card">
+            <div class="chart-title">Resultado por Dia</div>
+            <div class="chart-sub">Resultado diário em R$</div>
+            <div class="chart-wrap" style="height:200px;">
+              <canvas id="chart-daily"></canvas>
             </div>
-
-            <!-- Taxa de Acerto -->
-            <div class="chart-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <div class="chart-title" style="text-align:center;margin-bottom:10px;">Taxa de Acerto</div>
-              <div class="chart-wrap" style="height:110px;width:110px;">
-                <canvas id="chart-donut"></canvas>
-              </div>
-              <div style="text-align:center;margin-top:8px;">
-                <span id="donut-pct" style="font-size:22px;font-weight:900;letter-spacing:-.03em;">—</span>
-                <span style="font-size:11px;color:var(--muted);margin-left:3px;">acerto</span>
-              </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Compra vs Venda</div>
+            <div class="chart-sub">Performance por lado da operação</div>
+            <div class="chart-wrap" style="height:150px;">
+              <canvas id="chart-side"></canvas>
             </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;" id="cv-stats"></div>
+          </div>
+          <div class="chart-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div class="chart-title" style="text-align:center;margin-bottom:12px;">Taxa de Acerto</div>
+            <div class="chart-wrap" style="height:110px;width:110px;">
+              <canvas id="chart-donut"></canvas>
+            </div>
+            <div style="text-align:center;margin-top:10px;">
+              <span id="donut-pct" style="font-size:22px;font-weight:900;letter-spacing:-.03em;">—</span>
+              <span style="font-size:11px;color:var(--muted);margin-left:4px;">acerto</span>
+            </div>
+          </div>
+        </div>
 
-          </div><!-- /below-fold-grid -->
-        </div><!-- /below-fold -->
+      </div><!-- /ov-wrap -->
 
-        <!-- hidden JS compat elements -->
+        <!-- hidden JS compat -->
         <span id="stat-avg"      style="display:none;">—</span>
         <span id="stat-dias-kpi" style="display:none;">—</span>
         <span id="sub-stat-dias" style="display:none;">—</span>
         <span id="sub-wr"        style="display:none;">—</span>
         <span id="sub-pf"        style="display:none;">—</span>
         <span id="sub-payoff"    style="display:none;">—</span>
+        <span id="fold-left"     style="display:none;"></span>
 
       </div><!-- /sec-overview -->
 
@@ -1309,7 +1309,7 @@ let lastMetrics = null;
   document.getElementById('sb-name').textContent   = p.full_name || p.email;
   const firstName = (p.full_name || '').split(' ')[0] || '';
   const greetEl = document.getElementById('welcome-greeting');
-  if (greetEl && firstName) greetEl.innerHTML = `Olá, <span>${firstName}</span>`;
+  if (greetEl && firstName) greetEl.innerHTML = `Olá, <strong>${firstName}</strong>`;
 
   await Promise.all([loadTrades(), loadUploads()]);
 })();
@@ -1609,10 +1609,14 @@ function animateCountUp(el, targetValue, duration) {
   requestAnimationFrame(tick);
 }
 
-// fold-left bg glow
+// hero card + equity card negative state
 function updateFoldGlow(pnl) {
-  const fl = document.getElementById('fold-left');
-  if (fl) fl.classList.toggle('negative', pnl < 0);
+  const hero = document.getElementById('ov-hero');
+  const eq   = document.getElementById('equity-hero-card');
+  const glow = document.getElementById('equity-glow');
+  if (hero) hero.classList.toggle('negative', pnl < 0);
+  if (eq)   eq.classList.toggle('negative',   pnl < 0);
+  if (glow) glow.classList.toggle('negative', pnl < 0);
 }
 
 /* ============================================================
